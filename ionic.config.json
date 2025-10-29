@@ -1,0 +1,7 @@
+{
+  "name": "Telemedicina",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

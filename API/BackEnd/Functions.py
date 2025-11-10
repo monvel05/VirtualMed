@@ -4,6 +4,9 @@ from pymongo import MongoClient
 import BackEnd.GlobalInfo.ResponseMessages as respuestas
 import BackEnd.GlobalInfo.Keys as Colabskey
 
+
+#Ejemplo de conexion a la base de datos MongoDB
+'''
 if Colabskey.dbconn == None:
     mongoConnect = MongoClient(Colabskey.strConnection)
     Colabskey.dbconn = mongoConnect[Colabskey.strDBConnection]
@@ -11,8 +14,7 @@ if Colabskey.dbconn == None:
     dbAlumnos = Colabskey.dbconn["alumnos"]
     dbAdministrativos = Colabskey.dbconn["administrativos"]
 
-'''
-Ejemplo de petición
+
 
 def getAllProfesores():
     try:

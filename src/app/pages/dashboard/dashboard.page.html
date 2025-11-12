@@ -1,13 +1,57 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+@if (role == "doctor") {
+<ion-menu contentId="main-content">
+  <ion-header>
     <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
+      <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
-</ion-content>
+  <ion-content class="ion-padding">This is the menu content.</ion-content>
+</ion-menu>
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>VitualMed</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content [fullscreen]="true">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="8">
+          <ion-row>
+            <h1>Hola</h1>
+          </ion-row>
+          <ion-row>
+            <!--Botón de agendar cita-->
+            <ion-col size="12" size-md="6">
+              <button type="button" class="btn btn-primary">Agendar citas</button>
+            </ion-col>
+
+            <!--Botón de ver y gestionar citas-->
+            <ion-col size="12" size-md="6">
+              <button type="button" class="btn btn-primary">Gestionar citas</button>
+            </ion-col>
+
+            <!--Botón de historial médico-->
+            <ion-col size="12" size-md="6">
+              <button type="button" class="btn btn-primary">Historiales Médicos</button>
+            </ion-col>
+
+            <!--Botón de recetas-->
+            <ion-col size="12" size-md="6">
+              <button type="button" class="btn btn-primary">Mis recetas</button>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-datetime presentation="date" show-adjacent-days="true" [highlightedDates]="highlightedDates"></ion-datetime>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+</div>
+} @else {
+<p>xd</p>
+}

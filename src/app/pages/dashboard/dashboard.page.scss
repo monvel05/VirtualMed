@@ -1,0 +1,61 @@
+div[slot='content'] {
+  background: rgba(var(--ion-color-rose-rgb), 0.25);
+}
+
+.btn-custom {
+  background-color: #73c7e3;
+  border-color: #4f8496;
+  padding: 50px 28px;
+  font-size: xx-large;
+  color: black;
+  min-height: 70px;
+  max-height: 150px;
+  width: 100%;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #2e4a70;
+    color: aliceblue;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+ion-fab {
+  margin-top: var(--ion-safe-area-top, 0);
+}
+
+ion-fab-button {
+  --background: #c8a2cb;
+  --background-activated: #976597;
+  --background-hover: #c8a3c8;
+  --color: black;
+}
+
+// Media query para pantallas móviles - BOTONES MÁS GRANDES
+@media (max-width: 767px) {
+  .btn-custom {
+    padding: 25px 16px;  // Más padding vertical
+    font-size: x-large;  // Fuente más grande
+    min-height: 80px;    // Más altura mínima
+    font-weight: 600;    // Texto más grueso
+  }
+}
+
+// Media query para pantallas más grandes
+@media (min-width: 768px) {
+  .btn-custom {
+    font-size: 18px;
+    min-height: 80px;
+  }
+}
+
+ion-content {
+  --padding-top: var(--ion-safe-area-top, 0);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-bottom: var(--ion-safe-area-bottom, 0);
+}

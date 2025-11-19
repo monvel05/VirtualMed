@@ -35,3 +35,24 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 //@import '@ionic/angular/css/palettes/dark.system.css';
+
+//Import de bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+
+
+// Custom global styles
+// Agregar esto en variables.scss
+:root {
+  --ion-color-rose: #f4b9b8;
+  --ion-color-rose-contrast: #000000;
+  --ion-color-rose-shade: #e0b4ba;
+  --ion-color-rose-tint: #fff9f0;
+}
+
+.ion-color-rose {
+  --ion-color-base: var(--ion-color-rose);
+  --ion-color-contrast: var(--ion-color-rose-contrast);
+  --ion-color-shade: var(--ion-color-rose-shade);
+  --ion-color-tint: var(--ion-color-rose-tint);
+}

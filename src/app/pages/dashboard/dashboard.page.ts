@@ -1,22 +1,97 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenu, IonMenuButton, IonGrid, IonDatetime, IonCol, IonRow, IonButton} from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonMenu,
+  IonMenuButton,
+  IonGrid,
+  IonDatetime,
+  IonCol,
+  IonRow,
+  IonAccordion,
+  IonAccordionGroup,
+  IonItem,
+  IonLabel,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonFab,
+  IonFabButton,
+  IonFabList,
+  IonIcon,
+  IonModal,
+  IonButton
+} from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonCol, IonButtons, IonDatetime, IonContent, IonHeader, IonMenu, IonMenuButton, IonTitle, IonToolbar, IonGrid, IonCol, IonRow, IonButton, IonRow]
+  imports: [
+    IonCol,
+    IonButtons,
+    IonDatetime,
+    IonContent,
+    IonHeader,
+    IonMenuButton,
+    IonTitle,
+    IonToolbar,
+    IonGrid,
+    IonCol,
+    IonRow,
+    IonRow,
+    IonAccordion,
+    IonAccordionGroup,
+    IonItem,
+    IonLabel,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle,
+    IonFab,
+    IonFabButton,
+    IonFabList,
+    IonIcon,
+    IonModal,
+    IonButton,
+  ],
 })
 export class DashboardPage implements OnInit {
+  role = 'doctor';
+  greeting: string = '';
+  isModalOpen = false;
 
-  role = "doctor";
-
-  constructor() { }
+  constructor(private router: Router) {  }
 
   ngOnInit() {
+    this.getGreeting();
+  }
+
+  setOpen(isOpen: boolean) {
+    this.isModalOpen = isOpen;
+  }
+
+  getGreeting() {
+    const time = new Date();
+    const hour = time.getHours();
+
+    if (hour < 12) {
+      this.greeting = '¿Buenos días!';
+    } else if (hour < 18) {
+      this.greeting = '¡Buenas tardes!';
+    } else {
+      this.greeting = '¡Buenas noches!';
+    }
   }
 
   highlightedDates = [
@@ -45,4 +120,47 @@ export class DashboardPage implements OnInit {
       border: '1px solid rgb(103, 58, 183)',
     },
   ];
+
+  dates = [
+    {
+      date: '2025-11-10',
+      hour: '10:00 AM',
+      description: 'Cita con el paciente Juan Pérez a las 10:00 AM',
+    },
+    {
+      date: '2025-11-15',
+      hour: '02:00 PM',
+      description: 'Cita con la paciente María López a las 02:00 PM',
+    },
+  ];
+
+  //Funciones para navegación entre páginas
+  fnGoToCreateAppointment() {
+    this.router.navigate(['/create-appointment']);
+  }
+
+  fnGoToManagement() {
+    this.router.navigate(['/management']);
+  }
+
+  fnGoToMedicalRecords() {
+    this.router.navigate(['/medical-records']);
+  }
+
+  fnGoToPrescription() {
+    this.router.navigate(['/prescription']);
+  }
+
+  fnGoToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  fnGoToSettings() {
+    this.router.navigate(['/settings']);
+  }
+
+  fnGoToHome() {
+    this.router.navigate(['/dashboard']);
+  }
+
 }

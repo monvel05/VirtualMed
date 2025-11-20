@@ -52,6 +52,8 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+#Para lo de andorid studio
+/android
 
 # Miscellaneous
 /.angular

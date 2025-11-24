@@ -1,61 +1,249 @@
-div[slot='content'] {
-  background: rgba(var(--ion-color-rose-rgb), 0.25);
-}
-
-.btn-custom {
-  background-color: #73c7e3;
-  border-color: #4f8496;
-  padding: 50px 28px;
-  font-size: xx-large;
-  color: black;
-  min-height: 70px;
-  max-height: 150px;
-  width: 100%;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  cursor: pointer;
+/* --- Variables Locales & Scope (:host) --- */
+:host {
+  /* Paleta de colores extraída del diseño original */
+  --primary: #3880ff;
+  --secondary: #3dc2ff;
+  --danger: #eb445a;
+  --dark: #222428;
+  --medium: #92949c;
+  --light: #f4f5f8;
+  --white: #ffffff;
+  --header-bg: #2B5C48; /* El verde característico */
+  --card-bg: #ffffff;
   
-  &:hover {
-    background-color: #2e4a70;
-    color: aliceblue;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Sobrescribir variables de Ionic para consistencia */
+  --ion-color-primary: var(--header-bg);
+  --ion-background-color: var(--light);
+  --ion-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  display: block;
+  height: 100%;
+}
+
+/* --- Estilos Generales de la Página --- */
+.ion-page {
+  background-color: var(--light);
+}
+
+/* --- Toolbar Personalizado --- */
+ion-toolbar {
+  --background: var(--header-bg);
+  --color: var(--white);
+  --min-height: 70px;
+  
+  /* Sombra suave similar al diseño original */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  ion-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  ion-menu-button {
+    --color: var(--white);
   }
 }
 
-ion-fab {
-  margin-top: var(--ion-safe-area-top, 0);
-}
-
-ion-fab-button {
-  --background: #c8a2cb;
-  --background-activated: #976597;
-  --background-hover: #c8a3c8;
-  --color: black;
-}
-
-// Media query para pantallas móviles - BOTONES MÁS GRANDES
-@media (max-width: 767px) {
-  .btn-custom {
-    padding: 25px 16px;  // Más padding vertical
-    font-size: x-large;  // Fuente más grande
-    min-height: 80px;    // Más altura mínima
-    font-weight: 600;    // Texto más grueso
-  }
-}
-
-// Media query para pantallas más grandes
-@media (min-width: 768px) {
-  .btn-custom {
-    font-size: 18px;
-    min-height: 80px;
-  }
-}
-
+/* --- Contenido Principal --- */
 ion-content {
-  --padding-top: var(--ion-safe-area-top, 0);
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --padding-bottom: var(--ion-safe-area-bottom, 0);
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  
+  /* Títulos y Saludos */
+  h1.title {
+    color: var(--header-bg);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 5px;
+  }
+
+  h2 {
+    color: var(--medium);
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-top: 0;
+  }
+}
+
+/* --- Botones del Dashboard (.btn-custom) --- */
+/* Adaptados del estilo .card y .btn del diseño original */
+.btn-custom {
+  width: 100%;
+  background: var(--white);
+  color: var(--header-bg);
+  border: 1px solid #e8e8e8;
+  padding: 25px 20px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+
+  /* Icono decorativo sutil (opcional, usando pseudo-elemento) */
+  &::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 60px;
+    height: 60px;
+    background: rgba(43, 92, 72, 0.05);
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(43, 92, 72, 0.15);
+    border-color: var(--header-bg);
+    background: var(--header-bg);
+    color: var(--white);
+
+    &::after {
+      background: rgba(255,255,255, 0.1);
+      transform: scale(1.5);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* --- Estilos específicos para Doctor (Columna Derecha) --- */
+
+/* Calendario */
+ion-datetime {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  background: var(--white);
+  
+  /* Personalización colores Ionic */
+  --background: var(--white);
+  --wheel-highlight-background: #f8f9fa;
+  --accent-color: var(--header-bg);
+}
+
+/* Acordeón de Agenda */
+ion-accordion-group {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: var(--white);
+
+  ion-item[slot="header"] {
+    --background: var(--header-bg);
+    --color: var(--white);
+    font-weight: 600;
+    
+    ion-label {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+/* Cards dentro de la Agenda */
+ion-card {
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  background: #fff;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateX(5px);
+    border-left: 4px solid var(--header-bg);
+  }
+
+  ion-card-header {
+    padding: 10px 15px;
+    background: #f9f9f9;
+    
+    ion-card-title {
+      font-size: 1rem;
+      color: var(--dark);
+      font-weight: 700;
+    }
+    
+    ion-card-subtitle {
+      color: var(--header-bg);
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+  }
+
+  ion-card-content {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    color: var(--medium);
+  }
+}
+
+/* --- Estilos Específicos Paciente (FABs & Modal) --- */
+
+/* Floating Action Button */
+ion-fab-button {
+  --background: var(--header-bg);
+  --color: var(--white);
+  --box-shadow: 0 4px 15px rgba(43, 92, 72, 0.4);
+  
+  &[color="danger"] {
+    --background: var(--danger);
+  }
+
+  ion-icon {
+    font-size: 1.4rem;
+  }
+}
+
+/* Modal de Notificaciones */
+ion-modal {
+  --border-radius: 15px;
+  --box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+  ion-header ion-toolbar {
+    --background: var(--white);
+    --color: var(--dark);
+    box-shadow: none;
+    border-bottom: 1px solid #eee;
+
+    ion-title {
+      color: var(--header-bg);
+    }
+  }
+}
+
+/* --- Responsive Tweaks --- */
+@media (max-width: 768px) {
+  ion-content {
+    --padding-start: 10px;
+    --padding-end: 10px;
+  }
+
+  .btn-custom {
+    padding: 20px;
+    font-size: 1rem;
+  }
+
+  h1.title {
+    font-size: 1.6rem;
+  }
+  
+  ion-toolbar {
+    --min-height: 60px;
+    ion-title { font-size: 20px; }
+  }
 }

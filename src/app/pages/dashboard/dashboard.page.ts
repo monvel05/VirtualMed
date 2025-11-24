@@ -64,10 +64,11 @@ import { Router } from '@angular/router';
     IonIcon,
     IonModal,
     IonButton,
-  ],
+    IonMenu
+],
 })
 export class DashboardPage implements OnInit {
-  role = 'doctor';
+  role = '';
   greeting: string = '';
   isModalOpen = false;
 
@@ -86,7 +87,7 @@ export class DashboardPage implements OnInit {
     const hour = time.getHours();
 
     if (hour < 12) {
-      this.greeting = '¿Buenos días!';
+      this.greeting = '¡Buenos días!';
     } else if (hour < 18) {
       this.greeting = '¡Buenas tardes!';
     } else {

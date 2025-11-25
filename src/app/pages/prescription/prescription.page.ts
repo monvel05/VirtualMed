@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle } from "@ionic/angular/standalone";
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons } from "@ionic/angular/standalone";
 
 // Declaramos las variables para las librerías externas (CDN)
 declare var html2canvas: any;
@@ -10,7 +10,7 @@ declare var jsPDF: any;
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [IonTitle, IonToolbar, IonHeader, CommonModule, FormsModule],
+  imports: [IonButtons, IonContent, IonTitle, IonToolbar, IonHeader, CommonModule, FormsModule],
   templateUrl: './prescription.page.html',
   styleUrls: ['./prescription.page.scss']
 })

@@ -81,21 +81,12 @@
             <div class="error-message"><span>⚠ El nombre es requerido</span></div>
           }
 
-          <!-- CORRECCIÓN: Separar apellidos en paterno y materno -->
           <ion-item class="form-item">
-            <ion-label position="floating">Apellido Paterno</ion-label>
+            <ion-label position="floating">Apellidos</ion-label>
             <ion-input formControlName="apellidoPaterno"></ion-input>
           </ion-item>
-          @if (registerForm.get('apellidoPaterno')?.invalid && registerForm.get('apellidoPaterno')?.touched) {
-            <div class="error-message"><span>⚠ El apellido paterno es requerido</span></div>
-          }
-
-          <ion-item class="form-item">
-            <ion-label position="floating">Apellido Materno</ion-label>
-            <ion-input formControlName="apellidoMaterno"></ion-input>
-          </ion-item>
-          @if (registerForm.get('apellidoMaterno')?.invalid && registerForm.get('apellidoMaterno')?.touched) {
-            <div class="error-message"><span>⚠ El apellido materno es requerido</span></div>
+          @if (registerForm.get('apellidos')?.invalid && registerForm.get('apellidos')?.touched) {
+            <div class="error-message"><span>⚠ Los apellidos son requeridos</span></div>
           }
 
           <ion-item class="form-item">
@@ -284,18 +275,54 @@
 
           <ion-item class="form-item">
             <ion-label position="stacked" class="mb-5">Foto de perfil</ion-label>
-            <input
-              class="file-input"
-              type="file"
-              (change)="onFileSelected($event)"
-              accept="image/*"
-            />
+            
+            <!-- Contenedor mejorado para la carga de imagen -->
+            <div class="image-upload-container">
+              <!-- Input de archivo estilizado -->
+              <label class="file-input-label">
+                <input
+                  class="file-input"
+                  type="file"
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                  #fileInput
+                />
+                <div class="upload-button">
+                  <ion-icon name="camera-outline"></ion-icon>
+                  <span>Seleccionar imagen</span>
+                </div>
+              </label>
+
+              <!-- Previsualización mejorada -->
+              @if (imagePreview) {
+                <div class="image-preview-container">
+                  <img 
+                    [src]="imagePreview" 
+                    alt="Vista previa" 
+                    class="preview-image"
+                    [class.loading]="isUploading"
+                  >
+                  @if (isUploading) {
+                    <div class="upload-overlay">
+                      <ion-spinner name="crescent"></ion-spinner>
+                      <p>Subiendo...</p>
+                    </div>
+                  }
+                  @if (uploadedImageUrl && !isUploading) {
+                    <div class="upload-success">
+                      <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
           </ion-item>
 
-          <!-- CORRECCIÓN: Previsualización de imagen corregida -->
-          @if (imagePreview) {
-            <div class="image-preview">
-              <img [src]="imagePreview" alt="Vista previa" style="max-width: 100px; max-height: 100px;">
+          <!-- Loading global para el registro -->
+          @if (isRegistering) {
+            <div class="global-loading">
+              <ion-spinner name="crescent"></ion-spinner>
+              <p>Creando cuenta...</p>
             </div>
           }
 
@@ -303,8 +330,11 @@
             class="auth-button"
             expand="block"
             (click)="register()"
-            [disabled]="registerForm.invalid"
+            [disabled]="registerForm.invalid || isUploading || isRegistering"
           >
+            @if (isRegistering) {
+              <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
+            }
             Crear cuenta
           </ion-button>
 

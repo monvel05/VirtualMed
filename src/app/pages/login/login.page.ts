@@ -1,10 +1,9 @@
-import { Component, importProvidersFrom  } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { addIcons } from 'ionicons';
 import { HttpClientModule } from '@angular/common/http';
-import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
+import { eyeOutline, eyeOffOutline, cameraOutline, checkmarkCircle } from 'ionicons/icons';
 import {
   IonContent,
   IonCard,
@@ -21,6 +20,7 @@ import {
   IonListHeader,
   IonDatetime, 
   IonIcon,
+  IonSpinner,
   LoadingController, 
   ToastController 
 } from '@ionic/angular/standalone';
@@ -33,6 +33,7 @@ import { CloudinaryService } from '../../services/cloudinary.service';
   styleUrls: ['./login.page.scss'],
   imports: [
     IonIcon,
+    IonSpinner,
     CommonModule,
     ReactiveFormsModule,
     IonContent,
@@ -54,7 +55,6 @@ import { CloudinaryService } from '../../services/cloudinary.service';
    providers: [
     CloudinaryService
   ]
-
 })
 export class LoginPage {
   isLogin = true;
@@ -65,7 +65,11 @@ export class LoginPage {
   showLoginPassword = false;
   showRegisterPassword = false;
   showConfirmPassword = false;
-  uploadedImageUrl: string | null = null; // ← AÑADIDO para Cloudinary
+  uploadedImageUrl: string | null = null;
+  
+  // NUEVAS VARIABLES PARA CONTROLAR ESTADOS
+  isUploading = false;
+  isRegistering = false;
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +79,12 @@ export class LoginPage {
   ) {
     this.loginForm = this.createLoginForm();
     this.registerForm = this.createRegisterForm();
-    addIcons({ eyeOutline, eyeOffOutline });
+    addIcons({ 
+      eyeOutline, 
+      eyeOffOutline,
+      cameraOutline,
+      checkmarkCircle
+    });
 
     this.setupCedulaValidation();
   }
@@ -112,8 +121,7 @@ export class LoginPage {
   private createRegisterForm(): FormGroup {
     return this.fb.group({
       nombre: ['', Validators.required],
-      apellidoPaterno: ['', Validators.required],
-      apellidoMaterno: ['', Validators.required],
+      apellidos: ['', Validators.required],
       edad: ['', [Validators.required, Validators.min(1), Validators.max(120)]],
       fechaNacimiento: ['', Validators.required],
       genero: ['', Validators.required],
@@ -183,12 +191,7 @@ export class LoginPage {
 
   async register(): Promise<void> {
     if (this.registerForm.valid) {
-      const loading = await this.loadingController.create({ // ← AÑADIDO
-        message: 'Creando cuenta...',
-        spinner: 'crescent'
-      });
-      
-      await loading.present();
+      this.isRegistering = true;
 
       try {
         // Si hay imagen pero no se ha subido a Cloudinary, subirla
@@ -204,7 +207,8 @@ export class LoginPage {
         console.log('Registro exitoso:', userData);
         console.log('Foto en Cloudinary:', this.uploadedImageUrl);
 
-        
+        // Simular proceso de registro (reemplaza con tu API real)
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         // Mostrar mensaje de éxito
         const toast = await this.toastController.create({
@@ -214,10 +218,12 @@ export class LoginPage {
         });
         await toast.present();
 
+        // Aquí iría la navegación a la siguiente página
+        // this.router.navigate(['/home']);
+
       } catch (error) {
         console.error('Error en registro:', error);
         
-        // Mostrar mensaje de error
         const toast = await this.toastController.create({
           message: 'Error al crear la cuenta',
           duration: 3000,
@@ -225,7 +231,7 @@ export class LoginPage {
         });
         await toast.present();
       } finally {
-        await loading.dismiss();
+        this.isRegistering = false;
       }
     } else {
       this.markFormTouched(this.registerForm);
@@ -253,33 +259,18 @@ export class LoginPage {
     }
   }
 
-  // metodo para subir a Cloudinary
   async uploadToCloudinary(file: File): Promise<void> {
-    const loading = await this.loadingController.create({
-      message: 'Subiendo imagen...',
-      spinner: 'crescent'
-    });
-    
-    await loading.present();
+    this.isUploading = true;
 
     try {
       const response: any = await this.cloudinaryService.uploadImage(file);
       this.uploadedImageUrl = response.secure_url;
-      
-      // Mostrar mensaje de éxito
-      const toast = await this.toastController.create({
-        message: 'Imagen subida exitosamente',
-        duration: 2000,
-        color: 'success'
-      });
-      await toast.present();
       
       console.log('Imagen subida a Cloudinary:', this.uploadedImageUrl);
     } catch (error) {
       console.error('Error subiendo imagen:', error);
       this.uploadedImageUrl = null;
       
-      // Mostrar mensaje de error
       const toast = await this.toastController.create({
         message: 'Error subiendo imagen',
         duration: 2000,
@@ -287,7 +278,7 @@ export class LoginPage {
       });
       await toast.present();
     } finally {
-      await loading.dismiss();
+      this.isUploading = false;
     }
   }
 

@@ -107,14 +107,16 @@
     </ion-grid>
   </ion-content>
 </div>
+}
 
-} @else {
+@else {
 <div class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar>
-      <ion-title>VitualMed</ion-title>
+      <ion-title style="text-align: center">VirtualMed</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <ion-content [fullscreen]="true">
     <ion-grid>
       <ion-row>
@@ -128,7 +130,6 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <!--Botón para agendar cita-->
             <ion-col>
               <button
                 type="button"
@@ -139,7 +140,6 @@
               </button>
             </ion-col>
 
-            <!--Botón para ver mis citas-->
             <ion-col size="12" size-md="6">
               <button
                 type="button"
@@ -150,7 +150,6 @@
               </button>
             </ion-col>
 
-            <!--Botón para ver mi perfil-->
             <ion-col size="12" size-md="6">
               <button
                 type="button"
@@ -164,6 +163,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+    
     <ion-fab slot="fixed" vertical="bottom" horizontal="end">
       <ion-fab-button>
         <ion-icon name="chevron-up-circle"></ion-icon>
@@ -172,9 +172,7 @@
         <ion-fab-button color="danger">
           <ion-icon name="alert"></ion-icon>
         </ion-fab-button>
-        <ion-fab-button (click)="fnGoToHome()">
-          <ion-icon name="home"></ion-icon>
-        </ion-fab-button>
+        
         <ion-fab-button (click)="fnGoToSettings()">
           <ion-icon name="settings"></ion-icon>
         </ion-fab-button>
@@ -184,7 +182,6 @@
       </ion-fab-list>
       </ion-fab>
 
-      <!--Modal de notificaciones-->
       <ion-modal [isOpen]="isModalOpen">
     <ng-template>
       <ion-header>
@@ -196,7 +193,6 @@
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
-        <!--Hacer función que traiga las notificaciones del usuario-->
         <p>
           Usted está al día.
         </p>

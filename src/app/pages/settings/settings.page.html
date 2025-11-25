@@ -1,13 +1,471 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>settings</ion-title>
+  <ion-toolbar style="--background: var(--azulmarino); --color: white;">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Configuración</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">settings</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="config-content">
+  <!-- Selector de Rol -->
+  <ion-segment [(ngModel)]="role" value="paciente" class="role-segment">
+    <ion-segment-button value="paciente">
+      Paciente
+    </ion-segment-button>
+    <ion-segment-button value="medico">
+      Médico
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- INTERFAZ PARA PACIENTE -->
+  @if (role === 'paciente') {
+    <!-- Información del paciente -->
+    <ion-card class="user-card">
+      <ion-card-content>
+        <div class="user-info">
+          <div class="avatar-container">
+            <ion-avatar class="large-avatar">
+              P
+            </ion-avatar>
+          </div>
+          <div class="user-details">
+            <h2>Paciente</h2>
+            <p>Usuario de VirtualMed</p>
+            <p class="email">paciente@virtualmed.com</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Configuración del paciente -->
+    <ion-list lines="none" class="config-list">
+      
+
+      <!-- Notificaciones -->
+      <ion-item>
+        <ion-icon slot="start" name="notifications-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Recordatorios de Citas</h3>
+          <p>Recibir recordatorios antes de las consultas</p>
+        </ion-label>
+        <ion-toggle 
+          [(ngModel)]="patientSettings.appointmentReminders" 
+          slot="end">
+        </ion-toggle>
+      </ion-item>
+
+      <!-- Tamaño de fuente -->
+      <ion-item>
+        <ion-icon slot="start" name="text-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Tamaño de Fuente</h3>
+          <p>Ajustar el tamaño del texto</p>
+        </ion-label>
+        <ion-select 
+          [(ngModel)]="patientSettings.fontSize" 
+          placeholder="Seleccionar">
+          <ion-select-option value="pequena">Pequeña</ion-select-option>
+          <ion-select-option value="mediana">Mediana</ion-select-option>
+          <ion-select-option value="grande">Grande</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Cambiar contraseña -->
+      <ion-item button (click)="openPatientPasswordModal()">
+        <ion-icon slot="start" name="lock-closed-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Cambiar Contraseña</h3>
+          <p>Actualizar credenciales de acceso</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Ayuda y soporte -->
+      <ion-item button (click)="openPatientHelpModal()">
+        <ion-icon slot="start" name="help-circle-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Ayuda y Soporte</h3>
+          <p>Centro de ayuda y contacto</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  }
+
+  <!-- INTERFAZ PARA MÉDICO -->
+  @if (role === 'medico') {
+    <!-- Información del médico -->
+    <ion-card class="user-card">
+      <ion-card-content>
+        <div class="user-info">
+          <div class="avatar-container">
+            <ion-avatar class="large-avatar">
+              {{ doctorInfo.avatar }}
+            </ion-avatar>
+          </div>
+          <div class="user-details">
+            <h2>{{ doctorInfo.name }}</h2>
+            <p>{{ doctorInfo.specialty }}</p>
+            <p class="email">{{ doctorInfo.email }}</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Secciones de configuración -->
+    <ion-list lines="none" class="config-list">
+      <!-- Horario de atención -->
+      <ion-item button (click)="openScheduleModal()">
+        <ion-icon slot="start" name="time-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Horario de Atención</h3>
+          <p>Configurar disponibilidad para consultas</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Notificaciones -->
+      <ion-item button (click)="openNotificationsModal()">
+        <ion-icon slot="start" name="notifications-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Notificaciones</h3>
+          <p>Gestionar alertas y recordatorios</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Cambiar contraseña -->
+      <ion-item button (click)="openPasswordModal()">
+        <ion-icon slot="start" name="lock-closed-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Cambiar Contraseña</h3>
+          <p>Actualizar credenciales de acceso</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Ayuda y soporte -->
+      <ion-item button (click)="openHelp()">
+        <ion-icon slot="start" name="help-circle-outline" style="color: var(--Azulcielo);"></ion-icon>
+        <ion-label>
+          <h3>Ayuda y Soporte</h3>
+          <p>Centro de ayuda y contacto</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  }
+
+  <!-- Información de la app (compartida) -->
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="medical-outline" slot="start"></ion-icon>
+        VirtualMed
+      </ion-card-title>
+      <ion-card-subtitle>v2.1.0</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Tu plataforma confiable para consultas médicas en línea</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- ========== MODALES PARA PACIENTE ========== -->
+
+
+  <!-- Modal Cambiar Contraseña del Paciente -->
+  <ion-modal [isOpen]="isPatientPasswordModalOpen" (ionModalDidDismiss)="closeModals()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar style="--background: var(--azulmarino); --color: white;">
+          <ion-title>Cambiar Contraseña</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModals()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <p>Actualiza tu contraseña para mantener segura tu cuenta.</p>
+          
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label position="stacked">Contraseña actual</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="patientPasswordData.currentPassword"
+                placeholder="Ingresa tu contraseña actual">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Nueva contraseña</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="patientPasswordData.newPassword"
+                placeholder="Ingresa nueva contraseña">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Confirmar contraseña</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="patientPasswordData.confirmPassword"
+                placeholder="Confirma nueva contraseña">
+              </ion-input>
+            </ion-item>
+          </ion-list>
+
+          <ion-button expand="block" (click)="changePatientPassword()" class="save-button">
+            Cambiar Contraseña
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal Ayuda del Paciente -->
+  <ion-modal [isOpen]="isPatientHelpModalOpen" (ionModalDidDismiss)="closeModals()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar style="--background: var(--azulmarino); --color: white;">
+          <ion-title>Ayuda y Soporte</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModals()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <div class="help-section">
+            <h3>Centro de Ayuda para Pacientes</h3>
+            <p>¿Necesitas asistencia? Estamos aquí para ayudarte.</p>
+            
+            <ion-list lines="full">
+              <ion-item button (click)="presentAlert('FAQ Pacientes', 'Preguntas frecuentes para pacientes')">
+                <ion-icon slot="start" name="help-circle" style="color: var(--Azulcielo);"></ion-icon>
+                <ion-label>
+                  <h3>Preguntas Frecuentes</h3>
+                  <p>Encuentra respuestas a las dudas comunes de pacientes</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item button (click)="presentAlert('Contactar', 'Teléfono: 495-123-4567\nEmail: pacientes@virtualmed.com')">
+                <ion-icon slot="start" name="chatbubbles" style="color: var(--Azulcielo);"></ion-icon>
+                <ion-label>
+                  <h3>Contactar Soporte</h3>
+                  <p>Comunícate con nuestro equipo de soporte para pacientes</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item button (click)="presentAlert('Tutoriales', 'Tutoriales para usar la app como paciente')">
+                <ion-icon slot="start" name="play-circle" style="color: var(--Azulcielo);"></ion-icon>
+                <ion-label>
+                  <h3>Tutoriales para Pacientes</h3>
+                  <p>Aprende a usar todas las funciones para pacientes</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+
+          <div class="contact-info">
+            <h3>Información de Contacto</h3>
+            <ion-list lines="full">
+              <ion-item>
+                <ion-icon slot="start" name="mail" style="color: var(--Azulcielo);"></ion-icon>
+                <ion-label>
+                  <h3>Email para Pacientes</h3>
+                  <p>pacientes@virtualmed.com</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon slot="start" name="call" style="color: var(--Azulcielo);"></ion-icon>
+                <ion-label>
+                  <h3>Teléfono de Soporte</h3>
+                  <p>+1 (800) 123-4567</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon slot="start" name="time" style="color: var(--Azulcielo);"></ion-icon>
+                <ion-label>
+                  <h3>Horario de Atención</h3>
+                  <p>Lunes a Domingo: 7:00 AM - 10:00 PM</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- ========== MODALES PARA MÉDICO ========== -->
+
+  <!-- Modal Horario de Atención -->
+  <ion-modal [isOpen]="isScheduleModalOpen" (ionModalDidDismiss)="closeModals()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar style="--background: var(--azulmarino); --color: white;">
+          <ion-title>Horario de Atención</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModals()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <p>Configura los días y horarios en los que estás disponible para consultas.</p>
+          
+          <div class="days-grid">
+            <div 
+              *ngFor="let day of scheduleSettings.days" 
+              class="day-item" 
+              [class.active]="day.active"
+              (click)="toggleDay(day)">
+              {{ day.name }}
+            </div>
+          </div>
+          
+          <ion-list>
+            <ion-item>
+              <ion-label>Duración de consultas</ion-label>
+              <ion-select 
+                [(ngModel)]="scheduleSettings.appointmentDuration" 
+                placeholder="Seleccionar">
+                <ion-select-option value="15">15 minutos</ion-select-option>
+                <ion-select-option value="30">30 minutos</ion-select-option>
+                <ion-select-option value="45">45 minutos</ion-select-option>
+                <ion-select-option value="60">60 minutos</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+
+          <ion-button expand="block" (click)="saveSchedule()" class="save-button">
+            Guardar Horario
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal Notificaciones -->
+  <ion-modal [isOpen]="isNotificationsModalOpen" (ionModalDidDismiss)="closeModals()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar style="--background: var(--azulmarino); --color: white;">
+          <ion-title>Configuración de Notificaciones</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModals()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <p>Personaliza cómo y cuándo recibir notificaciones.</p>
+          
+          <ion-list lines="full">
+            <ion-item>
+              <ion-label>
+                <h3>Nuevas citas</h3>
+                <p>Alertas cuando un paciente agenda cita</p>
+              </ion-label>
+              <ion-toggle 
+                [(ngModel)]="notificationSettings.newAppointments" 
+                slot="end">
+              </ion-toggle>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>
+                <h3>Recordatorios de citas</h3>
+                <p>Recordatorios antes de cada consulta</p>
+              </ion-label>
+              <ion-toggle 
+                [(ngModel)]="notificationSettings.appointmentReminders" 
+                slot="end">
+              </ion-toggle>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>
+                <h3>Mensajes de pacientes</h3>
+                <p>Alertas de mensajes nuevos</p>
+              </ion-label>
+              <ion-toggle 
+                [(ngModel)]="notificationSettings.messages" 
+                slot="end">
+              </ion-toggle>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>
+                <h3>Notificaciones por email</h3>
+                <p>Recibir notificaciones por correo</p>
+              </ion-label>
+              <ion-toggle 
+                [(ngModel)]="notificationSettings.emailNotifications" 
+                slot="end">
+              </ion-toggle>
+            </ion-item>
+          </ion-list>
+
+          <ion-button expand="block" (click)="saveNotifications()" class="save-button">
+            Guardar Configuración
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal Cambiar Contraseña -->
+  <ion-modal [isOpen]="isPasswordModalOpen" (ionModalDidDismiss)="closeModals()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar style="--background: var(--azulmarino); --color: white;">
+          <ion-title>Cambiar Contraseña</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModals()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <div class="modal-inner">
+          <p>Actualiza tu contraseña para mantener segura tu cuenta.</p>
+          
+          <ion-list lines="full">
+            <ion-item>
+              <ion-label position="stacked">Contraseña actual</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="passwordData.currentPassword"
+                placeholder="Ingresa tu contraseña actual">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Nueva contraseña</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="passwordData.newPassword"
+                placeholder="Ingresa nueva contraseña">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Confirmar contraseña</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="passwordData.confirmPassword"
+                placeholder="Confirma nueva contraseña">
+              </ion-input>
+            </ion-item>
+          </ion-list>
+
+          <ion-button expand="block" (click)="changePassword()" class="save-button">
+            Cambiar Contraseña
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

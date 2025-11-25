@@ -30,14 +30,15 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
   },
-  {
+ {
     path: 'prescription',
     loadComponent: () => import('./pages/prescription/prescription.page').then( m => m.PrescriptionPage)
   },
   {
     path: 'management',
     loadComponent: () => import('./pages/management/management.page').then( m => m.ManagementPage)
-  },  {
+  },
+  {
     path: 'medical-records',
     loadComponent: () => import('./pages/medical-records/medical-records.page').then( m => m.MedicalRecordsPage)
   },

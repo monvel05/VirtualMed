@@ -1,0 +1,217 @@
+/* login.page.scss */
+
+/* CONTENEDOR PRINCIPAL */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  /* Usamos tu variable de fondo */
+  background-color: var(--ion-background-color) !important; 
+}
+
+/* TARJETA FLOTANTE */
+.auth-card {
+  background: #FFFFFF; /* Mantenemos blanco puro para resaltar sobre el crema */
+  border-radius: 24px;
+  /* Sombra suave usando tu azul marino con transparencia */
+  box-shadow: 0 10px 40px rgba(46, 74, 112, 0.08); 
+  margin: 0;
+  width: 100%;
+  max-width: 450px;
+  overflow: visible;
+}
+
+/* ENCABEZADO Y TÍTULO */
+ion-card-header {
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+
+.titulo {
+  text-align: center;
+  font-size: 32px; /* Un poco más grande para lucir la fuente Italiana */
+  font-weight: 400; /* Italiana es elegante y fina por defecto */
+  color: var(--azulmarino) !important;
+  font-family: var(--fuente); /* Fuente Italiana */
+}
+
+/* CONTENIDO */
+ion-card-content {
+  padding: 20px 30px 40px 30px;
+}
+
+/* INPUTS Y FORMULARIOS */
+.form-item {
+  --background: #FFFFFF;
+  --color: var(--azulmarino);
+  /* Usamos el azul más bajito para bordes sutiles */
+  --border-color: var(--AxulMasbajito); 
+  --border-radius: 16px;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --padding-start: 15px;
+  --highlight-height: 0;
+  --padding-end: 20px;
+  
+  margin-bottom: 18px;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  font-family: var(--fuente1); /* Poppins */
+  position: relative;
+}
+
+/* Efecto al escribir */
+.form-item.item-has-focus {
+  --border-color: var(--Azulcielo); /* Brilla con azul cielo */
+  transform: translateY(-2px);
+}
+
+/* Etiquetas (Labels) */
+ion-label {
+  color: var(--Gris) !important;
+  font-weight: 400;
+  font-family: var(--fuente1);
+  font-size: 14px;
+}
+
+ion-item.item-has-focus ion-label {
+  color: var(--Azulcielo) !important;
+}
+
+/* El texto que escribes */
+ion-input {
+  --color: var(--azulmarino);
+  font-weight: 500;
+  font-family: var(--fuente1);
+}
+
+/* BOTÓN PRINCIPAL */
+.auth-button {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  --border-radius: 16px;
+  --background: var(--Azulcielo);
+  --background-activated: var(--Azulbajito);
+  /* Sombra azul cielo brillante */
+  --box-shadow: 0 4px 15px rgba(115, 199, 227, 0.4); 
+  --color: var(--azulmarino); /* Texto azul marino para buen contraste estético */
+  
+  font-family: var(--fuente1);
+  font-weight: 600;
+  text-transform: none; /* Poppins se ve mejor sin mayúsculas forzadas */
+  font-size: 16px;
+  height: 52px;
+}
+
+/* ENLACES (Link) */
+.link-text {
+  text-align: center;
+  font-size: 14px;
+  color: var(--Gris);
+  margin-top: 10px;
+  font-family: var(--fuente1);
+}
+
+.link {
+  color: var(--Moradito);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* MENSAJES DE ERROR */
+.error-message {
+  /* Fondo rosita muy transparente */
+  background-color: rgba(244, 185, 184, 0.25); 
+  color: var(--azulmarino); /* Texto oscuro para leerse bien */
+  font-size: 12px;
+  font-family: var(--fuente1);
+  font-weight: 500;
+  margin: -10px 0 15px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid var(--Rosita);
+}
+
+
+
+.password-icon {
+  position: absolute; /* Flota libremente */
+  right: 15px;        /* Pegado a la derecha */
+  top: 50%;           /* A la mitad verticalmente */
+  
+  /* Esto ajusta la alineación fina. 
+     Si sientes que está muy arriba, cambia -40% a -30%
+     Si sientes que está muy abajo, cambia a -60% */
+  transform: translateY(-40%); 
+  
+  z-index: 10;        /* Asegura que esté encima de todo */
+  font-size: 22px;
+  color: var(--Azulbajito);
+  cursor: pointer;
+  margin: 0 !important; /* Quitamos márgenes antiguos para que no estorben */
+}
+
+/* El color al hacer foco */
+.item-has-focus .password-icon {
+  color: var(--azulmarino);
+}
+
+/* RADIO BUTTONS y LISTAS */
+ion-list-header {
+  padding-left: 5px;
+  font-size: 16px;
+  font-family: var(--fuente); /* Títulos de sección en Italiana se ven lindos */
+  font-weight: bold;
+  color: var(--azulmarino);
+  margin-bottom: 8px;
+  margin-top: 10px;
+}
+
+ion-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.radio-item {
+  --background: transparent;
+  --border-width: 0;
+  --inner-border-width: 0;
+  font-size: 14px;
+  font-family: var(--fuente1);
+  color: var(--azulmarino);
+  --min-height: 40px;
+}
+
+ion-radio {
+  --color: var(--AxulMasbajito);
+  --color-checked: var(--Azulcielo);
+  margin-right: 10px;
+}
+
+/* INPUT TIPO FILE (Foto) */
+.file-input {
+  font-family: var(--fuente1);
+  color: var(--azulmarino);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .login-container {
+    padding: 40px;
+  }
+  .auth-card {
+    padding: 20px; 
+  }
+}

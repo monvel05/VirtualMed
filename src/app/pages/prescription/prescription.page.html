@@ -1,148 +1,17 @@
-<div class="mobile-wrapper">
-      <!-- Menú Superior (Navbar) -->
-      <header class="ion-toolbar">
-        <div class="toolbar-content">
-          <button class="icon-button menu-btn">
-            <i class="icon-menu"></i>
-          </button>
-          <h1 class="toolbar-title">VirtualMed</h1>
-        </div>
-      </header>
-
-      <!-- Contenido Principal (Scrollable) -->
-      <main class="ion-content">
-        
-        <!-- Contenedor Específico para el PDF -->
-        <div id="prescription-pdf" class="pdf-content">
-          
-          <!-- Tarjeta del Doctor (Header de la receta) -->
-          <div class="card doctor-card">
-            <div class="doctor-header">
-              <div class="brand-info">
-                <h2 class="brand-title">VirtualMed</h2>
-                <p class="brand-subtitle">Salud Digital Integral</p>
-              </div>
-              
-              <div class="doctor-profile">
-                <div class="avatar">
-                  <span class="med-icon">✚</span>
-                </div>
-                <div class="doctor-details">
-                  <h3>{{doctor.name}}</h3>
-                  <p class="highlight">{{doctor.specialty}}</p>
-                  <p class="sub-text">{{doctor.subspecialty}}</p>
-                  <div class="credentials">
-                    <span class="badge">Cédula: {{doctor.professionalId}}</span>
-                    <span class="badge">Tel: {{doctor.phoneNumber}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Datos del Paciente -->
-          <div class="card patient-card">
-            <h3 class="card-title">Datos del Paciente</h3>
-            <div class="info-grid">
-              <div class="info-item">
-                <label>Nombre</label>
-                <span>{{patient.name}}</span>
-              </div>
-              <div class="info-item">
-                <label>Edad</label>
-                <span>{{patient.age}}</span>
-              </div>
-              <div class="info-item">
-                <label>Peso</label>
-                <span>{{patient.weight}}</span>
-              </div>
-              <div class="info-item">
-                <label>Fecha</label>
-                <span>{{currentDate}}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lista de Medicamentos -->
-          <div class="medications-list">
-            <h3 class="section-header">Prescripción Médica</h3>
-
-            @for (med of medications; track $index) {
-              <div class="card medication-card">
-                <div class="med-card-header">
-                  <div class="med-title">
-                    <span class="med-number">{{ $index + 1 }}</span>
-                    <h4>Medicamento</h4>
-                  </div>
-                  <button 
-                    class="icon-button delete-btn" 
-                    (click)="removeMedication($index)"
-                    data-html2canvas-ignore="true"
-                    title="Eliminar">
-                    ✕
-                  </button>
-                </div>
-
-                <div class="med-form">
-                  <div class="form-row">
-                    <div class="input-group">
-                      <label>Nombre del medicamento</label>
-                      <input type="text" [(ngModel)]="med.name" placeholder="Ej: Paracetamol">
-                    </div>
-                    <div class="input-group">
-                      <label>Dosis</label>
-                      <input type="text" [(ngModel)]="med.dosage" placeholder="Ej: 500mg">
-                    </div>
-                  </div>
-                  
-                  <div class="form-row">
-                    <div class="input-group">
-                      <label>Frecuencia</label>
-                      <input type="text" [(ngModel)]="med.frequency" placeholder="Ej: Cada 8 horas">
-                    </div>
-                    <div class="input-group">
-                      <label>Duración</label>
-                      <input type="text" [(ngModel)]="med.duration" placeholder="Ej: 7 días">
-                    </div>
-                  </div>
-
-                  <div class="input-group full-width">
-                    <label>Indicaciones especiales</label>
-                    <textarea [(ngModel)]="med.instructions" rows="2" placeholder="Tomar con alimentos..."></textarea>
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-
-          <!-- Footer Legal del PDF -->
-          <div class="pdf-footer">
-            <div class="signature-line">Firma del Médico</div>
-            <p>Receta válida por 7 días. Sujeta a disponibilidad en farmacia.</p>
-          </div>
-        </div> <!-- Fin Container PDF -->
-
-        <!-- Botones de Acción (Fuera del PDF) -->
-        <div class="fab-container">
-          <button class="btn btn-outline full-width" (click)="addNewMedication()">
-            <span class="plus-icon">+</span> Agregar Medicamento
-          </button>
-          
-          <div class="action-buttons">
-            <button class="btn btn-secondary" (click)="printPrescription()">
-              Imprimir
-            </button>
-            <button class="btn btn-primary" (click)="generatePDF()">
-              <span *ngIf="!isLoading">Descargar PDF</span>
-              <span *ngIf="isLoading">Generando...</span>
-            </button>
-          </div>
-        </div>
-
-      </main>
-
-      <!-- Toast Notification -->
-      <div class="toast" [class.show]="showToast">
-        {{ toastMessage }}
-      </div>
-    </div>
+<ion-menu contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">This is the menu content.</ion-content>
+</ion-menu>
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>VitualMed</ion-title>
+    </ion-toolbar>
+  </ion-header>

@@ -1,0 +1,270 @@
+.config-content {
+  --background: var(--ion-background-color);
+
+  .user-card {
+    margin: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background: white;
+    font-family: var(--fuente1);
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+
+      .avatar-container {
+        margin-right: 16px;
+
+        .large-avatar {
+          width: 70px;
+          height: 70px;
+          background: linear-gradient(135deg, var(--Azulcielo), var(--Azulbajito));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 22px;
+          color: white;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          font-family: var(--fuente);
+        }
+      }
+
+      .user-details {
+        flex: 1;
+
+        h2 {
+          margin: 0 0 6px 0;
+          font-weight: 700;
+          color: var(--azulmarino);
+          font-size: 18px;
+          font-family: var(--fuente);
+        }
+
+        p {
+          margin: 4px 0;
+          color: var(--Gris);
+          font-size: 14px;
+          font-family: var(--fuente1);
+
+          &.email {
+            color: var(--Azulcielo);
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+
+  .config-list {
+    background: transparent;
+    margin: 16px;
+
+    ion-item {
+      --background: white;
+      --border-radius: 12px;
+      margin-bottom: 10px;
+      --padding-start: 16px;
+      --inner-padding-end: 16px;
+      --min-height: 70px;
+      font-family: var(--fuente1);
+
+      ion-icon {
+        font-size: 22px;
+        margin-right: 8px;
+      }
+
+      h3 {
+        font-weight: 600;
+        color: var(--azulmarino);
+        margin-bottom: 6px;
+        font-size: 16px;
+        font-family: var(--fuente);
+      }
+
+      p {
+        color: var(--Gris);
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  .info-card {
+    margin: 16px;
+    border-radius: 16px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--Azulcielo), var(--Azulbajito));
+    color: white;
+    font-family: var(--fuente1);
+
+    ion-card-header {
+      padding-bottom: 8px;
+    }
+
+    ion-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: white;
+      font-family: var(--fuente);
+    }
+
+    ion-card-subtitle {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    ion-card-content {
+      padding-top: 0;
+
+      p {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Estilos para modales
+.modal-content {
+  .modal-inner {
+    padding: 16px;
+    font-family: var(--fuente1);
+
+    p {
+      color: var(--Gris);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+
+      .day-item {
+        padding: 16px;
+        border: 2px solid var(--VerdecitoBajito);
+        border-radius: 12px;
+        text-align: center;
+        background: white;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        cursor: pointer;
+        color: var(--azulmarino);
+        font-family: var(--fuente1);
+
+        &.active {
+          background: var(--Azulcielo);
+          color: white;
+          border-color: var(--Azulcielo);
+        }
+      }
+    }
+
+    .save-button {
+      margin-top: 24px;
+      --border-radius: 12px;
+      height: 50px;
+      font-weight: 600;
+      --background: var(--Azulcielo);
+      --color: white;
+      font-family: var(--fuente1);
+    }
+  }
+}
+
+// Estilos para listas en modales
+ion-list {
+  background: transparent !important;
+
+  ion-item {
+    --background: transparent;
+    --border-color: var(--VerdecitoBajito);
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    font-family: var(--fuente1);
+
+    ion-label {
+      h3 {
+        font-weight: 600;
+        color: var(--azulmarino);
+        margin-bottom: 4px;
+        font-family: var(--fuente);
+      }
+
+      p {
+        color: var(--Gris);
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Estilos para alertas de ayuda
+.help-alert {
+  .alert-message {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .help-content {
+    p {
+      margin: 8px 0;
+      line-height: 1.5;
+      font-family: var(--fuente1);
+
+      strong {
+        color: var(--Azulcielo);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (min-width: 768px) {
+  .config-content {
+    .user-card,
+    .config-list,
+    .info-card {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+
+    .days-grid {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+  }
+
+  ion-modal {
+    --width: 600px;
+    --height: 700px;
+    --border-radius: 20px;
+  }
+}
+
+// Animaciones suaves
+ion-item {
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.day-item {
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

@@ -1,13 +1,320 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">login</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="login-container">
+    
+    @if (isLogin) {
+    <ion-card class="auth-card">
+      <ion-card-header>
+        <ion-card-title class="titulo">Iniciar Sesión</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="loginForm">
+          <ion-item class="form-item">
+            <ion-label position="floating">Correo electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <div class="error-message">
+            @if (loginForm.get('email')?.errors?.['required']) {
+            <span>⚠ El correo es requerido</span>
+            } @if (loginForm.get('email')?.errors?.['email']) {
+            <span>⚠ Ingresa un correo válido</span>
+            }
+          </div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input
+              [type]="showLoginPassword ? 'text' : 'password'"
+              formControlName="password"
+            >
+            </ion-input>
+            <ion-icon
+              slot="end"
+              [name]="showLoginPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="password-icon"
+              (click)="toggleLoginPasswordVisibility()"
+            >
+            </ion-icon>
+          </ion-item>
+
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <div class="error-message">
+            <span>⚠ La contraseña es requerida</span>
+          </div>
+          }
+
+          <ion-button
+            class="auth-button"
+            expand="block"
+            (click)="login()"
+            [disabled]="loginForm.invalid"
+          >
+            Entrar
+          </ion-button>
+
+          <p class="link-text">
+            ¿No tienes cuenta?
+            <a class="link" (click)="switchToRegister()">Regístrate</a>
+          </p>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    } 
+    
+    @if (!isLogin) {
+    <ion-card class="auth-card">
+      <ion-card-header>
+        <ion-card-title class="titulo">Registro</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="registerForm">
+          
+          <ion-item class="form-item">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input formControlName="nombre"></ion-input>
+          </ion-item>
+          @if (registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched) {
+            <div class="error-message"><span>⚠ El nombre es requerido</span></div>
+          }
+
+          <!-- CORRECCIÓN: Separar apellidos en paterno y materno -->
+          <ion-item class="form-item">
+            <ion-label position="floating">Apellido Paterno</ion-label>
+            <ion-input formControlName="apellidoPaterno"></ion-input>
+          </ion-item>
+          @if (registerForm.get('apellidoPaterno')?.invalid && registerForm.get('apellidoPaterno')?.touched) {
+            <div class="error-message"><span>⚠ El apellido paterno es requerido</span></div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="floating">Apellido Materno</ion-label>
+            <ion-input formControlName="apellidoMaterno"></ion-input>
+          </ion-item>
+          @if (registerForm.get('apellidoMaterno')?.invalid && registerForm.get('apellidoMaterno')?.touched) {
+            <div class="error-message"><span>⚠ El apellido materno es requerido</span></div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="floating">Edad</ion-label>
+            <ion-input type="number" formControlName="edad"></ion-input>
+          </ion-item>
+          @if (registerForm.get('edad')?.invalid && registerForm.get('edad')?.touched) {
+            <div class="error-message">
+              @if (registerForm.get('edad')?.errors?.['required']) {
+                <span>⚠ La edad es requerida</span>
+              }
+              @if (registerForm.get('edad')?.errors?.['min'] || registerForm.get('edad')?.errors?.['max']) {
+                <span>⚠ La edad debe estar entre 1 y 120 años</span>
+              }
+            </div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="stacked" class="fix-label mb-5">Fecha de nacimiento</ion-label>
+            <ion-datetime presentation="date" formControlName="fechaNacimiento">
+            </ion-datetime>
+          </ion-item>
+          @if (registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched) {
+            <div class="error-message"><span>⚠ La fecha de nacimiento es requerida</span></div>
+          }
+
+          <ion-list>
+            <ion-list-header class="list-header">Género</ion-list-header>
+            <ion-radio-group formControlName="genero">
+              <ion-item class="radio-item">
+                <ion-label>Hombre</ion-label>
+                <ion-radio slot="start" value="hombre"></ion-radio>
+              </ion-item>
+              <ion-item class="radio-item">
+                <ion-label>Mujer</ion-label>
+                <ion-radio slot="start" value="mujer"></ion-radio>
+              </ion-item>
+              <ion-item class="radio-item">
+                <ion-label>Prefiero no decirlo</ion-label>
+                <ion-radio slot="start" value="prefiero no decirlo"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+          @if (registerForm.get('genero')?.invalid && registerForm.get('genero')?.touched) {
+            <div class="error-message"><span>⚠ El género es requerido</span></div>
+          }
+
+          <ion-list>
+            <ion-list-header class="list-header">Tipo de Perfil</ion-list-header>
+            <ion-radio-group formControlName="tipoPerfil">
+              <ion-item class="radio-item">
+                <ion-label>Médico</ion-label>
+                <ion-radio slot="start" value="medico"></ion-radio>
+              </ion-item>
+              <ion-item class="radio-item">
+                <ion-label>Paciente</ion-label>
+                <ion-radio slot="start" value="paciente"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+          @if (registerForm.get('tipoPerfil')?.invalid && registerForm.get('tipoPerfil')?.touched) {
+            <div class="error-message"><span>⚠ El tipo de perfil es requerido</span></div>
+          }
+
+          @if (registerForm.get('tipoPerfil')?.value === 'medico') {
+            <ion-item class="form-item">
+              <ion-label position="floating">Cédula Profesional</ion-label>
+              <ion-input
+                formControlName="cedula"
+                type="tel"
+                maxlength="10"
+                inputmode="numeric"
+              ></ion-input>
+            </ion-item>
+
+            @if (registerForm.get('cedula')?.invalid && registerForm.get('cedula')?.touched) {
+              <div class="error-message">
+                @if (registerForm.get('cedula')?.errors?.['required']) {
+                  <span>⚠ La cédula es requerida</span> 
+                } 
+                @if (registerForm.get('cedula')?.errors?.['pattern']) {
+                  <span>⚠ Solo números</span> 
+                } 
+                @if (registerForm.get('cedula')?.errors?.['minlength']) {
+                  <span>⚠ Mínimo 7 dígitos</span> 
+                }
+              </div>
+            }
+
+            <ion-item class="form-item">
+              <ion-label position="floating">Especialidad</ion-label>
+              <ion-input formControlName="especialidad"></ion-input>
+            </ion-item>
+
+            @if (registerForm.get('especialidad')?.invalid && registerForm.get('especialidad')?.touched) {
+              <div class="error-message">
+                <span>⚠ La especialidad es requerida</span>
+              </div>
+            }
+
+            <ion-item class="form-item">
+              <ion-label position="floating">Subespecialidad</ion-label>
+              <ion-input formControlName="subespecialidad"></ion-input>
+            </ion-item>
+          } 
+          
+          @if (registerForm.get('tipoPerfil')?.value === 'paciente') {
+            <ion-item class="form-item">
+              <ion-label position="floating">Peso (kg)</ion-label>
+              <ion-input type="number" formControlName="peso"></ion-input>
+            </ion-item>
+
+            @if (registerForm.get('peso')?.invalid && registerForm.get('peso')?.touched) {
+              <div class="error-message"><span>⚠ El peso es requerido</span></div>
+            }
+
+            <ion-item class="form-item">
+              <ion-label position="floating">Altura (cm)</ion-label>
+              <ion-input type="number" formControlName="altura"></ion-input>
+            </ion-item>
+
+            @if (registerForm.get('altura')?.invalid && registerForm.get('altura')?.touched) {
+              <div class="error-message"><span>⚠ La altura es requerida</span></div>
+            } 
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="floating">Correo electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+
+          @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+            <div class="error-message">
+              @if (registerForm.get('email')?.errors?.['required']) {
+                <span>⚠ El correo es requerido</span>
+              } 
+              @if (registerForm.get('email')?.errors?.['email']) {
+                <span>⚠ Ingresa un correo válido</span>
+              }
+            </div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input
+              [type]="showRegisterPassword ? 'text' : 'password'"
+              formControlName="password"
+            >
+            </ion-input>
+            <ion-icon
+              slot="end"
+              [name]="showRegisterPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="password-icon"
+              (click)="toggleRegisterPasswordVisibility()"
+            >
+            </ion-icon>
+          </ion-item>
+
+          @if (getPasswordError()) {
+            <div class="error-message">
+              <span>{{ getPasswordError() }}</span>
+            </div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+            >
+            </ion-input>
+            <ion-icon
+              slot="end"
+              [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="password-icon"
+              (click)="toggleConfirmPasswordVisibility()"
+            >
+            </ion-icon>
+          </ion-item>
+
+          @if (registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched) {
+            <div class="error-message">
+              <span>⚠ Las contraseñas no coinciden</span>
+            </div>
+          }
+
+          <ion-item class="form-item">
+            <ion-label position="stacked" class="mb-5">Foto de perfil</ion-label>
+            <input
+              class="file-input"
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="image/*"
+            />
+          </ion-item>
+
+          <!-- CORRECCIÓN: Previsualización de imagen corregida -->
+          @if (imagePreview) {
+            <div class="image-preview">
+              <img [src]="imagePreview" alt="Vista previa" style="max-width: 100px; max-height: 100px;">
+            </div>
+          }
+
+          <ion-button
+            class="auth-button"
+            expand="block"
+            (click)="register()"
+            [disabled]="registerForm.invalid"
+          >
+            Crear cuenta
+          </ion-button>
+
+          <p class="link-text">
+            ¿Ya tienes cuenta?
+            <a class="link" (click)="switchToLogin()">Inicia sesión</a>
+          </p>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    }
+  </div>
 </ion-content>

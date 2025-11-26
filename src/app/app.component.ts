@@ -1,29 +1,18 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { home,
-  settings,
-  notifications,
-  alert,
-  chevronUpCircle,
-  close
-} from 'ionicons/icons';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, IonicModule],
+  template: `
+    <ion-app>
+      <ion-router-outlet></ion-router-outlet>
+    </ion-app>
+  `
 })
 export class AppComponent {
-  constructor() {
-    //Iconos globales para el ion fab en las páginas
-    addIcons({
-      home,
-      settings,
-      notifications,
-      alert,
-      chevronUpCircle,
-      close
-    });
-  }
+  title = 'VirtualMed';
 }

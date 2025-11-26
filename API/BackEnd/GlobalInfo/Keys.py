@@ -1,7 +1,10 @@
-import sys
-dbconn = None
+import os
+from dotenv import load_dotenv
 
-# MongoDB
-# Server
-strConnection = "mongodb://localhost:27017/"
-strDBConnection = "escuelita"
+load_dotenv()  # Esto carga las variables del .env
+
+# MongoDB Configuration
+dbconn = None
+MONGODB_URI = os.getenv("MONGODB_URI")
+DB_NAME = "VirtualMedDB"
+PORT = os.getenv("PORT", 3000)  # Usa 3000 por defecto si no está en .env

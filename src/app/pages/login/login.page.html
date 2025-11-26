@@ -50,9 +50,14 @@
             class="auth-button"
             expand="block"
             (click)="login()"
-            [disabled]="loginForm.invalid"
+            [disabled]="loginForm.invalid || isLoggingIn"
           >
-            Entrar
+            @if (isLoggingIn) {
+              <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
+            }
+            @if (!isLoggingIn) {
+              Entrar
+            }
           </ion-button>
 
           <p class="link-text">
@@ -83,7 +88,7 @@
 
           <ion-item class="form-item">
             <ion-label position="floating">Apellidos</ion-label>
-            <ion-input formControlName="apellidoPaterno"></ion-input>
+            <ion-input formControlName="apellidos"></ion-input>
           </ion-item>
           @if (registerForm.get('apellidos')?.invalid && registerForm.get('apellidos')?.touched) {
             <div class="error-message"><span>⚠ Los apellidos son requeridos</span></div>
@@ -335,7 +340,9 @@
             @if (isRegistering) {
               <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
             }
-            Crear cuenta
+            @if (!isRegistering) {
+              Crear cuenta
+            }
           </ion-button>
 
           <p class="link-text">

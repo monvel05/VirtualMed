@@ -1,13 +1,132 @@
+
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>createAppointment</ion-title>
+    <ion-button slot="start"  routerLink="/pages/dashboard"  color="primary" fill="solid">
+      Regresar
+    </ion-button>
+    <ion-title>VirtualMed Crear cita </ion-title>
   </ion-toolbar>
 </ion-header>
 
+
+
+
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">createAppointment</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-card>
+<ion-grid>
+  <!--datos generales-->
+  <ion-row>
+    <ion-col size="12" size-md="6">
+      <h2 class="section-title">Datos generales</h2>
+          <ion-item lines="none">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input [(ngModel)]="nombreCita" placeholder="Ingresa tu nombre"></ion-input>
+          </ion-item>
+        </ion-col>
+
+        <!-- Apellidos -->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none">
+            <ion-label position="floating">Apellidos</ion-label>
+            <ion-input [(ngModel)]="apellidoCita" placeholder="Ingresa tus apellidos"></ion-input>
+          </ion-item>
+        </ion-col>
+        
+        <!-- Edad -->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none">
+            <ion-label position="floating">Edad</ion-label>
+            <ion-input [(ngModel)]="edadCita" placeholder="Ingresa tu edad" type="number"></ion-input>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="12">
+          <!-- Input de Correo con validación de estilo -->
+          <ion-item [class.valid]="correoInput.valid && correoInput.dirty"
+                    [class.invalid]="correoInput.invalid && correoInput.dirty"
+                    lines="none">
+            <ion-label position="floating">Correo electrónico</ion-label>
+            <ion-input
+              name="correo"
+              [(ngModel)]="correoCita"
+              type="email"
+              required
+              pattern=".+@.+"
+              #correoInput="ngModel">
+            </ion-input>
+          </ion-item>
+          
+          <!-- Mensaje de error -->
+          <div *ngIf="correoInput.invalid && correoInput.dirty" class="mensaje-error">
+            Ingresa un correo válido (ej. usuario@dominio.com)
+          </div>
+        </ion-col>
+  </ion-row>
+
+  <!--motivo-->
+  <ion-row>
+
+
+  </ion-row>
+
+  <!--medico y tipo de cita-->
+
+<ion-row>
+  <ion-col size="12" size-md="6">
+    <h2 class="section-title">Datos de cita</h2>
+          <ion-item lines="none">
+            <!-- Usamos position="stacked" para que el label esté siempre visible sobre el select -->
+            <ion-label position="stacked">Médico <ion-text color="danger">(Requerido)</ion-text></ion-label>
+            <ion-select class="custom-select" [(ngModel)]="medicoCita" placeholder="Selecciona a tu médico">
+              <ion-select-option value="medico1">Dr. Alejandro Gómez</ion-select-option>
+              <ion-select-option value="medico2">Dra. Camila Vargas</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+        <!-- Selección de tipo de cita -->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none">
+            <ion-label position="stacked">Tipo de cita <ion-text color="danger">(Requerido)</ion-text></ion-label>
+            <ion-select class="custom-select" [(ngModel)]="tipoCita" placeholder="Selecciona el tipo de cita">
+              <ion-select-option value="presencialCita">Presencial</ion-select-option>
+              <ion-select-option value="llamadaCita">Llamada</ion-select-option>
+              <ion-select-option value="videollamadaCita">Videollamada</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+</ion-row>
+  
+  <!--fecha y hora-->
+<ion-row>
+<ion-col size="12">
+          <h2 class="section-title">Día y Hora</h2>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item lines="none">
+            <ion-label position="stacked">Selecciona Fecha y Hora</ion-label>
+            <ion-datetime 
+              [(ngModel)]="fechahoraCita"
+              presentation="date-time"
+              value="2025-11-20T10:00:00" 
+              min="2025-01-01T00:00:00" 
+              max="2099-05-31T23:59:59"
+              locale="es-ES"
+              class="custom-datetime"
+            ></ion-datetime>
+          </ion-item>
+        </ion-col>
+</ion-row>
+
+<!--guardar los cambios-->
+<ion-row>
+    <ion-col size="12" size-md="6" offset-md="3" class="confirm-button-container">
+      <!-- Usamos una función de TS para el click -->
+      <ion-button expand="block" color="primary" (click)="guardarCita()">Confirmar Cita</ion-button>
+    </ion-col>
+</ion-row>
+
+
+</ion-grid>
+</ion-card>
 </ion-content>

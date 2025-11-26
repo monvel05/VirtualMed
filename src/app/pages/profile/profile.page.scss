@@ -1,0 +1,200 @@
+/* VALIDACIÓN DE CORREO */
+
+// Estado Válido
+ion-item.valid ion-input {
+  border-color: #2dd36f !important; /* Verde */
+  box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
+}
+
+// Estado Inválido
+ion-item.invalid ion-input {
+  border-color: #eb445a !important; /* Rojo */
+  box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
+}
+
+.mensaje-error {
+  color: #eb445a;
+  font-size: 13px;
+  margin-left: 5px;
+  margin-top: -10px; // Acercamos el mensaje al input
+  margin-bottom: 10px;
+}
+
+
+// Fondo de la página
+ion-content {
+  --background: var(--app-blanco-cremoso, #FFF9F0);
+}
+
+// Estilo de la Tarjeta Principal (Contenedor del Perfil)
+ion-card {
+  --background: white;
+  margin: 16px;
+  padding: 16px 8px; /* Padding interno */
+  
+  // Bordes redondeados y sombra para visibilidad
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(46, 74, 112, 0.15); 
+}
+
+/* Estilos de Entradas de Formulario (Inputs, Datetime, Radio Group) */
+
+ion-item {
+  // Quitamos los bordes por defecto y el fondo de ion-item
+  --background: transparent;
+  --inner-border-width: 0;
+  --border-width: 0;
+  padding: 0;
+  margin-bottom: 20px; /* Espacio entre campos */
+
+  // Damos estilo al input dentro del item
+  ion-input, ion-datetime {
+
+    padding: 10px;      /* espacio interno */
+    min-height: 40px;   /* altura mínima para que no se vea comprimido */
+
+    // Redondeado y borde sutil
+    border: 1px solid var(--app-gris-sutil, #B1CBD6);
+    border-radius: 8px;
+    padding-left: 10px !important; // Relleno interno
+    padding-right: 10px !important;
+    
+    // Altura y color de texto para visibilidad
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    color: var(--app-azul-marino, #2E4A70);
+    
+    // Estilo al enfocar
+    &:focus-within {
+      border-color: var(--app-azul-primario, #73C7E3);
+      box-shadow: 0 0 0 2px rgba(115, 199, 227, 0.3); 
+    }
+  }
+  ion-radio-group {
+  display: flex;
+  flex-direction: column; /* apila verticalmente */
+  gap: 8px;               /* espacio entre opciones */
+  padding: 10px;          /* espacio interno */
+  border: 1px solid #B1CBD6;
+  border-radius: 8px;
+}
+
+ion-radio-group ion-item {
+  --inner-padding-end: 0; /* quita padding extra */
+  --inner-padding-start: 0;
+  align-items: center;    /* centra radio y texto */
+}
+.genero-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--app-azul-marino, #2E4A70);
+}
+
+.genero-group {
+  border: 1px solid #B1CBD6;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: white;
+}
+
+  // Estilo para la etiqueta flotante/apilada
+  ion-label {
+  color: var(--app-azul-marino, #2E4A70);
+  font-weight: 600;
+  margin-bottom: 6px; /* separa el label del input */
+  line-height: 1.2;   /* altura de línea más cómoda */
+  font-size: 14px;    /* tamaño consistente */
+
+  }
+}
+
+/* Estilo específico para el grupo de radio */
+ion-radio-group {
+    padding: 10px;
+    display: block; // Asegura que el borde aplique bien
+}
+
+/* Estilo para el Avatar y Botones de Imagen */
+
+.avatar-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+ion-avatar {
+  border: 4px solid var(--app-azul-secundario, #9EBEED); /* Borde de acento */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap; // Envuelve en móvil
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Estilo para el Botón de Imagen (Cámara, Quitar) */
+.profile-actions ion-button {
+  --border-radius: 8px;
+  --box-shadow: none;
+}
+
+/* Estilos para el manejador de PDF */
+.pdf-actions {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Estilo del Botón de Guardar */
+.save-button-container {
+  padding: 16px;
+  text-align: center;
+}
+.save-button-container ion-button {
+  --border-radius: 12px;
+  font-weight: bold;
+  height: 45px;
+  width: 100%;
+}
+
+
+
+/* Estilos de la cabecera */
+ion-header {
+  ion-toolbar {
+    --background: var(--app-azul-marino, #2E4A70);
+    ion-title {
+      color: white;
+    }
+    ion-button {
+      color: var(--app-azul-primario, #73C7E3);
+      font-weight: bold;
+    }
+  }
+}
+
+/* Estilos del Modal del PDF */
+ion-modal {
+    --background: var(--app-blanco-cremoso, #FFF9F0);
+    ion-toolbar {
+        --background: var(--app-azul-marino, #2E4A70);
+        color: white;
+    }
+}
+
+
+
+
+
+
+
+
+

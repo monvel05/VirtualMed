@@ -1,144 +1,206 @@
-<div class="mobile-wrapper">
-      <!-- Menú Superior (Navbar) -->
-      <header class="ion-toolbar">
-        <div class="toolbar-content">
-          <button class="icon-button menu-btn">
-            <i class="icon-menu"></i>
-          </button>
-          <h1 class="toolbar-title">VirtualMed</h1>
-        </div>
-      </header>
+<div class="web-view">
+  <!-- Menú Superior (Navbar) -->
+  <header class="ion-toolbar">
+    <div class="toolbar-content">
+      <button class="icon-button menu-btn">
+        <i class="icon-menu"></i>
+      </button>
+      <h1 class="toolbar-title">VirtualMed</h1>
+    </div>
+  </header>
 
-      <!-- Contenido Principal (Scrollable) -->
-      <main class="ion-content">
-        
-        <!-- Contenedor Específico para el PDF -->
-        <div id="prescription-pdf" class="pdf-content">
-          
-          <!-- Tarjeta del Doctor (Header de la receta) -->
-          <div class="card doctor-card">
-            <div class="doctor-header">
-              <div class="brand-info">
-                <h2 class="brand-title">VirtualMed</h2>
-                <p class="brand-subtitle">Salud Digital Integral</p>
-              </div>
-              
-              <div class="doctor-profile">
-                <div class="avatar">
-                  <span class="med-icon">✚</span>
-                </div>
-                <div class="doctor-details">
-                  <h3>{{doctor.name}}</h3>
-                  <p class="highlight">{{doctor.specialty}}</p>
-                  <p class="sub-text">{{doctor.subspecialty}}</p>
-                  <div class="credentials">
-                    <span class="badge">Cédula: {{doctor.professionalId}}</span>
-                    <span class="badge">Tel: {{doctor.phoneNumber}}</span>
-                  </div>
-                </div>
+  <!-- Contenido Principal (Scrollable) -->
+  <main class="ion-content">
+    <!-- Contenedor Específico para el PDF -->
+    <div id="prescription-pdf" class="pdf-content">
+      <!-- Tarjeta del Doctor (Header de la receta) -->
+      <div class="card doctor-card">
+        <div class="doctor-header">
+          <div class="brand-info">
+            <h2 class="brand-title">VirtualMed</h2>
+            <p class="brand-subtitle">Salud Digital Integral</p>
+          </div>
+
+          <div class="doctor-profile">
+            <div class="avatar">
+              <span class="med-icon">✚</span>
+            </div>
+            <div class="doctor-details">
+              <h3>{{doctor.name}}</h3>
+              <p class="highlight">{{doctor.specialty}}</p>
+              <p class="sub-text">{{doctor.subspecialty}}</p>
+              <div class="credentials">
+                <span class="badge">Cédula: {{doctor.professionalId}}</span>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Datos del Paciente -->
-          <div class="card patient-card">
-            <h3 class="card-title">Datos del Paciente</h3>
-            <div class="info-grid">
-              <div class="info-item">
-                <label>Nombre</label>
-                <span>{{patient.name}}</span>
-              </div>
-              <div class="info-item">
-                <label>Edad</label>
-                <span>{{patient.age}}</span>
-              </div>
-              <div class="info-item">
-                <label>Fecha</label>
-                <span>{{currentDate}}</span>
-              </div>
-            </div>
+      <!-- Datos del Paciente -->
+      <div class="card patient-card">
+        <h3 class="card-title">Datos del Paciente</h3>
+
+        <div class="info-grid">
+          <div class="info-item full-width">
+            <label>Nombre del Paciente</label>
+            <input
+              type="text"
+              [(ngModel)]="patient.name"
+              class="pdf-input"
+              placeholder="Nombre completo"
+            />
           </div>
 
-          <!-- Lista de Medicamentos -->
-          <div class="medications-list">
-            <h3 class="section-header">Prescripción Médica</h3>
-
-            @for (med of medications; track $index) {
-              <div class="card medication-card">
-                <div class="med-card-header">
-                  <div class="med-title">
-                    <span class="med-number">{{ $index + 1 }}</span>
-                    <h4>Medicamento</h4>
-                  </div>
-                  <button 
-                    class="icon-button delete-btn" 
-                    (click)="removeMedication($index)"
-                    data-html2canvas-ignore="true"
-                    title="Eliminar">
-                    ✕
-                  </button>
-                </div>
-
-                <div class="med-form">
-                  <div class="form-row">
-                    <div class="input-group">
-                      <label>Nombre del medicamento</label>
-                      <input type="text" [(ngModel)]="med.name" placeholder="Ej: Paracetamol">
-                    </div>
-                    <div class="input-group">
-                      <label>Dosis</label>
-                      <input type="text" [(ngModel)]="med.dosage" placeholder="Ej: 500mg">
-                    </div>
-                  </div>
-                  
-                  <div class="form-row">
-                    <div class="input-group">
-                      <label>Frecuencia</label>
-                      <input type="text" [(ngModel)]="med.frequency" placeholder="Ej: Cada 8 horas">
-                    </div>
-                    <div class="input-group">
-                      <label>Duración</label>
-                      <input type="text" [(ngModel)]="med.duration" placeholder="Ej: 7 días">
-                    </div>
-                  </div>
-
-                  <div class="input-group full-width">
-                    <label>Indicaciones especiales</label>
-                    <textarea [(ngModel)]="med.instructions" rows="2" placeholder="Tomar con alimentos..."></textarea>
-                  </div>
-                </div>
-              </div>
-            }
+          <div class="info-item">
+            <label>Edad</label>
+            <input
+              type="text"
+              [(ngModel)]="patient.age"
+              class="pdf-input"
+              placeholder="Ej: 45 años"
+            />
           </div>
 
-          <!-- Footer Legal del PDF -->
-          <div class="pdf-footer">
-            <div class="signature-line">Firma del Médico</div>
-            <p>Receta válida por 7 días. Sujeta a disponibilidad en farmacia.</p>
+          <div class="info-item">
+            <label>Peso</label>
+            <input
+              type="text"
+              [(ngModel)]="patient.weight"
+              class="pdf-input"
+              placeholder="Ej: 70 kg"
+            />
           </div>
-        </div> <!-- Fin Container PDF -->
 
-        <!-- Botones de Acción (Fuera del PDF) -->
-        <div class="fab-container">
-          <button class="btn btn-outline full-width" (click)="addNewMedication()">
-            <span class="plus-icon">+</span> Agregar Medicamento
-          </button>
-          
-          <div class="action-buttons">
-            <button class="btn btn-secondary" (click)="printPrescription()">
-              Imprimir
-            </button>
-            <button class="btn btn-primary" (click)="generatePDF()">
-              <span *ngIf="!isLoading">Descargar PDF</span>
-              <span *ngIf="isLoading">Generando...</span>
-            </button>
+          <div class="info-item">
+            <label>Talla</label>
+            <input
+              type="text"
+              [(ngModel)]="patient.height"
+              class="pdf-input"
+              placeholder="Ej: 1.75 m"
+            />
+          </div>
+
+          <div class="info-item full-width">
+            <label>Alergias</label>
+            <input
+              type="text"
+              [(ngModel)]="patient.allergies"
+              class="pdf-input"
+              placeholder="Alergias conocidas"
+            />
+          </div>
+
+          <div class="info-item">
+            <label>Fecha de Consulta</label>
+            <input
+              type="text"
+              [(ngModel)]="currentDate"
+              class="pdf-input"
+              readonly
+            />
           </div>
         </div>
+      </div>
 
-      </main>
+      <!-- Lista de Medicamentos -->
+      <div class="medications-list">
+        <h3 class="section-header">Prescripción Médica</h3>
 
-      <!-- Toast Notification -->
-      <div class="toast" [class.show]="showToast">
-        {{ toastMessage }}
+        @for (med of medications; track $index) {
+        <div class="card medication-card">
+          <div class="med-card-header">
+            <div class="med-title">
+              <span class="med-number">{{ $index + 1 }}</span>
+              <h4>Medicamento</h4>
+            </div>
+            <button
+              class="icon-button delete-btn"
+              (click)="removeMedication($index)"
+              data-html2canvas-ignore="true"
+              title="Eliminar"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div class="med-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label>Nombre del medicamento</label>
+                <input
+                  type="text"
+                  [(ngModel)]="med.name"
+                  placeholder="Ej: Paracetamol"
+                />
+              </div>
+              <div class="input-group">
+                <label>Dosis</label>
+                <input
+                  type="text"
+                  [(ngModel)]="med.dosage"
+                  placeholder="Ej: 500mg"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label>Frecuencia</label>
+                <input
+                  type="text"
+                  [(ngModel)]="med.frequency"
+                  placeholder="Ej: Cada 8 horas"
+                />
+              </div>
+              <div class="input-group">
+                <label>Duración</label>
+                <input
+                  type="text"
+                  [(ngModel)]="med.duration"
+                  placeholder="Ej: 7 días"
+                />
+              </div>
+            </div>
+
+            <div class="input-group full-width">
+              <label>Indicaciones especiales</label>
+              <textarea
+                [(ngModel)]="med.instructions"
+                rows="2"
+                placeholder="Tomar con alimentos..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Footer Legal del PDF -->
+      <div class="pdf-footer">
+        <br><br><br>
+        <div class="signature-line">Firma del Médico</div>
+        <p>Receta válida por 7 días. Sujeta a disponibilidad en farmacia.</p>
       </div>
     </div>
+    <!-- Fin Container PDF -->
+
+    <!-- Botones de Acción (Fuera del PDF) -->
+    <div class="fab-container">
+      <button class="btn btn-outline full-width" (click)="addNewMedication()">
+        <span class="plus-icon">+</span> Agregar Medicamento
+      </button>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" (click)="generatePDF()">
+          <span *ngIf="!isLoading">Descargar PDF</span>
+          <span *ngIf="isLoading">Generando...</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" [class.show]="showToast">{{ toastMessage }}</div>
+</div>

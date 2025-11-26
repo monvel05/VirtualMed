@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common'; // Importante para *ngIf, *ngFor
+import { FormsModule } from '@angular/forms';   // Importante para ngModel
+import { Router } from '@angular/router';
+import { User } from '../../services/user.service';
+
+// Ionic Components & Icons
 import {
   IonContent,
   IonHeader,
@@ -27,17 +31,30 @@ import {
   IonFabList,
   IonIcon,
   IonModal,
-  IonButton
+  IonButton,
+  IonList 
 } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
+
+import { addIcons } from 'ionicons';
+import { 
+  personCircleOutline, 
+  settingsOutline, 
+  logOutOutline, 
+  chevronUpCircle, 
+  alert, 
+  notifications, 
+  settings, chatbubbles } from 'ionicons/icons';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
+  // CORRECCIÓN 1: Agregar CommonModule y FormsModule aquí, y limpiar duplicados
   imports: [
-    IonCol,
+    CommonModule,
+    FormsModule,
+    IonList,
     IonButtons,
     IonDatetime,
     IonContent,
@@ -47,7 +64,6 @@ import { Router } from '@angular/router';
     IonToolbar,
     IonGrid,
     IonCol,
-    IonRow,
     IonRow,
     IonAccordion,
     IonAccordionGroup,
@@ -65,14 +81,17 @@ import { Router } from '@angular/router';
     IonModal,
     IonButton,
     IonMenu
-],
+  ],
 })
 export class DashboardPage implements OnInit {
-  role = '';
+  role = this.user.getRole();
   greeting: string = '';
   isModalOpen = false;
 
-  constructor(private router: Router) {  }
+  constructor(private router: Router, private user: User) {
+    // CORRECCIÓN 2: Sintaxis de iconos más limpia
+    addIcons({personCircleOutline,settingsOutline,logOutOutline,chevronUpCircle,chatbubbles,settings,notifications,alert});
+  }
 
   ngOnInit() {
     this.getGreeting();
@@ -87,11 +106,11 @@ export class DashboardPage implements OnInit {
     const hour = time.getHours();
 
     if (hour < 12) {
-      this.greeting = '¡Buenos días!';
+      this.greeting = '¡Buenos días ' + this.user.getName() + '!';
     } else if (hour < 18) {
-      this.greeting = '¡Buenas tardes!';
+      this.greeting = '¡Buenas tardes ' + this.user.getName() + '!';
     } else {
-      this.greeting = '¡Buenas noches!';
+      this.greeting = '¡Buenas noches ' + this.user.getName() + '!';
     }
   }
 
@@ -126,16 +145,16 @@ export class DashboardPage implements OnInit {
     {
       date: '2025-11-10',
       hour: '10:00 AM',
-      description: 'Cita con el paciente Juan Pérez a las 10:00 AM',
+      description: 'Cita con el paciente Juan Pérez',
     },
     {
       date: '2025-11-15',
       hour: '02:00 PM',
-      description: 'Cita con la paciente María López a las 02:00 PM',
+      description: 'Cita con la paciente María López',
     },
   ];
 
-  //Funciones para navegación entre páginas
+  // Funciones para navegación entre páginas
   fnGoToCreateAppointment() {
     this.router.navigate(['/create-appointment']);
   }
@@ -164,4 +183,12 @@ export class DashboardPage implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
+  fnLogout() {
+    this.user.clearUserData();
+    this.router.navigate(['/login']);
+  }
+
+  fnGoToChatbot() {
+    this.router.navigate(['/chatbot']);
+  }
 }

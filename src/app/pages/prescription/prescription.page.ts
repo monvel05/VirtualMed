@@ -1,60 +1,78 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons } from "@ionic/angular/standalone";
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButtons,
+  ToastController,
+} from '@ionic/angular/standalone';
 
-// Declaramos las variables para las librerías externas (CDN)
-declare var html2canvas: any;
-declare var jsPDF: any;
+// 1. IMPORTAR LIBRERÍAS (En lugar de declare var...)
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { User } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [IonButtons, IonContent, IonTitle, IonToolbar, IonHeader, CommonModule, FormsModule],
+  imports: [
+    IonButtons,
+    IonContent,
+    IonTitle,
+    IonToolbar,
+    IonHeader,
+    CommonModule,
+    FormsModule,
+  ],
   templateUrl: './prescription.page.html',
-  styleUrls: ['./prescription.page.scss']
+  styleUrls: ['./prescription.page.scss'],
 })
-
 export class PrescriptionPage implements OnInit {
   isLoading = false;
   showToast = false;
   toastMessage = '';
 
-  currentDate: string = new Date().toLocaleDateString('es-MX', { 
-    year: 'numeric', month: 'long', day: 'numeric' 
+  currentDate: string = new Date().toLocaleDateString('es-MX', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
   doctor = {
-    name: 'Dr. Juan Pérez',
-    specialty: 'Oftalmología',
-    subspecialty: 'Cirugía de Cataratas',
-    professionalId: '1234567890',
-    phoneNumber: '+52 55 1234 5678',
-    email: 'juan.perez@correo.com'
+    name: this.user.getName() + ' ' + this.user.getSurname(),
+    specialty: this.user.getMedicalSpecialty(),
+    subspecialty: this.user.getMedicalSubspecialty(),
+    professionalId: this.user.getProfessionalLicense(),
+    email: this.user.getEmail(),
   };
 
   patient = {
-    name: 'María González López',
-    age: '45 años',
-    weight: '65 kg',
-    height: '165 cm',
-    allergies: 'Ninguna conocida'
+    name: '',
+    age: '',
+    weight: '',
+    height: '',
+    allergies: '',
   };
 
   medications: any[] = [
     { name: '', dosage: '', frequency: '', duration: '', instructions: '' },
-    { name: '', dosage: '', frequency: '', duration: '', instructions: '' },
-    { name: '', dosage: '', frequency: '', duration: '', instructions: '' }
   ];
 
-  ngOnInit() {
-    // Cargar librerías PDF
-    this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
-      .then(() => this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'));
-  }
+  constructor(private user: User) {}
+
+  ngOnInit() {}
 
   addNewMedication() {
-    this.medications.push({ name: '', dosage: '', frequency: '', duration: '', instructions: '' });
+    this.medications.push({
+      name: '',
+      dosage: '',
+      frequency: '',
+      duration: '',
+      instructions: '',
+    });
   }
 
   removeMedication(index: number) {
@@ -64,37 +82,45 @@ export class PrescriptionPage implements OnInit {
     }
   }
 
-  printPrescription() {
-    window.print();
-  }
-
   async generatePDF() {
     this.isLoading = true;
+
+    // Pequeña pausa para asegurar que el DOM esté listo
     setTimeout(async () => {
       try {
         const element = document.getElementById('prescription-pdf');
-        if (!element) return;
+        if (!element) {
+          this.isLoading = false;
+          return;
+        }
 
+        // GENERACIÓN DEL CANVAS
         const canvas = await html2canvas(element, {
-          scale: 2,
+          scale: 2, // Mejor calidad
           useCORS: true,
           backgroundColor: '#ffffff',
-          ignoreElements: (el: { getAttribute: (arg0: string) => string; }) => el.getAttribute('data-html2canvas-ignore') === 'true'
+          // Esta línea asegura que el atributo del HTML funcione
+          ignoreElements: (el) =>
+            el.getAttribute('data-html2canvas-ignore') === 'true',
         });
 
         const imgData = canvas.toDataURL('image/png');
+
+        // SECCIÓN DEL PDF
         const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        const imgWidth = 210;
-        const pageHeight = 297;
+
+        const imgWidth = 210; // A4 ancho en mm
+        const pageHeight = 297; // A4 alto en mm
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
+
         let heightLeft = imgHeight;
         let position = 0;
 
+        // Primera página
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
+        // Si la receta es muy larga, agrega más páginas
         while (heightLeft >= 0) {
           position = heightLeft - imgHeight;
           pdf.addPage();
@@ -105,27 +131,22 @@ export class PrescriptionPage implements OnInit {
         pdf.save(`Receta-${this.patient.name}.pdf`);
         this.showToastMsg('PDF Descargado con éxito');
       } catch (error) {
-        console.error(error);
+        console.error('Error generando PDF:', error);
         this.showToastMsg('Error al generar PDF');
       } finally {
         this.isLoading = false;
       }
-    }, 500);
+    }, 100);
   }
 
   showToastMsg(msg: string) {
     this.toastMessage = msg;
     this.showToast = true;
-    setTimeout(() => this.showToast = false, 3000);
+    setTimeout(() => (this.showToast = false), 3000);
   }
 
-  private loadScript(url: string): Promise<void> {
-    return new Promise((resolve) => {
-      if (document.querySelector(`script[src="${url}"]`)) { resolve(); return; }
-      const script = document.createElement('script');
-      script.src = url;
-      script.onload = () => resolve();
-      document.body.appendChild(script);
-    });
-  }
+  // FUNCIONES PARA LA BASE DE DATOS
+  fnBringDoctorData(id: string) {}
+
+  fnBringPatientData(id: string) {}
 }

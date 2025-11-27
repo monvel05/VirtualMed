@@ -1,0 +1,70 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="fnGoBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>MediChat 🩺</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <div class="chat-container">
+    
+    @for (msg of historialChat; track $index) {
+      <div 
+        [class.mensaje-usuario]="msg.remitente === 'usuario'"
+        [class.mensaje-bot]="msg.remitente === 'bot'">
+      
+        <div class="burbuja">
+          {{ msg.texto }}
+        </div>
+
+        @if (msg.doctores && msg.doctores.length > 0) {
+          <div class="contenedor-doctores">
+            @for (doc of msg.doctores; track $index) {
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-subtitle>{{ doc.especialidad }}</ion-card-subtitle>
+                  <ion-card-title>{{ doc.nombre }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  {{ doc.motivo }}
+                  <br><br>
+                  <ion-button expand="block" (click)="agendarCita(doc)">
+                    📅 Agendar Cita
+                  </ion-button>
+                </ion-card-content>
+              </ion-card>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (cargando) {
+      <div class="mensaje-bot">
+        <div class="burbuja escribiendo">
+          Analizando síntomas... 🩺
+        </div>
+      </div>
+    }
+
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item lines="none">
+      <ion-input placeholder="Describe tus síntomas..." 
+                 [(ngModel)]="mensajeUsuario" 
+                 (keyup.enter)="enviar()"></ion-input>
+      <ion-button slot="end" (click)="enviar()">
+        Enviar
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

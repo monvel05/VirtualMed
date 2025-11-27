@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+// src/app/pages/login/login.page.ts
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { HttpClientModule } from '@angular/common/http';
 import { eyeOutline, eyeOffOutline, cameraOutline, checkmarkCircle } from 'ionicons/icons';
 import {
   IonContent,
@@ -25,6 +25,8 @@ import {
   ToastController 
 } from '@ionic/angular/standalone';
 import { CloudinaryService } from '../../services/cloudinary.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -50,13 +52,15 @@ import { CloudinaryService } from '../../services/cloudinary.service';
     IonRadioGroup,
     IonListHeader,
     IonDatetime,
-    HttpClientModule 
   ],
    providers: [
     CloudinaryService
   ]
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
   isLogin = true;
   loginForm: FormGroup;
   registerForm: FormGroup;
@@ -67,16 +71,17 @@ export class LoginPage {
   showConfirmPassword = false;
   uploadedImageUrl: string | null = null;
   
-  // NUEVAS VARIABLES PARA CONTROLAR ESTADOS
   isUploading = false;
   isRegistering = false;
+  isLoggingIn = false;
 
   constructor(
     private fb: FormBuilder,
     private cloudinaryService: CloudinaryService, 
     private loadingController: LoadingController, 
-    private toastController: ToastController 
+    private toastController: ToastController
   ) {
+    console.log('LoginPage constructor ejecutado');
     this.loginForm = this.createLoginForm();
     this.registerForm = this.createRegisterForm();
     addIcons({ 
@@ -87,6 +92,86 @@ export class LoginPage {
     });
 
     this.setupCedulaValidation();
+  }
+
+  ngOnInit() {
+    console.log('ngOnInit ejecutandose');
+    
+    // Debug completo de la autenticación
+    this.debugAuthInfo();
+    
+    console.log('authService.isAuthenticated():', this.authService.isAuthenticated());
+    
+    if (this.authService.isAuthenticated()) {
+      console.log('USUARIO AUTENTICADO - Redirigiendo...');
+      this.redirectByRole();
+    } else {
+      console.log('USUARIO NO AUTENTICADO - Mostrando login');
+    }
+  }
+
+  // Método para debuggear profundamente la autenticación
+  debugAuthInfo() {
+    console.log('=== DEBUG AUTH INFO ===');
+    console.log('authService.isAuthenticated():', this.authService.isAuthenticated());
+    
+    const user = this.authService.getCurrentUser();
+    console.log('Usuario completo desde authService:', user);
+    console.log('Rol del usuario:', user?.role);
+    console.log('Tipo de rol:', typeof user?.role);
+    console.log('Rol exacto (string):', `"${user?.role}"`);
+    
+    // Verificar localStorage directamente
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    console.log('Token en localStorage:', storedToken);
+    console.log('User en localStorage:', storedUser);
+    
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        console.log('User parseado de localStorage:', parsedUser);
+        console.log('Rol en user parseado:', parsedUser.role);
+        console.log('TipoPerfil en user parseado:', parsedUser.tipoPerfil);
+        console.log('Todas las keys del user:', Object.keys(parsedUser));
+      } catch (e) {
+        console.error('Error parseando user:', e);
+      }
+    }
+    
+    // Verificar sessionStorage también
+    const sessionToken = sessionStorage.getItem('token');
+    const sessionUser = sessionStorage.getItem('user');
+    console.log('Token en sessionStorage:', sessionToken);
+    console.log('User en sessionStorage:', sessionUser);
+    
+    console.log('=== FIN DEBUG ===');
+  }
+
+  private redirectByRole(): void {
+    const user = this.authService.getCurrentUser();
+    console.log('redirectByRole - Usuario actual:', user);
+    console.log('redirectByRole - Rol del usuario:', user?.role);
+    
+    // Sin rol por defecto - solo redirige si el rol es reconocido
+    if (user?.role === 'paciente') {
+      console.log('PACIENTE - Redirigiendo a create-appointment');
+      this.router.navigate(['/create-appointment'], { replaceUrl: true });
+    } else if (user?.role === 'medico') {
+      console.log('MEDICO - Redirigiendo a dashboard');
+      this.router.navigate(['/dashboard'], { replaceUrl: true });
+    } else {
+      console.log('Rol no reconocido - No se redirige');
+      // No se hace redirección si el rol no es reconocido
+    }
+  }
+
+  private showAuthErrorToast() {
+    this.toastController.create({
+      message: 'Error: Rol de usuario no reconocido',
+      duration: 3000,
+      color: 'warning'
+    }).then(toast => toast.present());
   }
 
   private setupCedulaValidation() {
@@ -162,18 +247,146 @@ export class LoginPage {
   }
 
   switchToRegister(): void {
+    console.log('Cambiando a registro');
     this.isLogin = false;
   }
 
   switchToLogin(): void {
+    console.log('Cambiando a login');
     this.isLogin = true;
   }
 
-  login(): void {
+  async login(): Promise<void> {
+    console.log('Intentando login');
     if (this.loginForm.valid) {
-      console.log('Login exitoso:', this.loginForm.value);
+      this.isLoggingIn = true;
+      
+      try {
+        const credentials = this.loginForm.value;
+        console.log('Credenciales:', credentials);
+        const response = await this.authService.login(credentials).toPromise();
+        
+        if (!response) {
+          throw new Error('No se recibió respuesta del servidor');
+        }
+        
+        if (response.intStatus === 200) {
+          console.log('Login exitoso:', response);
+          
+          const toast = await this.toastController.create({
+            message: 'Inicio de sesión exitoso',
+            duration: 2000,
+            color: 'success'
+          });
+          await toast.present();
+
+          // Debug después del login exitoso
+          setTimeout(() => {
+            console.log('DEBUG POST-LOGIN:');
+            this.debugAuthInfo();
+            this.redirectByRole();
+          }, 100);
+          
+        } else {
+          throw new Error(response.strAnswer || 'Error en el login');
+        }
+      } catch (error: any) {
+        console.error('Error en login:', error);
+        
+        let errorMessage = 'Error en el inicio de sesión';
+        
+        if (error.error?.Error) {
+          errorMessage = error.error.Error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        const toast = await this.toastController.create({
+          message: errorMessage,
+          duration: 3000,
+          color: 'danger'
+        });
+        await toast.present();
+      } finally {
+        this.isLoggingIn = false;
+      }
     } else {
+      console.log('Formulario de login invalido');
       this.markFormTouched(this.loginForm);
+    }
+  }
+
+  async register(): Promise<void> {
+    console.log('Intentando registro');
+    if (this.registerForm.valid) {
+      this.isRegistering = true;
+
+      try {
+        // Si hay imagen pero no se ha subido a Cloudinary, subirla
+        if (this.selectedImage && !this.uploadedImageUrl) {
+          await this.uploadToCloudinary(this.selectedImage);
+        }
+
+        const userData = {
+          ...this.registerForm.value,
+          profileImage: this.uploadedImageUrl,
+          role: this.registerForm.get('tipoPerfil')?.value // Mapear tipoPerfil a role
+        };
+
+        console.log('Datos de registro:', userData);
+
+        // Usa el AuthService para registrar
+        const response = await this.authService.register(userData).toPromise();
+        
+        if (!response) {
+          throw new Error('No se recibió respuesta del servidor');
+        }
+        
+        if (response.intStatus === 200) {
+          console.log('Registro exitoso:', response);
+          console.log('Foto en Cloudinary:', this.uploadedImageUrl);
+
+          const toast = await this.toastController.create({
+            message: 'Cuenta creada exitosamente',
+            duration: 3000,
+            color: 'success'
+          });
+          await toast.present();
+
+          // Debug después del registro exitoso
+          setTimeout(() => {
+            console.log('DEBUG POST-REGISTER:');
+            this.debugAuthInfo();
+            this.redirectByRole();
+          }, 100);
+
+        } else {
+          throw new Error(response.strAnswer || 'Error en el registro');
+        }
+
+      } catch (error: any) {
+        console.error('Error en registro:', error);
+        
+        let errorMessage = 'Error en el registro';
+        
+        if (error.error?.Error) {
+          errorMessage = error.error.Error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        const toast = await this.toastController.create({
+          message: errorMessage,
+          duration: 3000,
+          color: 'danger'
+        });
+        await toast.present();
+      } finally {
+        this.isRegistering = false;
+      }
+    } else {
+      console.log('Formulario de registro invalido');
+      this.markFormTouched(this.registerForm);
     }
   }
 
@@ -187,55 +400,6 @@ export class LoginPage {
 
   toggleConfirmPasswordVisibility() {
     this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
-  async register(): Promise<void> {
-    if (this.registerForm.valid) {
-      this.isRegistering = true;
-
-      try {
-        // Si hay imagen pero no se ha subido a Cloudinary, subirla
-        if (this.selectedImage && !this.uploadedImageUrl) {
-          await this.uploadToCloudinary(this.selectedImage);
-        }
-
-        const userData = {
-          ...this.registerForm.value,
-          profileImage: this.uploadedImageUrl 
-        };
-
-        console.log('Registro exitoso:', userData);
-        console.log('Foto en Cloudinary:', this.uploadedImageUrl);
-
-        // Simular proceso de registro (reemplaza con tu API real)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Mostrar mensaje de éxito
-        const toast = await this.toastController.create({
-          message: 'Cuenta creada exitosamente',
-          duration: 3000,
-          color: 'success'
-        });
-        await toast.present();
-
-        // Aquí iría la navegación a la siguiente página
-        // this.router.navigate(['/home']);
-
-      } catch (error) {
-        console.error('Error en registro:', error);
-        
-        const toast = await this.toastController.create({
-          message: 'Error al crear la cuenta',
-          duration: 3000,
-          color: 'danger'
-        });
-        await toast.present();
-      } finally {
-        this.isRegistering = false;
-      }
-    } else {
-      this.markFormTouched(this.registerForm);
-    }
   }
 
   async onFileSelected(event: Event): Promise<void> {
@@ -287,5 +451,47 @@ export class LoginPage {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
+  }
+
+  // Método para limpiar autenticación (para testing)
+  clearAuthForTesting() {
+    console.log('Limpiando autenticación para testing');
+    localStorage.clear();
+    sessionStorage.clear();
+    console.log('Storage limpiado, recargando...');
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+  }
+
+  // Método para forzar rol específico (para testing)
+  forceRoleForTesting(role: 'paciente' | 'medico') {
+    console.log(`Forzando rol: ${role}`);
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      currentUser.role = role;
+      localStorage.setItem('user', JSON.stringify(currentUser));
+      console.log(`Rol forzado a: ${role}, recargando...`);
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    } else {
+      console.log('No hay usuario logueado para forzar rol');
+    }
+  }
+
+  // Métodos para llenar credenciales de prueba (opcional)
+  fillDemoCredentials(role: 'paciente' | 'medico') {
+    if (role === 'paciente') {
+      this.loginForm.patchValue({
+        email: 'paciente@virtualmed.com',
+        password: '123456'
+      });
+    } else {
+      this.loginForm.patchValue({
+        email: 'medico@virtualmed.com',
+        password: '123456'
+      });
+    }
   }
 }

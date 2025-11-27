@@ -1,29 +1,100 @@
+// src/app/app.component.ts
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { home,
-  settings,
+import { 
+  chevronUpCircle, 
+  alert, 
+  settings, 
   notifications,
-  alert,
-  chevronUpCircle,
-  close
+  eyeOutline,
+  eyeOffOutline,
+  cameraOutline,
+  checkmarkCircle,
+  logOutOutline,
+  personOutline,
+  medkitOutline,
+  calendarOutline,
+  documentOutline,
+  peopleOutline,
+  statsChartOutline,
+  medicalOutline,
+  homeOutline,
+  menuOutline,
+  closeOutline,
+  searchOutline,
+  addOutline,
+  trashOutline,
+  createOutline,
+  timeOutline,
+  locationOutline,
+  callOutline,
+  mailOutline,
+  heartOutline,
+  warningOutline,
+  informationCircleOutline,
+  ellipsisHorizontalOutline,
+  arrowBackOutline,
+  saveOutline,
+  downloadOutline,
+  shareOutline,
+  printOutline
 } from 'ionicons/icons';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, IonicModule],
+  template: `
+    <ion-app>
+      <ion-router-outlet></ion-router-outlet>
+    </ion-app>
+  `
 })
 export class AppComponent {
+  title = 'VirtualMed';
+
   constructor() {
-    //Iconos globales para el ion fab en las páginas
+    // Registrar todos los iconos que usa la aplicación
     addIcons({
-      home,
+      chevronUpCircle,
+      alert,
       settings,
       notifications,
-      alert,
-      chevronUpCircle,
-      close
+      eyeOutline,
+      eyeOffOutline,
+      cameraOutline,
+      checkmarkCircle,
+      logOutOutline,
+      personOutline,
+      medkitOutline,
+      calendarOutline,
+      documentOutline,
+      peopleOutline,
+      statsChartOutline,
+      medicalOutline,
+      homeOutline,
+      menuOutline,
+      closeOutline,
+      searchOutline,
+      addOutline,
+      trashOutline,
+      createOutline,
+      timeOutline,
+      locationOutline,
+      callOutline,
+      mailOutline,
+      heartOutline,
+      warningOutline,
+      informationCircleOutline,
+      ellipsisHorizontalOutline,
+      arrowBackOutline,
+      saveOutline,
+      downloadOutline,
+      shareOutline,
+      printOutline
     });
   }
 }

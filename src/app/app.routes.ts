@@ -1,4 +1,7 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
+import { AuthGuard } from './services/auth.guard';
+import { RoleGuard } from './services/role.guard';
 
 export const routes: Routes = [
   {
@@ -7,48 +10,62 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard.page').then( m => m.DashboardPage)
+    path: 'login',
+    loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage)
   },
   {
-    path: 'login',
-    loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
+    path: 'dashboard',
+    loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage),
+    canActivate: [AuthGuard] // Solo usuarios autenticados
   },
   {
     path: 'profile',
-    loadComponent: () => import('./pages/profile/profile.page').then( m => m.ProfilePage)
+    loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage),
+    canActivate: [AuthGuard] // Solo usuarios autenticados
   },
   {
     path: 'create-appointment',
-    loadComponent: () => import('./pages/create-appointment/create-appointment.page').then( m => m.CreateAppointmentPage)
+    loadComponent: () => import('./pages/create-appointment/create-appointment.page').then(m => m.CreateAppointmentPage),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRole: 'paciente' } // Solo pacientes
   },
   {
     path: 'my-appointments',
-    loadComponent: () => import('./pages/my-appointments/my-appointments.page').then( m => m.MyAppointmentsPage)
+    loadComponent: () => import('./pages/my-appointments/my-appointments.page').then(m => m.MyAppointmentsPage),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRole: 'paciente' } // Solo pacientes
   },
   {
-    path: 'settings',
-    loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
-  },
- {
     path: 'prescription',
-    loadComponent: () => import('./pages/prescription/prescription.page').then( m => m.PrescriptionPage)
-  },
-  {
-    path: 'management',
-    loadComponent: () => import('./pages/management/management.page').then( m => m.ManagementPage)
+    loadComponent: () => import('./pages/prescription/prescription.page').then(m => m.PrescriptionPage),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRole: 'paciente' } // Solo pacientes
   },
   {
     path: 'medical-records',
-    loadComponent: () => import('./pages/medical-records/medical-records.page').then( m => m.MedicalRecordsPage)
+    loadComponent: () => import('./pages/medical-records/medical-records.page').then(m => m.MedicalRecordsPage),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRole: 'paciente' } // Solo pacientes
+  },
+  {
+    path: 'management',
+    loadComponent: () => import('./pages/management/management.page').then(m => m.ManagementPage),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRole: 'medico' } // Solo médicos
   },
   {
     path: 'schedule-for-doctor',
-    loadComponent: () => import('./pages/schedule-for-doctor/schedule-for-doctor.page').then( m => m.ScheduleForDoctorPage)
-  },  {
-    path: 'chatbot',
-    loadComponent: () => import('./pages/chatbot/chatbot.page').then( m => m.ChatbotPage)
+    loadComponent: () => import('./pages/schedule-for-doctor/schedule-for-doctor.page').then(m => m.ScheduleForDoctorPage),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRole: 'medico' } // Solo médicos
   },
-
-
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then(m => m.SettingsPage),
+    canActivate: [AuthGuard] // Ambos roles
+  },
+  {
+    path: '**',
+    redirectTo: 'login'
+  }
 ];

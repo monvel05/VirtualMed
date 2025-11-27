@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton,
   IonGrid, IonIcon, IonCard, IonRow, IonLabel, IonItem, IonRadio,
   IonCol,IonList,IonSelect, IonSelectOption,IonText, IonInput , IonDatetime} from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-appointment',
@@ -24,13 +25,17 @@ export class CreateAppointmentPage implements OnInit {
   fechahoraCita: string = new Date().toISOString(); 
   
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
   guardarCita(){
 
+  }
+
+  fnCitaRegresar(){
+    this.router.navigate(['/dashboard']);
   }
 
 }

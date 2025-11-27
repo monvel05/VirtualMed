@@ -7,6 +7,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonAvatar, IonG
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Platform } from '@ionic/angular';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 
 
@@ -34,7 +35,7 @@ export class ProfilePage implements OnInit {
   
   
 
-  constructor(private platform: Platform, private sanitizer: DomSanitizer) { }
+  constructor(private platform: Platform, private sanitizer: DomSanitizer,private router:Router) { }
 
   ngOnInit() {
   }
@@ -109,6 +110,10 @@ export class ProfilePage implements OnInit {
 quitarExpediente() {
   this.pdfUrl = null;   // limpia la variable
   this.mostrarModal = false; // asegura que el modal esté cerrado
+}
+
+  fnPerfilRegresar(){
+  this.router.navigate(['/dashboard']);
 }
 
 }

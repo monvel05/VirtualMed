@@ -64,6 +64,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/settings/settings.page').then(m => m.SettingsPage),
     canActivate: [AuthGuard] // Ambos roles
   },
+
+   {
+    path: 'chatbot',
+    loadComponent: () => import('./pages/chatbot/chatbot.page').then( m => m.ChatbotPage)
+  },
+  
   {
     path: '**',
     redirectTo: 'login'

@@ -34,7 +34,7 @@ import {
   IonButton,
   IonList 
 } from '@ionic/angular/standalone';
-
+import { AuthService } from 'src/app/services/auth.service';
 import { addIcons } from 'ionicons';
 import { 
   personCircleOutline, 
@@ -84,16 +84,17 @@ import {
   ],
 })
 export class DashboardPage implements OnInit {
-  role = this.user.getRole();
+  role = '';
   greeting: string = '';
   isModalOpen = false;
 
-  constructor(private router: Router, private user: User) {
-    // CORRECCIÓN 2: Sintaxis de iconos más limpia
+  constructor(private router: Router, private user: User, private authService: AuthService) {
     addIcons({personCircleOutline,settingsOutline,logOutOutline,chevronUpCircle,chatbubbles,settings,notifications,alert});
   }
 
   ngOnInit() {
+    console.log(this.user.getRole())
+    this.role = this.user.getRole();
     this.getGreeting();
   }
 
@@ -154,6 +155,8 @@ export class DashboardPage implements OnInit {
     },
   ];
 
+  
+
   // Funciones para navegación entre páginas
   fnGoToCreateAppointment() {
     this.router.navigate(['/create-appointment']);
@@ -184,8 +187,10 @@ export class DashboardPage implements OnInit {
   }
 
   fnLogout() {
+    
     this.user.clearUserData();
-    this.router.navigate(['/login']);
+    this.ngOnInit();
+    this.authService.logout();
   }
 
   fnGoToChatbot() {

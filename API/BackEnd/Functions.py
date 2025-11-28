@@ -4,8 +4,22 @@ from pymongo.errors import ConnectionFailure, OperationFailure
 from datetime import datetime
 import BackEnd.GlobalInfo.ResponseMessages as respuestas
 import BackEnd.GlobalInfo.Keys as Colabskey
+from bson import ObjectId # Aseguré importar esto al inicio para evitar errores en las funciones
 
 def get_db_connection():
+    """
+    Establece o recupera una conexión activa a la base de datos MongoDB Atlas.
+
+    Utiliza un patrón Singleton simple almacenando la conexión en `Colabskey.dbconn`
+    para evitar múltiples conexiones innecesarias.
+
+    Returns:
+        pymongo.database.Database: Objeto de conexión a la base de datos seleccionada.
+
+    Raises:
+        ConnectionFailure: Si no se puede establecer conexión con el servidor de MongoDB.
+        Exception: Para cualquier otro error general durante la conexión.
+    """
     if Colabskey.dbconn is None:
         try:
             print("🔌 Intentando conectar a MongoDB...")
@@ -34,156 +48,220 @@ def get_db_connection():
     print("🔗 Usando conexión existente a BD")
     return Colabskey.dbconn
 
-def getAllUsers():
+def getAllMedicos():
+    """
+    Recupera exclusivamente la lista de usuarios con perfil de médico.
+
+    Consulta la colección 'medicos' de la base de datos para obtener
+    la información profesional y personal de los doctores registrados.
+
+    Returns:
+        flask.Response: Objeto JSON con:
+            - arrMedicos (list): Lista de doctores con id, nombre, especialidad, etc.
+            - count (int): Total de médicos encontrados.
+    """
     try:
-        print("🔍 Iniciando getAllUsers...")
+        print("🔍 Iniciando getAllMedicos...")
         db = get_db_connection()
         
-        arrFinalUsers = []
+        arrFinalMedicos = []
+
+        print("📊 Buscando en colección: medicos")
+        collection = db["doctor"]
         
-        # Obtener usuarios de todas las colecciones
-        collections_to_check = ["users", "doctors", "patients"]
+        # Buscamos todos los documentos en la colección
+        objQuery = collection.find({})
+        listMedicos = list(objQuery)
         
-        for collection_name in collections_to_check:
-            print(f"📊 Buscando en colección: {collection_name}")
-            collection = db[collection_name]
-            objQuery = collection.find({})
-            listUsers = list(objQuery)
-            
-            if len(listUsers) != 0:
-                for objUser in listUsers:
-                    objFormateado = {
-                        "id": str(objUser["_id"]),
-                        "email": objUser["email"],
-                        "role": objUser.get("role", "No especificado"),
-                        "nombre": objUser.get("nombre", ""),
-                        "apellidos": objUser.get("apellidos", ""),
-                        "collection": collection_name
-                    }
-                    arrFinalUsers.append(objFormateado)
+        if len(listMedicos) > 0:
+            for objMedico in listMedicos:
+                # Formateamos el objeto con los datos relevantes para un médico
+                objFormateado = {
+                    "id": str(objMedico["_id"]),
+                    "email": objMedico.get("email", ""),
+                    "nombre": objMedico.get("nombre", ""),
+                    "apellidos": objMedico.get("apellidos", ""),
+                    "especialidad": objMedico.get("especialidad", "General"),
+                    "subespecialidad": objMedico.get("subespecialidad", "N/A"),
+                    "cedula": objMedico.get("cedula", "No registrada"),
+                    "role": "medico", 
+                    "estado": objMedico.get("estado", "activo")
+                }
+                arrFinalMedicos.append(objFormateado)
         
-        print(f"📊 Total de usuarios encontrados: {len(arrFinalUsers)}")
+        print(f"👨‍⚕️ Total de médicos encontrados: {len(arrFinalMedicos)}")
         
         objResponse = respuestas.succ200.copy()
-        objResponse["arrUsers"] = arrFinalUsers
+        objResponse["arrMedicos"] = arrFinalMedicos
+        objResponse["count"] = len(arrFinalMedicos)
         return jsonify(objResponse)
         
     except Exception as e:
-        print(f"💥 ERROR en getAllUsers: {str(e)}")
+        print(f"💥 ERROR en getAllMedicos: {str(e)}")
+        objResponse = respuestas.err500.copy()
+        objResponse['Error'] = str(e)
+        return jsonify(objResponse), 500
+
+def getAllPacientes():
+    """
+    Recupera exclusivamente la lista de usuarios con perfil de paciente.
+
+    Consulta la colección 'pacientes' para obtener el listado de personas
+    que reciben atención médica en el sistema.
+
+    Returns:
+        flask.Response: Objeto JSON con:
+            - arrPacientes (list): Lista de pacientes.
+            - count (int): Total de pacientes encontrados.
+    """
+    try:
+        print("🔍 Iniciando getAllPacientes...")
+        db = get_db_connection()
+        
+        arrFinalPacientes = []
+        
+        # NOTA: Se actualizó el nombre de la colección a 'pacientes' (español)
+        print("📊 Buscando en colección: pacientes")
+        collection = db["pacientes"]
+        
+        objQuery = collection.find({})
+        listPacientes = list(objQuery)
+        
+        if len(listPacientes) > 0:
+            for objPaciente in listPacientes:
+                objFormateado = {
+                    "id": str(objPaciente["_id"]),
+                    "email": objPaciente.get("email", ""),
+                    "nombre": objPaciente.get("nombre", ""),
+                    "apellidos": objPaciente.get("apellidos", ""),
+                    "edad": objPaciente.get("edad", ""),
+                    "genero": objPaciente.get("genero", ""),
+                    "role": "paciente"
+                }
+                arrFinalPacientes.append(objFormateado)
+        
+        print(f"🏥 Total de pacientes encontrados: {len(arrFinalPacientes)}")
+        
+        objResponse = respuestas.succ200.copy()
+        objResponse["arrPacientes"] = arrFinalPacientes
+        objResponse["count"] = len(arrFinalPacientes)
+        return jsonify(objResponse)
+        
+    except Exception as e:
+        print(f"💥 ERROR en getAllPacientes: {str(e)}")
         objResponse = respuestas.err500.copy()
         objResponse['Error'] = str(e)
         return jsonify(objResponse), 500
 
 def addUser():
+    """
+    Registra un nuevo usuario directamente en la colección correspondiente a su rol.
+
+    Elimina la dependencia de una colección central 'users'. 
+    Verifica unicidad del correo a través de las colecciones 'medicos' y 'pacientes'.
+
+    El payload (JSON) debe contener 'email', 'password' y 'role'.
+
+    Returns:
+        tuple: (flask.Response, int)
+            - 200: Usuario creado exitosamente.
+            - 400: Datos incompletos o rol no válido.
+            - 409: El correo ya existe en el sistema.
+            - 500: Error de servidor.
+    """
     try:
-        print("🔍 Iniciando proceso de registro...")
+        print("🔍 Iniciando proceso de registro directo...")
         data = request.get_json()
         print(f"📨 Datos recibidos: {data}")
         
-        # Validar campos requeridos
-        if not data or 'email' not in data or 'password' not in data:
-            print("❌ Faltan campos requeridos: email y/o password")
+        # Validar campos requeridos (Ahora 'role' es obligatorio para saber dónde guardar)
+        if not data or 'email' not in data or 'password' not in data or 'role' not in data:
+            print("❌ Faltan campos requeridos: email, password o role")
             objResponse = {
                 "intStatus": 400,
                 "strAnswer": "Bad Request",
-                "Error": "Faltan campos requeridos: email y password"
+                "Error": "Faltan campos requeridos: email, password y role"
             }
             return jsonify(objResponse), 400
         
         db = get_db_connection()
-        print("✅ Conexión a BD establecida")
         
-        # Verificar si el usuario ya existe en cualquier colección
-        print(f"🔎 Verificando si el usuario {data['email']} ya existe...")
-        existing_user_doctors = db["doctors"].find_one({"email": data['email']})
-        existing_user_patients = db["patients"].find_one({"email": data['email']})
-        existing_user_users = db["users"].find_one({"email": data['email']})
+        # 1. Verificar si el correo ya existe en CUALQUIERA de las colecciones
+        print(f"🔎 Verificando existencia de {data['email']} en el sistema...")
+        existe_medico = db["doctor"].find_one({"email": data['email']})
+        existe_paciente = db["pacientes"].find_one({"email": data['email']})
         
-        if existing_user_doctors or existing_user_patients or existing_user_users:
-            print("❌ Usuario ya existe en alguna colección")
+        if existe_medico or existe_paciente:
+            print("❌ El correo ya está registrado en el sistema")
             objResponse = {
                 "intStatus": 409,
                 "strAnswer": "Conflict",
-                "Error": "El usuario ya existe"
+                "Error": "El usuario ya existe en el sistema"
             }
             return jsonify(objResponse), 409
         
-        # Determinar en qué colección guardar según el rol
-        role = data.get('role', 'patient')
+        # 2. Preparar datos y seleccionar colección según el rol
+        role = data['role'].lower()
         collection_name = ""
+        user_data = {}
         
-        if role == 'medico' or role == 'doctor':
-            collection_name = "doctors"
-        elif role == 'paciente' or role == 'patient':
-            collection_name = "patients"
-        else:
-            collection_name = "users"
-        
-        print(f"🎯 Rol detectado: {role}, colección: {collection_name}")
-        
-        # PRIMERO: Crear usuario básico en la colección 'users'
-        user_basic_data = {
+        # Datos base comunes
+        base_data = {
             "email": data['email'],
-            "password": data['password'],
-            "role": role,
-            "fechaRegistro": datetime.now()
-        }
-        
-        print("📝 Insertando usuario básico en colección 'users'...")
-        user_result = db["users"].insert_one(user_basic_data)
-        user_id = user_result.inserted_id
-        print(f"✅ Usuario básico creado con ID: {user_id}")
-        
-        # SEGUNDO: Crear el perfil específico en la colección correspondiente
-        users_collection = db[collection_name]
-        
-        # Datos comunes para todos los usuarios
-        base_user_data = {
-            "email": data['email'],
-            "password": data['password'],
+            "password": data['password'], # Recuerda hashear esto en producción
             "role": role,
             "nombre": data.get('nombre', ''),
-            "apellidos": data.get('apellidos', ''),
+            "apellido": data.get('apellidos', ''),
             "edad": data.get('edad', ''),
             "fechaNacimiento": data.get('fechaNacimiento', ''),
             "genero": data.get('genero', ''),
             "profileImage": data.get('profileImage', ''),
-            "fechaRegistro": datetime.now(),
-            "userId": user_id  # Referencia al usuario básico
+            "fechaRegistro": datetime.now()
         }
-        
-        # Datos específicos según el rol
+
         if role == 'medico' or role == 'doctor':
+            collection_name = "doctor"
             user_data = {
-                **base_user_data,
+                **base_data,
+                "role": "doctor", # Estandarizamos a español
                 "cedula": data.get('cedula', ''),
                 "especialidad": data.get('especialidad', ''),
-                "subespecialidad": data.get('subespecialidad', ''),
-                "estado": "activo",
-                "verificado": False
+                "subespecialidad": data.get('subespecialidad', '')
             }
-            print("🩺 Creando perfil de médico...")
+            print("🩺 Configurando perfil de Médico...")
+
         elif role == 'paciente' or role == 'patient':
+            collection_name = "pacientes"
             user_data = {
-                **base_user_data,
+                **base_data,
+                "role": "paciente", # Estandarizamos a español
                 "peso": data.get('peso', ''),
-                "altura": data.get('altura', '')
+                "altura": data.get('altura', ''),
+                "tipoSangre": data.get('tipoSangre', '')
             }
-            print("Creando perfil de paciente...")
+            print("🏥 Configurando perfil de Paciente...")
+            
         else:
-            user_data = base_user_data
-            print("Creando perfil de usuario genérico...")
+            print(f"❌ Rol no válido proporcionado: {role}")
+            objResponse = {
+                "intStatus": 400,
+                "strAnswer": "Bad Request",
+                "Error": "Rol no válido. Use 'medico' o 'paciente'."
+            }
+            return jsonify(objResponse), 400
         
-        print(f"📝 Insertando perfil específico en colección '{collection_name}'...")
-        result = users_collection.insert_one(user_data)
-        print(f"✅ Perfil específico creado con ID: {result.inserted_id}")
+        # 3. Insertar en la colección seleccionada
+        print(f"📝 Insertando usuario en colección '{collection_name}'...")
+        result = db[collection_name].insert_one(user_data)
+        new_id = str(result.inserted_id)
+        
+        print(f"✅ Usuario creado con ID: {new_id}")
         
         objResponse = respuestas.succ200.copy()
-        objResponse["strAnswer"] = f"Usuario creado exitosamente como {role}"
-        objResponse["userId"] = str(user_id)
-        objResponse["profileId"] = str(result.inserted_id)
+        objResponse["strAnswer"] = f"Usuario registrado exitosamente como {collection_name}"
+        objResponse["id"] = new_id
         objResponse["user"] = {
-            "id": str(user_id),
+            "id": new_id,
             "email": user_data["email"],
             "role": user_data["role"],
             "nombre": user_data["nombre"],
@@ -191,7 +269,6 @@ def addUser():
             "collection": collection_name
         }
         
-        print("🎉 Registro completado exitosamente!")
         return jsonify(objResponse)
         
     except Exception as e:
@@ -204,109 +281,116 @@ def addUser():
         return jsonify(objResponse), 500
 
 def loginUser():
+    """
+    Autentica a un usuario buscando en las colecciones específicas de roles.
+    
+    Estrategia de búsqueda:
+    1. Busca en la colección 'medicos'.
+    2. Si no encuentra, busca en la colección 'pacientes'.
+    3. Verifica la contraseña y retorna el objeto formateado para el UserService de Angular.
+
+    Returns:
+        flask.Response: JSON con los datos del usuario listos para el Frontend.
+    """
     try:
         print("🔍 Iniciando proceso de login...")
         data = request.get_json()
         print(f"📨 Datos de login recibidos: {data}")
         
-        # Validar campos requeridos
+        # 1. Validar entrada
         if not data or 'email' not in data or 'password' not in data:
-            print("❌ Faltan campos requeridos en login")
-            objResponse = {
-                "intStatus": 400,
-                "strAnswer": "Bad Request",
-                "Error": "Faltan campos requeridos: email y password"
-            }
-            return jsonify(objResponse), 400
+            print("❌ Faltan campos requeridos")
+            return jsonify({"strAnswer": "Bad Request", "Error": "Faltan email o password"}), 400
         
         db = get_db_connection()
-        print("✅ Conexión a BD establecida para login")
+        email = data['email']
+        password = data['password']
         
-        # PRIMERO buscar en la colección 'users' (autenticación centralizada)
-        print(f"🔎 Buscando usuario: {data['email']}")
-        user_basic = db["users"].find_one({"email": data['email']})
+        user_found = None
+        role_detected = ""
         
-        if not user_basic:
-            print("❌ Usuario no encontrado en colección 'users'")
-            objResponse = {
-                "intStatus": 404,
-                "strAnswer": "Not Found",
-                "Error": "Usuario no encontrado"
-            }
-            return jsonify(objResponse), 404
+        # 2. Buscar en colección de MEDICOS
+        print(f"🔎 Buscando '{email}' en Médicos...")
+        user_found = db["doctor"].find_one({"email": email})
         
-        # Verificar contraseña
-        print("🔐 Verificando contraseña...")
-        if user_basic['password'] != data['password']:
-            print("❌ Contraseña incorrecta")
-            objResponse = {
-                "intStatus": 401,
-                "strAnswer": "Unauthorized", 
-                "Error": "Contraseña incorrecta"
-            }
-            return jsonify(objResponse), 401
-        
-        # SEGUNDO: Buscar el perfil completo según el rol
-        role = user_basic.get('role', 'patient')
-        user_profile = None
-        collection_name = ""
-        
-        print(f"🎯 Buscando perfil específico para rol: {role}")
-        if role == 'medico' or role == 'doctor':
-            user_profile = db["doctors"].find_one({"email": data['email']})
-            collection_name = "doctors"
-            print("🩺 Perfil de médico encontrado")
-        elif role == 'paciente' or role == 'patient':
-            user_profile = db["patients"].find_one({"email": data['email']})
-            collection_name = "patients"
-            print("😊 Perfil de paciente encontrado")
+        if user_found:
+            role_detected = "medico"
+            print("✅ Usuario encontrado en colección de Médicos")
         else:
-            user_profile = user_basic  # Para usuarios básicos
-            collection_name = "users"
-            print("👤 Usando perfil básico de usuario")
+            # 3. Si no es médico, buscar en PACIENTES
+            print(f"🔎 Buscando '{email}' en Pacientes...")
+            user_found = db["pacientes"].find_one({"email": email})
+            if user_found:
+                role_detected = "paciente"
+                print("✅ Usuario encontrado en colección de Pacientes")
         
-        # Preparar respuesta con datos del perfil si existe
-        user_response = {
-            "id": str(user_basic["_id"]),
-            "email": user_basic["email"],
-            "role": user_basic.get("role", "patient")
+        # 4. Si no se encontró en ninguna
+        if not user_found:
+            print("❌ Usuario no encontrado en ninguna colección")
+            return jsonify({"strAnswer": "Not Found", "Error": "Usuario no registrado"}), 404
+        
+        # 5. Verificar Contraseña
+        # NOTA: En producción deberías usar hash (ej. bcrypt.check_password_hash)
+        if user_found.get('password') != password:
+            print("❌ Contraseña incorrecta")
+            return jsonify({"strAnswer": "Unauthorized", "Error": "Credenciales inválidas"}), 401
+            
+        # 6. Preparar respuesta para Angular (Mapeo exacto para UserService)
+        print("🏗️ Construyendo objeto de sesión...")
+        
+        response_user = {
+            # Campos Comunes
+            "id": str(user_found["_id"]),
+            "role": role_detected,
+            "email": user_found.get("email"),
+            "nombre": user_found.get("nombre"),
+            "apellidos": user_found.get("apellidos"),
+            "edad": user_found.get("edad"),
+            "fechaNacimiento": user_found.get("fechaNacimiento"),
+            "genero": user_found.get("genero"),
+            "profileImage": user_found.get("profileImage", ""),
         }
         
-        # Agregar datos del perfil si están disponibles
-        if user_profile and collection_name != "users":
-            user_response.update({
-                "nombre": user_profile.get("nombre", ""),
-                "apellidos": user_profile.get("apellidos", ""),
-                "profileId": str(user_profile["_id"]),
-                "collection": collection_name
+        # Campos Específicos de Médico
+        if role_detected.lower() == "doctor" or role_detected.lower() == "medico":
+            response_user.update({
+                "cedula": user_found.get("cedula"),
+                "especialidad": user_found.get("especialidad"),
+                "subespecialidad": user_found.get("subespecialidad")
             })
-            print("📋 Datos del perfil específico agregados")
-        elif collection_name == "users":
-            # Para usuarios que solo existen en la colección users
-            user_response.update({
-                "nombre": user_basic.get("nombre", ""),
-                "apellidos": user_basic.get("apellidos", ""),
-                "collection": "users"
-            })
-            print("📋 Datos del perfil básico agregados")
-        
-        objResponse = respuestas.succ200.copy()
-        objResponse["strAnswer"] = "Login exitoso"
-        objResponse["user"] = user_response
-        
-        print("🎉 Login exitoso!")
-        return jsonify(objResponse)
             
+        # Campos Específicos de Paciente
+        elif role_detected.lower() == "paciente":
+            response_user.update({
+                "peso": user_found.get("peso"),
+                "altura": user_found.get("altura"),
+                "tipoSangre": user_found.get("tipoSangre")
+            })
+
+        print(f"🎉 Login exitoso para: {role_detected}")
+
+        return jsonify(response_user), 200
+
     except Exception as e:
         print(f"💥 ERROR en loginUser: {str(e)}")
         import traceback
-        print(f"📋 Stack trace: {traceback.format_exc()}")
-        
-        objResponse = respuestas.err500.copy()
-        objResponse['Error'] = str(e)
-        return jsonify(objResponse), 500
+        print(traceback.format_exc())
+        return jsonify({"Error": str(e)}), 500
 
 def getUserById(user_id):
+    """
+    Busca un usuario específico por su ID único (ObjectId).
+
+    Realiza una búsqueda cruzada: primero localiza el usuario en la tabla maestra 'users'
+    y luego recupera los detalles adicionales de su colección de perfil correspondiente.
+
+    Args:
+        user_id (str): El ID del usuario en formato string hexadecimal.
+
+    Returns:
+        flask.Response: JSON con los datos combinados del usuario. 
+                        Retorna null en "user" si no se encuentra.
+    """
     try:
         from bson import ObjectId
         
@@ -369,54 +453,26 @@ def getUserById(user_id):
         objResponse['Error'] = str(e)
         return jsonify(objResponse), 500
 
-def getUsersByRole(role):
-    try:
-        print(f"🔍 Buscando usuarios por rol: {role}")
-        db = get_db_connection()
-        
-        arrFinalUsers = []
-        
-        # Determinar en qué colección buscar según el rol
-        if role == 'medico' or role == 'doctor':
-            collections_to_check = ["doctors"]
-        elif role == 'paciente' or role == 'patient':
-            collections_to_check = ["patients"]
-        else:
-            collections_to_check = ["users"]
-        
-        print(f"📊 Buscando en colecciones: {collections_to_check}")
-        for collection_name in collections_to_check:
-            collection = db[collection_name]
-            objQuery = collection.find({"role": role})
-            listUsers = list(objQuery)
-            
-            if len(listUsers) != 0:
-                print(f"✅ Encontrados {len(listUsers)} usuarios en {collection_name}")
-                for objUser in listUsers:
-                    objFormateado = {
-                        "id": str(objUser["_id"]),
-                        "email": objUser["email"],
-                        "role": objUser.get("role", "No especificado"),
-                        "nombre": objUser.get("nombre", ""),
-                        "apellidos": objUser.get("apellidos", ""),
-                        "collection": collection_name
-                    }
-                    arrFinalUsers.append(objFormateado)
-            else:
-                print(f"ℹ️ No se encontraron usuarios en {collection_name}")
-                
-        objResponse = respuestas.succ200.copy()
-        objResponse["arrUsers"] = arrFinalUsers
-        objResponse["role"] = role
-        return jsonify(objResponse)
-        
-    except Exception as e:
-        print(f"💥 ERROR en getUsersByRole: {str(e)}")
-        objResponse = respuestas.err500.copy()
-        objResponse['Error'] = str(e)
-        return jsonify(objResponse), 500
+
 
 def updateUser(user_id):
+    """
+    Actualiza la información de un usuario existente.
+
+    Maneja la lógica para actualizar campos en dos lugares distintos:
+    1. Campos de autenticación (email, password, role) en la colección 'users'.
+    2. Campos de perfil (nombre, apellidos, etc.) en la colección específica del rol.
+
+    Args:
+        user_id (str): ID del usuario a actualizar.
+
+    Returns:
+        tuple: (flask.Response, int)
+            - 200: Actualización exitosa.
+            - 400: Bad request (sin datos).
+            - 404: Usuario no encontrado.
+            - 500: Error interno.
+    """
     try:
         from bson import ObjectId
         
@@ -505,6 +561,22 @@ def updateUser(user_id):
         return jsonify(objResponse), 500
 
 def deleteUser(user_id):
+    """
+    Elimina permanentemente a un usuario y sus datos asociados.
+
+    Ejecuta una eliminación en cascada manual:
+    1. Elimina el perfil detallado en la colección de rol (doctors/patients).
+    2. Elimina el registro de autenticación en la colección 'users'.
+
+    Args:
+        user_id (str): ID del usuario a eliminar.
+
+    Returns:
+        tuple: (flask.Response, int)
+            - 200: Eliminación exitosa.
+            - 404: Usuario no encontrado.
+            - 500: Error interno.
+    """
     try:
         from bson import ObjectId
         

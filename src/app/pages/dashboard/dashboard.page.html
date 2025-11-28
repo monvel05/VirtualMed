@@ -1,4 +1,4 @@
-@if (role == "doctor") {
+@if (role == "doctor" || role == "medico") {
 <ion-menu contentId="main-content">
   <ion-header>
     <ion-toolbar>
@@ -133,7 +133,7 @@
     <ion-toolbar>
       <ion-title style="text-align: center">VirtualMed</ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="fnLogout()" color="danger">
+        <ion-button (click)="fnLogout()" color="light">
           <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
         </ion-button>
       </ion-buttons>

@@ -8,7 +8,7 @@
       </ion-card-header>
 
       <ion-card-content>
-        <form [formGroup]="loginForm">
+        <form [formGroup]="loginForm" (ngOnSubmit)="login()">
           <ion-item class="form-item">
             <ion-label position="floating">Correo electrónico</ion-label>
             <ion-input type="email" formControlName="email"></ion-input>
@@ -47,9 +47,10 @@
           }
 
           <ion-button
+          type="submit"
+            (click)="login()"
             class="auth-button"
             expand="block"
-            (click)="login()"
             [disabled]="loginForm.invalid || isLoggingIn"
           >
             @if (isLoggingIn) {

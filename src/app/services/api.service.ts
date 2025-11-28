@@ -11,7 +11,7 @@ export class ApiService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   
-  private baseUrl = 'http://localhost:3000'; // Tu API Flask
+  private baseUrl = 'http://localhost:3000'; 
 
   private getHeaders(): HttpHeaders {
     // Obtener usuario actual en lugar de token directamente

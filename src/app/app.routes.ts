@@ -67,5 +67,9 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login'
+  },  {
+    path: 'doctor-profile',
+    loadComponent: () => import('./pages/doctor-profile/doctor-profile.page').then( m => m.DoctorProfilePage)
   }
+
 ];

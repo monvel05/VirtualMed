@@ -22,7 +22,7 @@ export class CreateAppointmentPage implements OnInit {
   correoCita: string= '';
   medicoCita: any;
   tipoCita: any;
-  fechahoraCita: string = new Date().toISOString(); 
+  fechahoraCita: string =''; 
   
 
   constructor(private router: Router) { }

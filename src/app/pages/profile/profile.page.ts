@@ -24,13 +24,14 @@ export class ProfilePage implements OnInit {
   avatarUrl: string | undefined; 
   nombre: string = '';
   apellido:string ='';
-  edad:string ='';
+  edad:number=0 ;
+  nacimiento: string='';
   generoSeleccionado: string = '';
   peso: number = 0;
   altura: number = 0;
   correo: string = '';
   //pdfUrl: string | null = null;   guarda la URL del PDF
-  mostrarModal = false;           // controla si el modal está abierto
+  mostrarModal = false;           
   pdfUrl: SafeResourceUrl | null = null;
   
   

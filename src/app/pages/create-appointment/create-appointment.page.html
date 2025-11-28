@@ -57,16 +57,12 @@
           </ion-item>
           
           <!-- Mensaje de error -->
-          <div *ngIf="correoInput.invalid && correoInput.dirty" class="mensaje-error">
+          @if (correoInput.invalid && correoInput.dirty) {
+          <div class="mensaje-error">
             Ingresa un correo válido (ej. usuario@dominio.com)
           </div>
+}
         </ion-col>
-  </ion-row>
-
-  <!--motivo-->
-  <ion-row>
-
-
   </ion-row>
 
   <!--medico y tipo de cita-->
@@ -75,7 +71,7 @@
   <ion-col size="12" size-md="6">
     <h2 class="section-title">Datos de cita</h2>
           <ion-item lines="none">
-            <!-- Usamos position="stacked" para que el label esté siempre visible sobre el select -->
+            <!--  -->
             <ion-label position="stacked">Médico <ion-text color="danger">(Requerido)</ion-text></ion-label>
             <ion-select class="custom-select" [(ngModel)]="medicoCita" placeholder="Selecciona a tu médico">
               <ion-select-option value="medico1">Dr. Alejandro Gómez</ion-select-option>

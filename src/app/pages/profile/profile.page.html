@@ -59,13 +59,16 @@
         
         
         <!--fecha de nacimiento -->
-        <ion-col size="12" size-md="6">
+
+        <ion-col>
           <ion-item lines="none">
             <ion-label position="floating">Fecha de nacimiento</ion-label>
-            <ion-datetime presentation="day-month-year"></ion-datetime>
-          </ion-item>
+            <ion-datetime presentation="date" [(ngModel)]="nacimiento">
+            </ion-datetime>
+            </ion-item>
         </ion-col>
       </ion-row>
+      
 
       
       <ion-row>

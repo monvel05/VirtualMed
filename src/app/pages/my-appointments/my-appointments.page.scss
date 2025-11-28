@@ -1,0 +1,158 @@
+// my-appointments.page.scss
+.content {
+  padding: 16px;
+}
+
+// HEADER
+ion-header {
+  ion-toolbar {
+    --background: #9BEBED;
+    --color: #2c5f7a;
+    
+    &:first-child {
+      border-bottom: 3px solid #73C7E3;
+    }
+  }
+}
+
+// CONTENIDO
+ion-content {
+  --background: #F0F2F2;
+}
+
+// TARJETAS DE CITAS
+.appt-card {
+  margin: 0 0 20px 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(115, 199, 227, 0.15);
+  background: white;
+  overflow: hidden;
+
+  &.next {
+    border-left: 6px solid #73C7E3;
+  }
+
+  &.empty {
+    text-align: center;
+    background: #9BEBED;
+    
+    ion-card-content {
+      padding: 50px 20px;
+    }
+  }
+}
+
+// BARRAS DE ESTADO
+.status-bar {
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-pendiente {
+  background: linear-gradient(135deg, #9BEBED 0%, #73C7E3 100%);
+  color: #2c5f7a;
+}
+
+.status-confirmada {
+  background: linear-gradient(135deg, #86CBB1 0%, #6ab897 100%);
+  color: #1e4e3a;
+}
+
+.status-completada {
+  background: linear-gradient(135deg, #E6B780 0%, #d9a466 100%);
+  color: #7d5a2c;
+}
+
+.status-cancelada {
+  background: linear-gradient(135deg, #FF9999 0%, #ff7a7a 100%);
+  color: #8b3a3a;
+}
+
+// ALERTAS
+.alerta-cancelada {
+  --background: #FFE6E6;
+  --color: #8b3a3a;
+  border-radius: 12px;
+  margin: 0 0 20px 0;
+  border-left: 6px solid #FF9999;
+}
+
+// CONTENIDO DE TARJETAS
+ion-card-header {
+  padding: 20px 20px 12px 20px;
+  background: rgba(155, 235, 237, 0.08);
+  
+  ion-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c5f7a;
+  }
+  
+  ion-card-subtitle {
+    font-size: 16px;
+    color: #73C7E3;
+    font-weight: 600;
+  }
+}
+
+ion-card-content {
+  padding: 12px 20px 20px 20px;
+}
+
+// LISTA DE INFORMACIÓN
+ion-list {
+  background: transparent;
+  margin-bottom: 16px;
+  
+  ion-item {
+    --background: transparent;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    
+    ion-icon {
+      color: #86CBB1;
+      margin-right: 16px;
+      font-size: 20px;
+    }
+  }
+}
+
+// BOTONES DE ACCIÓN
+.appt-actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid rgba(155, 235, 237, 0.3);
+}
+
+// ==================== BOTÓN CANCELAR CITA ====================
+.btn-cancelar {
+  --background: linear-gradient(135deg, #f28f8f 0%, #f0a5a5 100%);
+  --background-activated: #d87373;
+  --color: #C62828;
+  font-weight: 600;
+  
+}
+
+// ==================== BOTÓN SOLICITAR CITA ====================
+.btn-solicitar {
+  --background: linear-gradient(135deg, #79b4e0 0%, #8cbae3 100%);
+  --background-activated: #5a8fc4;
+  --color: #1565C0;
+}
+
+// SECCIONES
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #73C7E3;
+  margin: 0;
+}
+
+// RESPONSIVE
+@media (max-width: 480px) {
+  .content {
+    padding: 12px;
+  }
+}

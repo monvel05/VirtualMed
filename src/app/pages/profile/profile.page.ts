@@ -51,7 +51,7 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
   }
 
-  // ========== GETTERS DE VALIDACIÓN ==========
+  
   
   get nombreInvalid(): boolean {
     return this.nombre.trim().length === 0;
@@ -98,7 +98,6 @@ export class ProfilePage implements OnInit {
           !this.correoInvalid;
   }
 
-  // ========== MÉTODOS DEL FORMULARIO ==========
 
   // Guarda los cambios del formulario
   guardarCambios() {
@@ -120,7 +119,7 @@ export class ProfilePage implements OnInit {
         expediente: this.pdfUrl ? 'Subido' : 'No subido'
       });
       
-      // Puedes agregar aquí tu llamada a la API o servicio
+      // P
       alert('Perfil guardado exitosamente');
     } else {
       alert('Por favor completa todos los campos correctamente');
@@ -139,7 +138,6 @@ export class ProfilePage implements OnInit {
     this.correoTouched = true;
   }
 
-  // ========== MÉTODOS EXISTENTES (sin cambios) ==========
 
   async seleccionarImagen(){
     if (this.platform.is('capacitor')){

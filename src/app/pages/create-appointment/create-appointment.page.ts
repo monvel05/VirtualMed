@@ -104,14 +104,11 @@ export class CreateAppointmentPage implements OnInit {
       // Limpiar el formulario después de guardar
       this.limpiarFormulario();
       
-      // Opcional: Redirigir a otra página
-      // this.router.navigate(['/citas']);
     } else {
       alert('Por favor completa todos los campos correctamente');
     }
   }
 
-  // ========== MÉTODOS AUXILIARES ==========
 
   // Marca todos los campos como tocados para mostrar errores
   private marcarTodosComoTocados() {

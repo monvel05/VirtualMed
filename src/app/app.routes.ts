@@ -32,10 +32,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/prescription/prescription.page').then(m => m.PrescriptionPage),
   },
   {
-    path: 'medical-records',
-    loadComponent: () => import('./pages/medical-records/medical-records.page').then(m => m.MedicalRecordsPage),
-  },
-  {
     path: 'management',
     loadComponent: () => import('./pages/management/management.page').then(m => m.ManagementPage),
   },
@@ -46,12 +42,10 @@ export const routes: Routes = [
   {
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings.page').then(m => m.SettingsPage),
-    canActivate: [AuthGuard]
   },
   {
     path: 'chatbot',
     loadComponent: () => import('./pages/chatbot/chatbot.page').then( m => m.ChatbotPage),
-    canActivate: [AuthGuard] 
   },
   {
     path: '**',

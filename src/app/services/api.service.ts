@@ -51,4 +51,9 @@ export class ApiService {
   delete(endpoint: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}${endpoint}`, { headers: this.getHeaders() });
   }
+
+  //FUNCIÓN EXTRA PARA ACTUALIZACIÓN DE CITAS
+updateCitaStatus(id: string, status: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/citas/${id}/status`, { estatus: status }, { headers: this.getHeaders() });
+}
 }

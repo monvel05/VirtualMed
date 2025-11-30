@@ -485,3 +485,111 @@ def deleteUser(user_id):
             
     except Exception as e:
         return jsonify({"intStatus": 500, "Error": str(e)}), 500
+
+
+
+# ==================== FUNCIONES DE CITAS (NUEVAS) ====================
+
+def createCita():
+    try:
+        print("📅 [CITAS] Creando nueva cita...")
+        data = request.get_json()
+        db = get_db_connection()
+
+        # Validar campos obligatorios
+        campos_requeridos = ['pacienteId', 'medicoId', 'fecha', 'hora', 'tipoCita']
+        if not all(k in data for k in campos_requeridos):
+            return jsonify({"intStatus": 400, "Error": "Faltan datos de la cita"}), 400
+
+        # Objeto de cita basado en tu requerimiento
+        nueva_cita = {
+            "pacienteId": ObjectId(data['pacienteId']), # ID real del usuario paciente
+            "medicoId": ObjectId(data['medicoId']),     # ID real del usuario médico
+            
+            # Datos del formulario
+            "nombreCita": data.get('nombreCita', ''),
+            "apellidoCita": data.get('apellidoCita', ''),
+            "edadCita": data.get('edadCita', 0),
+            "correoCita": data.get('correoCita', ''),
+            "tipoCita": data.get('tipoCita', 'virtual'), # 'virtual' o 'presencial'
+            "fecha": data.get('fecha', ''),
+            "hora": data.get('hora', ''),
+            "motivo": data.get('motivo', 'Consulta general'),
+            
+            # Estado inicial siempre es Pendiente
+            "estatus": "Pendiente", 
+            "fechaCreacion": datetime.now()
+        }
+
+        result = db["appointments"].insert_one(nueva_cita)
+        
+        return jsonify({
+            "intStatus": 200, 
+            "strAnswer": "Cita creada exitosamente",
+            "citaId": str(result.inserted_id)
+        })
+
+    except Exception as e:
+        print(f"💥 Error createCita: {e}")
+        return jsonify({"intStatus": 500, "Error": str(e)}), 500
+
+def getCitasByUser(user_id):
+    """
+    Busca citas donde el usuario sea paciente O médico.
+    """
+    try:
+        db = get_db_connection()
+        user_oid = ObjectId(user_id)
+        
+        # Buscar citas donde este ID sea el paciente O el médico
+        query = {
+            "$or": [
+                {"pacienteId": user_oid},
+                {"medicoId": user_oid}
+            ]
+        }
+        
+        citas = list(db["appointments"].find(query))
+        
+        arrCitas = []
+        for c in citas:
+            # Enriquecemos la data buscando nombres (opcional pero recomendado)
+            # Aquí devolvemos la estructura que pediste para el Dashboard
+            arrCitas.append({
+                "id": str(c["_id"]),
+                "fecha": c.get("fecha"),
+                "hora": c.get("hora"),
+                "tipo": c.get("tipoCita"),
+                "estatus": c.get("estatus"),
+                "doctor": str(c.get("medicoId")), # Podrías hacer otra query para sacar el nombre
+                "paciente": str(c.get("pacienteId")),
+                "motivo": c.get("motivo", ""),
+                "urgencia": c.get("urgencia", "media")
+            })
+
+        return jsonify({"intStatus": 200, "arrCitas": arrCitas})
+
+    except Exception as e:
+        return jsonify({"intStatus": 500, "Error": str(e)}), 500
+
+def updateCitaStatus(cita_id):
+    """
+    Sirve para Cancelar (Paciente) o Confirmar/Rechazar (Médico)
+    """
+    try:
+        data = request.get_json() # Espera: {"estatus": "Confirmada"}
+        nuevo_estatus = data.get('estatus')
+        
+        if nuevo_estatus not in ['Pendiente', 'Confirmada', 'Completada', 'Cancelada']:
+            return jsonify({"intStatus": 400, "Error": "Estatus inválido"}), 400
+
+        db = get_db_connection()
+        db["appointments"].update_one(
+            {"_id": ObjectId(cita_id)},
+            {"$set": {"estatus": nuevo_estatus}}
+        )
+        
+        return jsonify({"intStatus": 200, "strAnswer": "Estatus actualizado"})
+        
+    except Exception as e:
+        return jsonify({"intStatus": 500, "Error": str(e)}), 500

@@ -5,6 +5,7 @@ import BackEnd.Functions as CallMethod
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/users', methods=['GET'])
 def get_users():
     return CallMethod.getAllUsers()
@@ -32,6 +33,24 @@ def update_user(user_id):
 @app.route('/user/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
     return CallMethod.deleteUser(user_id)
+
+
+@app.route('/citas', methods=['POST'])
+def create_cita():
+    return CallMethod.createCita()
+
+
+@app.route('/users/<user_id>/citas', methods=['GET'])
+def get_citas_by_user(user_id):
+    return CallMethod.getCitasByUser(user_id)
+
+
+@app.route('/citas/<cita_id>/status', methods=['PUT'])
+def update_cita_status(cita_id):
+    return CallMethod.updateCitaStatus(cita_id)
+
+
+# ==================== INICIO DEL SERVIDOR ====================
 
 if __name__ == '__main__':
     print("Iniciando servidor Flask...")

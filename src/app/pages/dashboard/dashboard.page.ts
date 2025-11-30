@@ -32,7 +32,7 @@ import {
     IonGrid, IonCol, IonRow, IonAccordion, IonAccordionGroup,
     IonItem, IonLabel, IonCard, IonCardContent, IonCardHeader,
     IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonFabList,
-    IonIcon, IonModal, IonButton, IonMenu
+    IonIcon, IonModal, IonButton, IonMenu, IonList
   ],
 })
 export class DashboardPage implements OnInit {
@@ -42,7 +42,7 @@ export class DashboardPage implements OnInit {
 
   constructor(
     private router: Router, 
-    public userService: UserService // <--- Inyectamos el servicio correctamente
+    private userService: UserService // <--- Inyectamos el servicio correctamente
   ) {
     addIcons({personCircleOutline,settingsOutline,logOutOutline,chevronUpCircle,chatbubbles,settings,notifications,alert});
   }

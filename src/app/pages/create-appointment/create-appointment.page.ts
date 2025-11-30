@@ -11,9 +11,9 @@ import { Router } from '@angular/router';
   templateUrl: './create-appointment.page.html',
   styleUrls: ['./create-appointment.page.scss'],
   standalone: true,
-  imports: [IonCol, IonRadio, IonItem, IonLabel, IonRow, IonCard,
-  IonIcon, IonGrid, IonContent, IonHeader, IonTitle, IonToolbar, 
-  CommonModule, FormsModule, IonButton,IonList,IonSelect, IonSelectOption,IonText, IonInput, IonDatetime]
+  imports: [IonCol, IonItem, IonLabel, IonRow, IonCard,
+  IonGrid, IonContent, IonHeader, IonTitle, IonToolbar, 
+  CommonModule, FormsModule, IonButton,IonSelect, IonSelectOption,IonText, IonInput, IonDatetime]
 })
 export class CreateAppointmentPage implements OnInit {
   nombreCita: string='';

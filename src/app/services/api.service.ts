@@ -1,58 +1,54 @@
-// src/app/services/api.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
   
-  private baseUrl = 'http://localhost:3000'; 
+  private http = inject(HttpClient);
+  
+  // 👇 CAMBIA ESTO POR LA URL DE TU BACKEND (ej: 'http://localhost:3000/api')
+  private apiUrl = 'http://localhost:3000'; 
 
+  constructor() { }
+
+  // Función auxiliar para crear headers
   private getHeaders(): HttpHeaders {
-    // Obtener usuario actual en lugar de token directamente
-    const user = this.authService.getCurrentUser();
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
-    // Si necesitas autenticación, puedes manejarla de otra forma
-    // o agregar el token si está disponible en el localStorage
-    const token = localStorage.getItem('currentUser') ? 
-      JSON.parse(localStorage.getItem('currentUser')!).token : null;
+    // 💡 SOLUCIÓN DEL ERROR:
+    // En lugar de usar AuthService, leemos directamente lo que guardó UserService
+    // para evitar dependencias circulares.
+    const savedData = localStorage.getItem('user_flags');
     
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+    if (savedData) {
+      // Si tu backend necesita un token, aquí es donde lo agregarías
+      // const user = JSON.parse(savedData);
+      // headers = headers.set('Authorization', `Bearer ${user.token}`);
     }
 
     return headers;
   }
 
-  get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}${endpoint}`, { 
-      headers: this.getHeaders() 
-    });
+  // ================= MÉTODOS HTTP GENÉRICOS =================
+
+  get(endpoint: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}${endpoint}`, { headers: this.getHeaders() });
   }
 
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}${endpoint}`, data, { 
-      headers: this.getHeaders() 
-    });
+    return this.http.post<T>(`${this.apiUrl}${endpoint}`, data, { headers: this.getHeaders() });
   }
 
-  put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}${endpoint}`, data, { 
-      headers: this.getHeaders() 
-    });
+  put(endpoint: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}${endpoint}`, data, { headers: this.getHeaders() });
   }
 
-  delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}${endpoint}`, { 
-      headers: this.getHeaders() 
-    });
+  delete(endpoint: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}${endpoint}`, { headers: this.getHeaders() });
   }
 }

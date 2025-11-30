@@ -1,3 +1,6 @@
+
+
+<!-- version con validador  -->
 <!--regreso y encabezado-->
 <ion-header [translucent]="true">
   <ion-toolbar>
@@ -13,13 +16,13 @@
     <ion-grid>
 
       <!--foto de perfil-->
-        <ion-row class="avatar-container">
+      <ion-row class="avatar-container">
         <ion-col size="12">
           <ion-avatar style="width: 120px; height: 120px; margin: 20px auto;">
             <img [src]="avatarUrl || 'assets/avatar.png'" alt="Avatar" />
           </ion-avatar> 
         
-        <!--botones de la foto de perfil-->
+          <!--botones de la foto de perfil-->
           <div class="profile-actions">
             <ion-button (click)="seleccionarImagen()" color="primary" fill="outline">
               Cambiar
@@ -31,103 +34,169 @@
         </ion-col>
       </ion-row>
     
-    <!--nombre del paciente-->
-    <ion-row>
-      <ion-col size="12" size-md="6">
-          <ion-item lines="none">
+      <!--nombre del paciente-->
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="nombreInvalid && nombreTouched">
             <ion-label position="floating">Nombre</ion-label>
-            <ion-input [(ngModel)]="nombre" placeholder="Ingresa tu nombre"></ion-input>
+            <ion-input 
+              [(ngModel)]="nombre" 
+              placeholder="Ingresa tu nombre"
+              (ionBlur)="nombreTouched = true">
+            </ion-input>
           </ion-item>
+          @if(nombreInvalid && nombreTouched){
+            <div class="mensaje-error">
+              El nombre es requerido
+            </div>
+          }
         </ion-col>
 
-        
         <!--apellido del paciente -->
         <ion-col size="12" size-md="6">
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="apellidoInvalid && apellidoTouched">
             <ion-label position="floating">Apellidos</ion-label>
-            <ion-input [(ngModel)]="apellido" placeholder="Ingresa tus apellidos"></ion-input>
+            <ion-input 
+              [(ngModel)]="apellido" 
+              placeholder="Ingresa tus apellidos"
+              (ionBlur)="apellidoTouched = true">
+            </ion-input>
           </ion-item>
+          @if(apellidoInvalid && apellidoTouched){
+            <div class="mensaje-error">
+              Los apellidos son requeridos
+            </div>
+          }
         </ion-col>
         
         <!-- edad del paciente-->
         <ion-col size="12" size-md="6">
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="edadInvalid && edadTouched">
             <ion-label position="floating">Edad</ion-label>
-            <ion-input [(ngModel)]="edad" placeholder="Ingresa tu edad"></ion-input>
+            <ion-input 
+              [(ngModel)]="edad" 
+              type="number"
+              placeholder="Ingresa tu edad"
+              (ionBlur)="edadTouched = true">
+            </ion-input>
           </ion-item>
+          @if(edadInvalid && edadTouched){
+            <div class="mensaje-error">
+              La edad debe ser mayor a 0
+            </div>
+          }
         </ion-col>
-        
         
         <!--fecha de nacimiento -->
-
-        <ion-col>
-          <ion-item lines="none">
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="nacimientoInvalid && nacimientoTouched">
             <ion-label position="floating">Fecha de nacimiento</ion-label>
-            <ion-datetime presentation="date" [(ngModel)]="nacimiento">
+            <ion-datetime 
+              presentation="date" 
+              [(ngModel)]="nacimiento"
+              (ionBlur)="nacimientoTouched = true">
             </ion-datetime>
-            </ion-item>
+          </ion-item>
+          @if(nacimientoInvalid && nacimientoTouched){
+            <div class="mensaje-error">
+              La fecha de nacimiento es requerida
+            </div>
+          }
         </ion-col>
       </ion-row>
-      
 
-      
       <ion-row>
         <!-- genero con radios grupos dentro del radio group -->
         <ion-col size="12" size-md="6">
-          
-<ion-label class="genero-label">Género</ion-label>
-<ion-radio-group [(ngModel)]="generoSeleccionado" class="genero-group">
-  <ion-item lines="none">
-    <ion-label>Hombre</ion-label>
-    <ion-radio slot="start" value="hombre"></ion-radio>
-  </ion-item>
-  <ion-item lines="none">
-    <ion-label>Mujer</ion-label>
-    <ion-radio slot="start" value="mujer"></ion-radio>
-  </ion-item>
-  <ion-item lines="none">
-    <ion-label>Prefiero no decirlo</ion-label>
-    <ion-radio slot="start" value="no-decirlo"></ion-radio>
-  </ion-item>
-</ion-radio-group>
+          <ion-label class="genero-label">Género</ion-label>
+          <ion-radio-group 
+            [(ngModel)]="generoSeleccionado" 
+            class="genero-group"
+            [class.invalid]="generoInvalid && generoTouched">
+            <ion-item lines="none">
+              <ion-label>Hombre</ion-label>
+              <ion-radio slot="start" value="hombre"></ion-radio>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>Mujer</ion-label>
+              <ion-radio slot="start" value="mujer"></ion-radio>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>Prefiero no decirlo</ion-label>
+              <ion-radio slot="start" value="no-decirlo"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+          @if(generoInvalid && generoTouched){
+            <div class="mensaje-error">
+              Selecciona un género
+            </div>
+          }
         </ion-col>
 
         <ion-col size="12" size-md="6">
           <!-- peso en numero -->
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="pesoInvalid && pesoTouched">
             <ion-label position="floating">Peso (kg)</ion-label>
-            <ion-input [(ngModel)]="peso" placeholder="Ingresa tu peso"></ion-input>
+            <ion-input 
+              [(ngModel)]="peso" 
+              type="number"
+              placeholder="Ingresa tu peso"
+              (ionBlur)="pesoTouched = true">
+            </ion-input>
           </ion-item>
+          @if(pesoInvalid && pesoTouched){
+            <div class="mensaje-error">
+              El peso debe ser mayor a 0
+            </div>
+          }
+          
           <!-- altura en numero -->
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="alturaInvalid && alturaTouched">
             <ion-label position="floating">Altura (cm)</ion-label>
-            <ion-input [(ngModel)]="altura" placeholder="Ingresa tu altura"></ion-input>
+            <ion-input 
+              [(ngModel)]="altura" 
+              type="number"
+              placeholder="Ingresa tu altura"
+              (ionBlur)="alturaTouched = true">
+            </ion-input>
           </ion-item>
+          @if(alturaInvalid && alturaTouched){
+            <div class="mensaje-error">
+              La altura debe ser mayor a 0
+            </div>
+          }
         </ion-col>
       </ion-row>
       
       <ion-row>
         <ion-col size="12">
           <!-- validacion del correo-->
-          <ion-item [class.valid]="correoInput.valid && correoInput.dirty"
-                    [class.invalid]="correoInput.invalid && correoInput.dirty"
-                    lines="none">
+          <ion-item 
+            lines="none"
+            [class.invalid]="correoInvalid && correoTouched"
+            [class.valid]="!correoInvalid && correoTouched">
             <ion-label position="floating">Correo electrónico</ion-label>
-            <ion-input name="correo" [(ngModel)]="correo" type="email"
-            required pattern=".+@.+" #correoInput="ngModel"></ion-input>
+            <ion-input 
+              name="correo" 
+              [(ngModel)]="correo" 
+              type="email"
+              required 
+              pattern=".+@.+"
+              #correoInput="ngModel"
+              (ionBlur)="correoTouched = true">
+            </ion-input>
           </ion-item>
           
           <!-- Mensaje de error -->
-            @if(correoInput.invalid && correoInput.dirty){
+          @if(correoInvalid && correoTouched){
             <div class="mensaje-error">
-            Ingresa un correo válido (ej. usuario@dominio.com)
-          </div>
+              Ingresa un correo válido (ej. usuario@dominio.com)
+            </div>
           }
-
         </ion-col>
       </ion-row>
   
-    <ion-row>
+      <ion-row>
         <ion-col size="12">
           <div class="pdf-actions">
             <!-- boton para subir el expediente del paciente -->
@@ -136,34 +205,39 @@
             </ion-button>
             
             <!-- boton para ver el expediente -->
-              @if(pdfUrl){
-                <ion-button (click)="abrirModal()" color="primary">
-              Ver Expediente
-            </ion-button>
-              }
+            @if(pdfUrl){
+              <ion-button (click)="abrirModal()" color="primary">
+                Ver Expediente
+              </ion-button>
+            }
             
             <!-- quitar expediente -->
-              @if (pdfUrl) {
+            @if (pdfUrl) {
               <ion-button (click)="quitarExpediente()" color="danger" fill="outline">
-              Quitar
-            </ion-button>
-              }
-
+                Quitar
+              </ion-button>
+            }
           </div>
         </ion-col>
       </ion-row>
-        <!--boton para guardar los cambips-->
+      
+      <!--boton para guardar los cambios-->
       <ion-row>
         <ion-col size="12" size-md="6" offset-md="3" class="save-button-container">
-          <ion-button expand="block">Guardar cambios</ion-button>
+          <ion-button 
+            expand="block" 
+            (click)="guardarCambios()"
+            [disabled]="!formularioValido">
+            Guardar cambios
+          </ion-button>
         </ion-col>
       </ion-row>
 
-  </ion-grid>
-</ion-card>
+    </ion-grid>
+  </ion-card>
 </ion-content>
 
-  <!-- modal para ver el expediente -->
+<!-- modal para ver el expediente -->
 <ion-modal [isOpen]="mostrarModal" (didDismiss)="cerrarModal()">
   <ng-template>
     <ion-header>
@@ -175,14 +249,9 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      
-
-      @if(pdfUrl){
-        <iframe [src]="pdfUrl" width="100%" height="100%"></iframe>
+      @if(pdfver){
+        <iframe [src]="pdfver" width="100%" height="100%"></iframe>
       }
-      
     </ion-content>
   </ng-template>
 </ion-modal>
-
-

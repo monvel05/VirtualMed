@@ -189,7 +189,33 @@ ion-modal {
         color: white;
     }
 }
+/* Estilos para validación del grupo de radio */
+.genero-group.invalid {
+  border-color: #eb445a !important;
+  box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
+}
 
+.genero-group.valid {
+  border-color: #2dd36f !important;
+  box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
+}
+
+/* Estilos para el datetime validation */
+ion-datetime.invalid {
+  border-color: #eb445a !important;
+  box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
+}
+
+ion-datetime.valid {
+  border-color: #2dd36f !important;
+  box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
+}
+
+/* Botón deshabilitado */
+ion-button[disabled] {
+  opacity: 0.6;
+  --background: var(--app-gris-sutil, #B1CBD6);
+}
 
 
 

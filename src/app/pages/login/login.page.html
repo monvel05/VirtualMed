@@ -143,8 +143,8 @@
             <ion-list-header class="list-header">Tipo de Perfil</ion-list-header>
             <ion-radio-group formControlName="tipoPerfil">
               <ion-item class="radio-item">
-                <ion-label>Médico</ion-label>
-                <ion-radio slot="start" value="medico"></ion-radio>
+                <ion-label>Doctor</ion-label>
+                <ion-radio slot="start" value="doctor"></ion-radio>
               </ion-item>
               <ion-item class="radio-item">
                 <ion-label>Paciente</ion-label>
@@ -156,12 +156,12 @@
             <div class="error-message"><span>⚠ El tipo de perfil es requerido</span></div>
           }
 
-          @if (registerForm.get('tipoPerfil')?.value === 'medico') {
+          @if (registerForm.get('tipoPerfil')?.value === 'doctor') {
             <ion-item class="form-item">
               <ion-label position="floating">Cédula Profesional</ion-label>
               <ion-input
                 formControlName="cedula"
-                type="tel"
+                type="text"
                 maxlength="10"
                 inputmode="numeric"
               ></ion-input>
@@ -281,9 +281,7 @@
           <ion-item class="form-item">
             <ion-label position="stacked" class="mb-5">Foto de perfil</ion-label>
             
-            <!-- Contenedor mejorado para la carga de imagen -->
             <div class="image-upload-container">
-              <!-- Input de archivo estilizado -->
               <label class="file-input-label">
                 <input
                   class="file-input"
@@ -298,7 +296,6 @@
                 </div>
               </label>
 
-              <!-- Previsualización mejorada -->
               @if (imagePreview) {
                 <div class="image-preview-container">
                   <img 
@@ -323,7 +320,6 @@
             </div>
           </ion-item>
 
-          <!-- Loading global para el registro -->
           @if (isRegistering) {
             <div class="global-loading">
               <ion-spinner name="crescent"></ion-spinner>

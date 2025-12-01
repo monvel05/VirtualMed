@@ -166,8 +166,8 @@ export class DashboardPage implements OnInit {
     this.router.navigate(['/management']);
   }
 
-  fnGoToMedicalRecords() {
-    this.router.navigate(['/medical-records']);
+  fnGoToClassifier() {
+    this.router.navigate(['/cancer-classifier']);
   }
 
   fnGoToPrescription() {

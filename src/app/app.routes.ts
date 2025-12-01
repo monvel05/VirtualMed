@@ -57,7 +57,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard] 
   },
   {
+    path: 'cancer-classifier',
+    loadComponent: () => import('./pages/cancer-classifier/cancer-classifier.page').then( m => m.CancerClassifierPage),
+  },
+  {
     path: '**',
     redirectTo: 'login'
-  }
+  },
+
 ];

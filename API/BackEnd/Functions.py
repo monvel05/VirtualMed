@@ -4,6 +4,60 @@ from pymongo.errors import ConnectionFailure, OperationFailure
 from datetime import datetime
 import BackEnd.GlobalInfo.ResponseMessages as respuestas
 import BackEnd.GlobalInfo.Keys as Colabskey
+from bson import ObjectId
+import json
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from PIL import Image
+import numpy as np
+import io
+import os
+import base64
+
+# ========== CIFRADO SIMPLE Y FUNCIONAL ==========
+from cryptography.fernet import Fernet
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
+
+# Obtener clave del .env
+clave_env = os.getenv('ENCRYPTION_KEY')
+
+
+CLAVE_FUNCIONAL = clave_env.encode()
+print("✅ Sistema de cifrado inicializado desde .env")
+
+# Inicialización DIRECTA sin lógica compleja
+fernet = Fernet(CLAVE_FUNCIONAL)
+print("✅ Sistema de cifrado inicializado CORRECTAMENTE")
+
+def cifrar_url_imagen(url: str) -> str:
+    """Cifra la URL de la imagen para almacenamiento seguro"""
+    try:
+        print(f"🔐 Cifrando URL...")
+        url_cifrada = fernet.encrypt(url.encode())
+        url_cifrada_b64 = base64.urlsafe_b64encode(url_cifrada).decode()
+        print(f"✅ URL cifrada correctamente ({len(url)} -> {len(url_cifrada_b64)} chars)")
+        return url_cifrada_b64
+    except Exception as e:
+        print(f"⚠️ Error cifrando URL: {e}")
+        return url
+
+def descifrar_url_imagen(url_cifrada: str) -> str:
+    """Descifra la URL de la imagen para uso"""
+    try:
+        if len(url_cifrada) > 200:
+            url_cifrada_bytes = base64.urlsafe_b64decode(url_cifrada.encode())
+            url_descifrada = fernet.decrypt(url_cifrada_bytes).decode()
+            print("✅ URL descifrada correctamente")
+            return url_descifrada
+        return url_cifrada
+    except Exception as e:
+        print(f"⚠️ Error descifrando URL: {e}")
+        return url_cifrada
+
 
 def get_db_connection():
     if Colabskey.dbconn is None:
@@ -548,3 +602,212 @@ def deleteUser(user_id):
         objResponse = respuestas.err500.copy()
         objResponse['Error'] = str(e)
         return jsonify(objResponse), 500
+    
+
+# ========== FUNCIONES DE PREDICCIÓN CON CIFRADO ==========
+
+def analyze_complete():
+    """
+    Endpoint único que:
+    1. Recibe URL de Cloudinary + datos del paciente + archivo de imagen
+    2. Procesa con el modelo de ML
+    3. Guarda todo en MongoDB colección 'prediction' (con URL cifrada)
+    4. Devuelve resultado completo
+    """
+    try:
+        # Verificar que viene la imagen para el modelo
+        if "image" not in request.files:
+            return jsonify({"error": "No se envió ninguna imagen para el modelo"}), 400
+
+        # Obtener datos del formData
+        cloudinary_url = request.form.get('image_url', '')
+        patient_name = request.form.get('patient_name', '')
+        patient_age = request.form.get('patient_age', '')
+        patient_id = request.form.get('patient_id', '')
+        breast_side = request.form.get('breast_side', '')
+        clinical_notes = request.form.get('clinical_notes', '')
+        
+        print(f"📋 Datos recibidos:")
+        print(f"   Cloudinary URL: {cloudinary_url}")
+        print(f"   Nombre: {patient_name}")
+        print(f"   Edad: {patient_age}")
+        print(f"   ID: {patient_id}")
+        print(f"   Mama: {breast_side}")
+
+        file = request.files["image"]
+        
+        # ========== 1. PROCESAR CON MODELO DE ML ==========
+        print("🔮 Iniciando evaluación de imagen con modelo de ML...")
+        
+        # Ruta al modelo
+        current_file = os.path.abspath(__file__)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
+        MODEL_PATH = os.path.join(BASE_DIR, "models", "model_vgg16_final.keras")
+        
+        print(f"📁 Buscando modelo en: {MODEL_PATH}")
+        
+        # Verificar si el archivo del modelo existe
+        if not os.path.exists(MODEL_PATH):
+            error_msg = f"Modelo no encontrado en la ruta: {MODEL_PATH}"
+            print(f"❌ {error_msg}")
+            return jsonify({"error": error_msg}), 500
+        
+        # Cargar modelo
+        try:
+            print("🔄 Cargando modelo...")
+            model = load_model(MODEL_PATH)
+            print("✅ Modelo cargado exitosamente")
+        except Exception as e:
+            error_msg = f"Error cargando modelo: {str(e)}"
+            print(f"❌ {error_msg}")
+            return jsonify({"error": error_msg}), 500
+
+        # Procesar imagen para el modelo
+        print("📷 Procesando imagen para modelo...")
+        try:
+            img = Image.open(io.BytesIO(file.read())).convert("RGB")
+            img = img.resize((227, 227))
+            img_array = np.array(img) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
+            print("✅ Imagen procesada correctamente")
+        except Exception as e:
+            error_msg = f"Error procesando imagen: {str(e)}"
+            print(f"❌ {error_msg}")
+            return jsonify({"error": error_msg}), 500
+
+        # Hacer predicción
+        print("🤖 Haciendo predicción...")
+        try:
+            prediction = model.predict(img_array)
+            print(f"✅ Predicción completada: {prediction}")
+        except Exception as e:
+            error_msg = f"Error en la predicción: {str(e)}"
+            print(f"❌ {error_msg}")
+            return jsonify({"error": error_msg}), 500
+
+        # Interpretar resultados
+        malignant_probability = prediction[0][0]
+        malignant_probability_float = float(malignant_probability)
+
+        if malignant_probability_float > 0.5:
+            classification = "Maligno"
+            confidence_percent = malignant_probability_float * 100
+        else:
+            classification = "Benigno"
+            confidence_percent = (1 - malignant_probability_float) * 100
+
+        print(f"📊 Resultado del modelo: {classification} con {confidence_percent:.2f}% de confianza")
+
+        # ========== 2. GUARDAR EN MONGODB CON URL CIFRADA ==========
+        print("💾 Guardando en MongoDB colección 'prediction'...")
+        try:
+            db = get_db_connection()
+            predictions_collection = db.prediction
+            
+            # CIFRAR la URL de la imagen antes de guardar
+            url_cifrada = cifrar_url_imagen(cloudinary_url)
+            
+            prediction_doc = {
+                'image_url': url_cifrada,  # URL CIFRADA
+                'patient_name': patient_name,
+                'patient_age': int(patient_age) if patient_age and patient_age.isdigit() else 0,
+                'patient_id': patient_id,
+                'breast_side': breast_side,
+                'clinical_notes': clinical_notes,
+                'classification': classification,
+                'confidence': confidence_percent,
+                'analysis_date': datetime.utcnow().isoformat(),
+                'created_at': datetime.utcnow()
+            }
+            
+            result = predictions_collection.insert_one(prediction_doc)
+            prediction_id = str(result.inserted_id)
+            
+            print(f"✅ Predicción guardada con ID: {prediction_id}")
+            
+        except Exception as e:
+            error_msg = f"Error guardando en MongoDB: {str(e)}"
+            print(f"❌ {error_msg}")
+            return jsonify({"error": error_msg}), 500
+
+        # ========== 3. RESPONDER ==========
+        return jsonify({
+            "success": True,
+            "prediction_id": prediction_id,
+            "classification": classification,
+            "confidence": float(malignant_probability_float),
+            "confidence_percent": float(confidence_percent),
+            "message": "Análisis completado y guardado exitosamente",
+            "data": {
+                "patient_name": patient_name,
+                "patient_age": patient_age,
+                "patient_id": patient_id,
+                "breast_side": breast_side,
+                "clinical_notes": clinical_notes
+            }
+        })
+
+    except Exception as e:
+        error_msg = f"Error general en analyze_complete: {str(e)}"
+        print(f"💥 {error_msg}")
+        return jsonify({"error": error_msg}), 500
+
+def getAllPredictions():
+    """Obtiene todas las predicciones del historial y DESCIFRA las URLs"""
+    try:
+        db = get_db_connection()
+        predictions_collection = db.prediction
+        
+        predictions = list(predictions_collection.find().sort('created_at', -1))
+        
+        for prediction in predictions:
+            prediction['_id'] = str(prediction['_id'])
+            # DESCIFRAR la URL de la imagen antes de enviar al frontend
+            prediction['image_url'] = descifrar_url_imagen(prediction['image_url'])
+        
+        print(f"📊 Recuperadas {len(predictions)} predicciones del historial")
+        return jsonify(predictions)
+        
+    except Exception as e:
+        print(f"Error obteniendo predicciones: {str(e)}")
+        return jsonify({'error': f'Error obteniendo predicciones: {str(e)}'}), 500
+
+def getPredictionById(prediction_id):
+    """Obtiene una predicción específica por ID y DESCIFRA la URL"""
+    try:
+        db = get_db_connection()
+        predictions_collection = db.prediction
+        
+        prediction = predictions_collection.find_one({'_id': ObjectId(prediction_id)})
+        
+        if not prediction:
+            return jsonify({'error': 'Predicción no encontrada'}), 404
+        
+        prediction['_id'] = str(prediction['_id'])
+        # DESCIFRAR la URL de la imagen
+        prediction['image_url'] = descifrar_url_imagen(prediction['image_url'])
+        
+        return jsonify(prediction)
+        
+    except Exception as e:
+        print(f"Error obteniendo predicción {prediction_id}: {str(e)}")
+        return jsonify({'error': f'Error obteniendo predicción: {str(e)}'}), 500
+
+def deletePrediction(prediction_id):
+    """Elimina una predicción de la base de datos"""
+    try:
+        db = get_db_connection()
+        predictions_collection = db.prediction
+        
+        result = predictions_collection.delete_one({'_id': ObjectId(prediction_id)})
+        
+        if result.deleted_count == 0:
+            return jsonify({'error': 'Predicción no encontrada'}), 404
+        
+        print(f"Predicción {prediction_id} eliminada")
+        
+        return jsonify({'message': 'Predicción eliminada exitosamente'})
+        
+    except Exception as e:
+        print(f"Error eliminando predicción {prediction_id}: {str(e)}")
+        return jsonify({'error': f'Error eliminando predicción: {str(e)}'}), 500

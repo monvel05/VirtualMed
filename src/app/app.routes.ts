@@ -53,6 +53,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/chatbot/chatbot.page').then( m => m.ChatbotPage), 
   },
   {
+    path: 'cancer-classifier',
+    loadComponent: () => import('./pages/cancer-classifier/cancer-classifier.page').then( m => m.CancerClassifierPage),
+  },
+  {
     path: '**',
     redirectTo: 'login'
   },
@@ -60,5 +64,6 @@ export const routes: Routes = [
     path: 'doctor-profile',
     loadComponent: () => import('./pages/doctor-profile/doctor-profile.page').then( m => m.DoctorProfilePage)
   }
+
 
 ];

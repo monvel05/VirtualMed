@@ -33,6 +33,29 @@ def update_user(user_id):
 def delete_user(user_id):
     return CallMethod.deleteUser(user_id)
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy", "message": "Servidor funcionando correctamente"})
+
+# ENDPOINT PRINCIPAL - TODO EN UNO
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    return CallMethod.analyze_complete()
+
+# Solo mantener para consultar el historial
+@app.route('/predictions', methods=['GET'])
+def get_predictions():
+    return CallMethod.getAllPredictions()
+
+@app.route('/predictions/<prediction_id>', methods=['GET'])
+def get_prediction(prediction_id):
+    return CallMethod.getPredictionById(prediction_id)
+
+@app.route('/predictions/<prediction_id>', methods=['DELETE'])
+def delete_prediction(prediction_id):
+    return CallMethod.deletePrediction(prediction_id)
+
+
 if __name__ == '__main__':
     print("Iniciando servidor Flask...")
     app.run(port=3000, debug=True)

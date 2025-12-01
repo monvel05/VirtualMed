@@ -52,8 +52,8 @@ export const routes: Routes = [
     redirectTo: 'login'
   },
   {
-    path: 'doctor-profile',
-    loadComponent: () => import('./pages/doctor-profile/doctor-profile.page').then( m => m.DoctorProfilePage)
+    path: 'chatbot',
+    loadComponent: () => import('./pages/chatbot/chatbot.page').then(m => m.ChatbotPage),
   }
 
 ];

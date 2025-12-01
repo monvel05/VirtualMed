@@ -359,19 +359,26 @@ def getUserById(user_id):
             user_combined.update({
                 "nombre": user_profile.get("nombre", ""),
                 "apellidos": user_profile.get("apellidos", ""),
-                "profileId": str(user_profile["_id"])
+                "profileId": str(user_profile["_id"]),
+                # 🔥 AGREGAR ESTOS CAMPOS FALTANTES:
+                "profileImage": user_profile.get("profileImage", ""),
+                "edad": user_profile.get("edad", ""),
+                "genero": user_profile.get("genero", ""),
+                "fechaNacimiento": user_profile.get("fechaNacimiento", "")
             })
             # Agregar campos específicos
             if "cedula" in user_profile: user_combined["cedula"] = user_profile["cedula"]
             if "especialidad" in user_profile: user_combined["especialidad"] = user_profile["especialidad"]
             if "subespecialidad" in user_profile: user_combined["subespecialidad"] = user_profile["subespecialidad"]
+            if "estado" in user_profile: user_combined["estado"] = user_profile["estado"]
+            if "verificado" in user_profile: user_combined["verificado"] = user_profile["verificado"]
             
         return jsonify({"intStatus": 200, "user": user_combined})
         
     except Exception as e:
         print(f"💥 Error getUserById: {e}")
         return jsonify({"intStatus": 500, "Error": str(e)}), 500
-
+    
 def getUsersByRole(role):
     try:
         db = get_db_connection()

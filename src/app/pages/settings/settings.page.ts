@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
 
 import { 
   IonContent, IonHeader, IonTitle, IonToolbar, IonList, 
@@ -8,9 +9,8 @@ import {
   IonCardHeader, IonCardTitle, IonCardSubtitle, IonAvatar,
   IonToggle, IonButton, IonSelect, IonSelectOption, IonInput,
   IonModal, AlertController, IonButtons, NavController, 
-  IonSegment, IonSegmentButton 
+  IonSegment, IonSegmentButton, IonRippleEffect 
 } from '@ionic/angular/standalone';
-
 
 import { addIcons } from 'ionicons';
 import { 
@@ -18,14 +18,8 @@ import {
   helpCircleOutline, personCircleOutline, medicalOutline, 
   arrowBack, settingsOutline, textOutline,
   chatbubbleOutline, playCircleOutline, mailOutline,
-  callOutline,
-  
-  helpCircle,
-  playCircle,
-  mail,
-  call,
-  time,
-  chatbubbles
+  callOutline, helpCircle, playCircle, chatbubbles,
+  chevronForwardOutline, saveOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -37,19 +31,44 @@ import {
     IonSegmentButton, IonSegment, IonButtons, IonContent, IonHeader, IonTitle, 
     IonToolbar, IonList, IonItem, IonLabel, IonIcon, IonCard, IonCardContent, 
     IonCardHeader, IonCardTitle, IonCardSubtitle, IonAvatar, IonToggle, 
-    IonButton, IonSelect, IonSelectOption, IonInput, IonModal, CommonModule, FormsModule
+    IonButton, IonSelect, IonSelectOption, IonInput, IonModal, CommonModule, FormsModule,
+    IonRippleEffect 
   ]
 })
 export class SettingsPage implements OnInit {
 
   role: string = 'paciente';
 
-  // MÉDICO 
-  doctorInfo = {
-    name: '',
-    specialty: 'Médico General',
+  // --- VARIABLES PREVIEW PACIENTE ---
+  patientPreview = {
+    nombre: 'Cargando...',
     email: '',
-    avatar: 'DR'
+    avatar: 'https://ionicframework.com/docs/img/demos/avatar.svg'
+  };
+
+  // Variables de configuración de PACIENTE
+  patientSettings = {
+    appointmentReminders: true,
+    fontSize: 'mediana',
+    language: 'es',
+  };
+
+  // Modales Paciente
+  isPatientPasswordModalOpen = false;
+  isPatientHelpModalOpen = false;
+  
+  patientPasswordData = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  };
+
+  // --- VARIABLES MÉDICO ---
+  doctorInfo = {
+    name: 'Dr. Ejemplo',
+    specialty: 'Médico General',
+    email: 'doc@test.com',
+    avatar: 'https://ionicframework.com/docs/img/demos/avatar.svg'
   };
 
   scheduleSettings = {
@@ -79,174 +98,239 @@ export class SettingsPage implements OnInit {
     confirmPassword: ''
   };
 
-  // Modales del médico
+  // Modales Médico
   isScheduleModalOpen = false;
   isNotificationsModalOpen = false;
   isPasswordModalOpen = false;
 
-  //PACIENTE
-  patientSettings = {
-    appointmentReminders: true,
-    fontSize: 'mediana',
-    language: 'es',
-  };
-
-  // Modales del paciente
-  isPatientPasswordModalOpen = false;
-  isPatientHelpModalOpen = false;
-
-  // Datos para modales del paciente
-  patientPasswordData = {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  };
-
   constructor(
     private alertController: AlertController, 
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private userService: UserService 
   ) {
-   
-    addIcons({
-      'arrow-back': arrowBack,
-      'notifications-outline': notificationsOutline,
-      'text-outline': textOutline,
-      'lock-closed-outline': lockClosedOutline,
-      'help-circle-outline': helpCircleOutline,
-      'time-outline': timeOutline,
-      'medical-outline': medicalOutline,
-      'person-circle-outline': personCircleOutline,
-      'settings-outline': settingsOutline,
-      'chatbubble-outline': chatbubbleOutline,
-      'play-circle-outline': playCircleOutline,
-      'mail-outline': mailOutline,
-      'call-outline': callOutline,
-      'help-circle': helpCircle,
-      'play-circle': playCircle,
-      'chatbubbles': chatbubbles,
-      'mail': mail,
-      'call': call,
-      'time': time
-    });
+    addIcons({arrowBack,chevronForwardOutline,notificationsOutline,textOutline,lockClosedOutline,helpCircleOutline,saveOutline,timeOutline,mailOutline,medicalOutline,helpCircle,chatbubbles,playCircle,personCircleOutline,settingsOutline,chatbubbleOutline,playCircleOutline,callOutline});
   }
 
   ngOnInit() {
-    console.log('Settings page initialized');
+    this.determinarRolUsuario();
   }
 
-  
+  // Determina si el usuario es paciente o médico
+  determinarRolUsuario() {
+    const userRole = this.userService.getRole();
+    
+    if (userRole === 'medico' || userRole === 'doctor') {
+      this.role = 'medico';
+    } else {
+      this.role = 'paciente';
+    }
+  }
 
-  toggleDay(day: any) {
-    day.active = !day.active;
+  // Se ejecuta cada vez que entras a la pantalla
+  ionViewWillEnter() {
+    this.determinarRolUsuario();
+    
+    if (this.role === 'paciente') {
+      this.cargarPreviewPaciente();
+    } else if (this.role === 'medico') {
+      this.cargarPreviewMedico();
+    }
+  }
+
+  // --- LÓGICA PACIENTE ---
+  cargarPreviewPaciente() {
+    const myId = this.userService.getId();
+    
+    if (!myId) {
+      this.patientPreview.nombre = 'Invitado';
+      this.patientPreview.avatar = 'https://ui-avatars.com/api/?name=Invitado&background=random';
+      return;
+    }
+    
+    this.userService.getUserById(myId).subscribe({
+      next: (res: any) => {
+        if (res && res.user) {
+          const fullName = res.user.nombre + ' ' + (res.user.apellido || res.user.apellidos || '');
+          this.patientPreview.nombre = fullName;
+          this.patientPreview.email = res.user.email;
+          
+          let imgUrl = res.user.profileImage;
+
+          if (imgUrl && typeof imgUrl === 'string' && imgUrl.length > 10) {
+            imgUrl = imgUrl.replace(/['"]+/g, '').trim();
+            
+            if (imgUrl.startsWith('http:')) {
+              imgUrl = imgUrl.replace('http:', 'https:');
+            }
+            
+            this.testImageLoad(imgUrl).then(success => {
+              if (success) {
+                this.patientPreview.avatar = imgUrl;
+              } else {
+                this.patientPreview.avatar = `https://ui-avatars.com/api/?name=${fullName}&background=0D8ECF&color=fff&size=128`;
+              }
+            });
+            
+          } else {
+            this.patientPreview.avatar = `https://ui-avatars.com/api/?name=${fullName}&background=0D8ECF&color=fff&size=128`;
+          }
+        } else {
+          this.patientPreview.nombre = 'Usuario';
+        }
+      },
+      error: (error: any) => {
+        this.patientPreview.nombre = 'Usuario (Offline)';
+        this.patientPreview.avatar = 'https://ui-avatars.com/api/?name=User&background=gray&color=fff';
+      }
+    });
+  }
+
+  // --- LÓGICA MÉDICO ---
+  cargarPreviewMedico() {
+    const doctorId = this.userService.getId();
+    
+    if (!doctorId) {
+      this.doctorInfo.name = 'Médico';
+      this.doctorInfo.avatar = 'https://ui-avatars.com/api/?name=Medico&background=random';
+      return;
+    }
+    
+    this.userService.getUserById(doctorId).subscribe({
+      next: (res: any) => {
+        if (res && res.user) {
+          const fullName = 'Dr. ' + (res.user.nombre || '') + ' ' + (res.user.apellido || res.user.apellidos || '');
+          const specialty = res.user.especialidad || 'Médico General';
+          
+          this.doctorInfo.name = fullName;
+          this.doctorInfo.specialty = specialty;
+          this.doctorInfo.email = res.user.email || '';
+          
+          let imgUrl = res.user.profileImage;
+
+          if (imgUrl && typeof imgUrl === 'string' && imgUrl.length > 10) {
+            imgUrl = imgUrl.replace(/['"]+/g, '').trim();
+            
+            if (imgUrl.startsWith('http:')) {
+              imgUrl = imgUrl.replace('http:', 'https:');
+            }
+            
+            this.testImageLoad(imgUrl).then(success => {
+              if (success) {
+                this.doctorInfo.avatar = imgUrl;
+              } else {
+                const nameForAvatar = fullName.replace('Dr. ', '').replace('Dra. ', '');
+                this.doctorInfo.avatar = `https://ui-avatars.com/api/?name=${nameForAvatar}&background=0D8ECF&color=fff&size=128`;
+              }
+            });
+            
+          } else {
+            const nameForAvatar = fullName.replace('Dr. ', '').replace('Dra. ', '');
+            this.doctorInfo.avatar = `https://ui-avatars.com/api/?name=${nameForAvatar}&background=0D8ECF&color=fff&size=128`;
+          }
+        }
+      },
+      error: (error: any) => {
+        this.doctorInfo.name = 'Médico (Offline)';
+        this.doctorInfo.avatar = 'https://ui-avatars.com/api/?name=Medico&background=gray&color=fff';
+      }
+    });
+  }
+
+  // Método para testear si la imagen se puede cargar
+  private testImageLoad(url: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+      
+      setTimeout(() => {
+        if (!img.complete) {
+          resolve(false);
+        }
+      }, 5000);
+    });
+  }
+
+  // Manejo de errores de imagen
+  onImageError(event: any, type: 'patient' | 'doctor') {
+    const fallbackUrl = 'https://ionicframework.com/docs/img/demos/avatar.svg';
+    event.target.src = fallbackUrl;
+    event.target.onerror = null;
+    
+    if (type === 'patient') {
+      const fullName = this.patientPreview.nombre;
+      this.patientPreview.avatar = `https://ui-avatars.com/api/?name=${fullName}&background=0D8ECF&color=fff&size=128`;
+    } else {
+      const nameForAvatar = this.doctorInfo.name.replace('Dr. ', '').replace('Dra. ', '');
+      this.doctorInfo.avatar = `https://ui-avatars.com/api/?name=${nameForAvatar}&background=0D8ECF&color=fff&size=128`;
+    }
+  }
+
+  goToProfilePage() {
+    this.navCtrl.navigateForward('/profile'); 
+  }
+
+  // Manejar cambio de segmento
+  onSegmentChange(event: any) {
+    this.role = event.detail.value;
+    
+    if (this.role === 'paciente') {
+      this.cargarPreviewPaciente();
+    } else if (this.role === 'medico') {
+      this.cargarPreviewMedico();
+    }
+  }
+
+  // --- MÉTODOS DE LA UI ---
+  toggleDay(day: any) { 
+    day.active = !day.active; 
   }
 
   saveSchedule() {
-    console.log('Horario guardado:', this.scheduleSettings);
     this.isScheduleModalOpen = false;
-    this.presentAlert('Éxito', 'Horario de atención actualizado correctamente.');
+    this.presentAlert('Éxito', 'Horario actualizado.');
   }
 
   saveNotifications() {
-    console.log('Notificaciones guardadas:', this.notificationSettings);
     this.isNotificationsModalOpen = false;
-    this.presentAlert('Éxito', 'Configuración de notificaciones actualizada.');
+    this.presentAlert('Éxito', 'Notificaciones actualizadas.');
   }
 
   async changePassword() {
-    if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-      this.presentAlert('Error', 'Las contraseñas no coinciden.');
-      return;
-    }
-
-    if (this.passwordData.newPassword.length < 6) {
-      this.presentAlert('Error', 'La contraseña debe tener al menos 6 caracteres.');
-      return;
-    }
-
-    console.log('Cambiando contraseña:', this.passwordData);
     this.isPasswordModalOpen = false;
-    
-    this.passwordData = {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    };
-
-    this.presentAlert('Éxito', 'Contraseña cambiada correctamente.');
+    this.presentAlert('Éxito', 'Contraseña cambiada.');
   }
 
-  async openHelp() {
-    const alert = await this.alertController.create({
-      header: 'Ayuda y Soporte - Médico',
-      message: 'Contacta a nuestro equipo de soporte en 495-123-4567 o por correo a soporte@telemedicina.com',
-      buttons: ['Cerrar'],
-      cssClass: 'help-alert'
-    });
-
-    await alert.present();
+  // Métodos Paciente
+  openPatientPasswordModal() { 
+    this.isPatientPasswordModalOpen = true; 
   }
-
-  //  MÉTODOS PARA PACIENTE 
-
-  openPatientPasswordModal() {
-    this.isPatientPasswordModalOpen = true;
+  
+  openPatientHelpModal() { 
+    this.isPatientHelpModalOpen = true; 
   }
-
-  openPatientHelpModal() {
-    this.isPatientHelpModalOpen = true;
-  }
-
+  
   async changePatientPassword() {
-    if (this.patientPasswordData.newPassword !== this.patientPasswordData.confirmPassword) {
-      this.presentAlert('Error', 'Las contraseñas no coinciden.');
-      return;
-    }
-
-    if (this.patientPasswordData.newPassword.length < 6) {
-      this.presentAlert('Error', 'La contraseña debe tener al menos 6 caracteres.');
-      return;
-    }
-
-    console.log('Cambiando contraseña del paciente:', this.patientPasswordData);
     this.isPatientPasswordModalOpen = false;
-    
-    this.patientPasswordData = {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    };
-
-    this.presentAlert('Éxito', 'Contraseña cambiada correctamente.');
+    this.presentAlert('Éxito', 'Contraseña cambiada.');
   }
 
   savePatientPreferences() {
-    console.log('Preferencias del paciente guardadas:', this.patientSettings);
-    this.presentAlert('Éxito', 'Preferencias actualizadas correctamente.');
+    this.presentAlert('Éxito', 'Preferencias actualizadas.');
   }
 
-  async openPatientHelp() {
-    const alert = await this.alertController.create({
-      header: 'Ayuda y Soporte - Paciente',
-      message: 'Contacta a nuestro equipo de soporte en 495-123-4567 o por correo a pacientes@virtualmed.com',
-      buttons: ['Cerrar'],
-      cssClass: 'help-alert'
-    });
-
-    await alert.present();
+  // Modales compartidos
+  openScheduleModal() { 
+    this.isScheduleModalOpen = true; 
   }
-
-  //  MÉTODOS COMPARTIDOS
-
-  openScheduleModal() {
-    this.isScheduleModalOpen = true;
+  
+  openNotificationsModal() { 
+    this.isNotificationsModalOpen = true; 
   }
-
-  openNotificationsModal() {
-    this.isNotificationsModalOpen = true;
-  }
-
-  openPasswordModal() {
-    this.isPasswordModalOpen = true;
+  
+  openPasswordModal() { 
+    this.isPasswordModalOpen = true; 
   }
 
   closeModals() {
@@ -258,7 +342,7 @@ export class SettingsPage implements OnInit {
   }
 
   goBack() {
-    if (this.isScheduleModalOpen || this.isNotificationsModalOpen || this.isPasswordModalOpen ||
+    if (this.isScheduleModalOpen || this.isNotificationsModalOpen || this.isPasswordModalOpen || 
         this.isPatientPasswordModalOpen || this.isPatientHelpModalOpen) {
       this.closeModals();
     } else {
@@ -267,12 +351,15 @@ export class SettingsPage implements OnInit {
   }
 
   async presentAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: ['OK']
+    const alert = await this.alertController.create({ 
+      header, 
+      message, 
+      buttons: ['OK'] 
     });
-
     await alert.present();
+  }
+  
+  async openHelp() { 
+    this.presentAlert('Ayuda', 'Contacta a soporte.'); 
   }
 }

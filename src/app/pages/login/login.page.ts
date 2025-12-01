@@ -60,16 +60,19 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
-
+    console.log('🧹 Limpiando sesión anterior en pantalla de login...');
+    this.userService.clearUserData(); // Primero limpiar SIEMPRE
+    
+    // Solo después de limpiar, verificar si redirigir
+    // (pero como acabamos de limpiar, nunca debería redirigir)
     if (this.userService.isAuthenticated()) {
+      console.log('⚠️ Usuario aún autenticado después de limpiar, redirigiendo...');
       this.router.navigate(['/dashboard']);
     }
 
-    console.log('🧹 Limpiando sesión anterior...');
-    this.userService.clearUserData(); // Esto borra el localStorage y las banderas
-    
-    // Opcional: Si quieres reiniciar el formulario también
+    // Limpiar formularios
     this.loginForm.reset();
+    this.registerForm.reset();
   }
 
   // ==================== VALIDACIONES DINÁMICAS ====================

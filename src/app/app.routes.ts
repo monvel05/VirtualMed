@@ -50,5 +50,9 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login'
+  },
+  {
+    path: 'chatbot',
+    loadComponent: () => import('./pages/chatbot/chatbot.page').then(m => m.ChatbotPage),
   }
 ];

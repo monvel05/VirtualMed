@@ -32,7 +32,7 @@ import {
     IonGrid, IonCol, IonRow, IonAccordion, IonAccordionGroup,
     IonItem, IonLabel, IonCard, IonCardContent, IonCardHeader,
     IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonFabList,
-    IonIcon, IonModal, IonButton, IonMenu
+    IonIcon, IonModal, IonButton, IonMenu, IonList
   ],
 })
 export class DashboardPage implements OnInit {

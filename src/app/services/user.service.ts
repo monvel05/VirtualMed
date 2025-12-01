@@ -238,7 +238,7 @@ export class UserService {
   getCitasByUser(userId: string): Observable<any> { return this.apiService.get(`/users/${userId}/citas`); }
   createCita(citaData: any): Observable<any> { return this.apiService.post('/citas', citaData); }
   getUsers(): Observable<any> { return this.apiService.get('/users'); }
-  getUserById(id: string): Observable<any> { return this.apiService.get(`/users/${id}`); }
+  getUserById(id: string): Observable<any> { return this.apiService.get(`/user/${id}`); }
   updateProfile(userData: any): Observable<any> { return this.apiService.put('/user/profile', userData); }
   getMedicos(): Observable<any> { return this.apiService.get('/medicos'); }
   getPacientes(): Observable<any> { return this.apiService.get('/pacientes'); }

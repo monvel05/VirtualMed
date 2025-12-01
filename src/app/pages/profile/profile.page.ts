@@ -1,5 +1,3 @@
-
-
 // validado
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,6 +9,8 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Platform } from '@ionic/angular';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service'; // AÑADIR ESTO
+import { firstValueFrom } from 'rxjs'; // Para convertir Observable a Promise
 
 @Component({
   selector: 'app-profile',
@@ -36,6 +36,10 @@ export class ProfilePage implements OnInit {
   pdfver: SafeResourceUrl | null = null;
   mostrarModal = false;
   
+  // Archivo seleccionado temporalmente (para subir)
+  selectedImageFile: File | null = null; // AÑADIR
+  selectedPdfFile: File | null = null; // AÑADIR
+  
   // Propiedades para validación
   nombreTouched: boolean = false;
   apellidoTouched: boolean = false;
@@ -46,12 +50,55 @@ export class ProfilePage implements OnInit {
   alturaTouched: boolean = false;
   correoTouched: boolean = false;
 
-  constructor(private platform: Platform, private sanitizer: DomSanitizer, private router: Router) { }
+  // Inyectar UserService
+  constructor(
+    private platform: Platform, 
+    private sanitizer: DomSanitizer, 
+    private router: Router,
+    private userService: UserService // AÑADIR
+  ) { }
 
   ngOnInit() {
+    this.cargarDatosPaciente(); // AÑADIR: cargar datos al iniciar
   }
 
-  
+  // ========== NUEVO MÉTODO: Cargar datos del paciente ==========
+  cargarDatosPaciente() {
+    const myId = this.userService.getId(); // Obtiene ID del usuario logueado
+    
+    this.userService.getUserById(myId).subscribe({
+      next: (res: any) => {
+        if (res.user) {
+          // Asignar datos desde el backend
+          this.nombre = res.user.nombre || '';
+          this.apellido = res.user.apellido || '';
+          this.edad = res.user.edad || 0;
+          this.nacimiento = res.user.nacimiento || '';
+          this.generoSeleccionado = res.user.genero || '';
+          this.peso = res.user.peso || 0;
+          this.altura = res.user.altura || 0;
+          this.correo = res.user.correo || '';
+          
+          // Avatar: si hay URL, usarla; si no, default
+          this.avatarUrl = res.user.profileImage || 'assets/avatar.png';
+          
+          // PDF: si hay URL, crear versión segura para visualización
+          if (res.user.pdfUrl) {
+            this.pdfUrl = res.user.pdfUrl;
+            this.pdfver = this.sanitizer.bypassSecurityTrustResourceUrl(res.user.pdfUrl);
+          }
+          
+          console.log('Datos cargados desde backend');
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando datos:', err);
+        alert('Error al cargar los datos del perfil');
+      }
+    });
+  }
+
+  // ========== VALIDACIÓN (sin cambios) ==========
   
   get nombreInvalid(): boolean {
     return this.nombre.trim().length === 0;
@@ -86,7 +133,6 @@ export class ProfilePage implements OnInit {
     return !emailPattern.test(this.correo);
   }
 
-  // Valida si todo el formulario es válido
   get formularioValido(): boolean {
     return !this.nombreInvalid && 
           !this.apellidoInvalid && 
@@ -98,15 +144,31 @@ export class ProfilePage implements OnInit {
           !this.correoInvalid;
   }
 
-
-  // Guarda los cambios del formulario
-  guardarCambios() {
-    // Marcar todos los campos como tocados para mostrar errores
+  // ========== MÉTODO MODIFICADO: Guardar cambios ==========
+  async guardarCambios() {
     this.marcarTodosComoTocados();
     
-    if (this.formularioValido) {
-      // Aquí va tu lógica para guardar los datos
-      console.log('Datos del paciente guardados:', {
+    if (!this.formularioValido) {
+      alert('Por favor completa todos los campos correctamente');
+      return;
+    }
+
+    try {
+      // 1. Subir imagen si hay una nueva
+      let profileImageUrl = this.avatarUrl;
+      if (this.selectedImageFile) {
+        profileImageUrl = await this.subirArchivo(this.selectedImageFile, 'avatar');
+      }
+
+      // 2. Subir PDF si hay uno nuevo
+      let pdfUrlFinal = this.pdfUrl;
+      if (this.selectedPdfFile) {
+        pdfUrlFinal = await this.subirArchivo(this.selectedPdfFile, 'pdf');
+      }
+
+      // 3. Preparar datos para enviar al backend
+      const dataToUpdate = {
+        userId: this.userService.getId(), // Importante: ID del usuario
         nombre: this.nombre,
         apellido: this.apellido,
         edad: this.edad,
@@ -115,30 +177,49 @@ export class ProfilePage implements OnInit {
         peso: this.peso,
         altura: this.altura,
         correo: this.correo,
-        avatar: this.avatarUrl,
-        expediente: this.pdfUrl ? 'Subido' : 'No subido'
+        profileImage: profileImageUrl, // URL como string
+        pdfUrl: pdfUrlFinal // URL como string (no SafeResourceUrl)
+      };
+
+      // 4. Llamar al servicio para actualizar
+      this.userService.updateProfile(dataToUpdate).subscribe({
+        next: (res) => {
+          console.log('Datos actualizados', res);
+          alert('Perfil guardado exitosamente');
+          
+          // Resetear archivos temporales
+          this.selectedImageFile = null;
+          this.selectedPdfFile = null;
+        },
+        error: (err) => {
+          console.error('Error al guardar:', err);
+          alert('Error al guardar los cambios');
+        }
       });
-      
-      // P
-      alert('Perfil guardado exitosamente');
-    } else {
-      alert('Por favor completa todos los campos correctamente');
+
+    } catch (error) {
+      console.error('Error en el proceso de guardado:', error);
+      alert('Error al subir archivos');
     }
   }
 
-  // Marca todos los campos como tocados para mostrar errores
-  private marcarTodosComoTocados() {
-    this.nombreTouched = true;
-    this.apellidoTouched = true;
-    this.edadTouched = true;
-    this.nacimientoTouched = true;
-    this.generoTouched = true;
-    this.pesoTouched = true;
-    this.alturaTouched = true;
-    this.correoTouched = true;
+  // ========== NUEVO MÉTODO: Subir archivo al servidor ==========
+  private async subirArchivo(file: File, tipo: 'avatar' | 'pdf'): Promise<string> {
+    console.log(`Subiendo ${tipo}:`, file.name);
+
+    try {
+      const response = await firstValueFrom(
+      this.userService.uploadFile(file, tipo) // ← Así es como debe llamarse
+      );
+      return response.url; // Asumiendo que el backend devuelve {url: '...'}
+    } catch (error) {
+      console.error(`Error subiendo ${tipo}:`, error);
+      throw error;
+    }
   }
 
-
+  // ========== MÉTODOS MODIFICADOS: Manejo de archivos ==========
+  
   async seleccionarImagen(){
     if (this.platform.is('capacitor')){
       try{
@@ -152,17 +233,23 @@ export class ProfilePage implements OnInit {
           promptLabelPicture:"Camara",
         });
         this.avatarUrl = image.webPath;
-      }catch (error){
-        console.log("error con la imagen");
+        // Para Capacitor necesitarías convertir webPath a File
+      } catch (error){
+        console.log("Error con la imagen");
       }
-    } else{
+    } else {
       const input = document.createElement('input');
       input.type ='file';
       input.accept = 'image/*';
-      input.onchange= (event: any) => {
+      input.onchange = (event: any) => {
         const inputEl = event.target as HTMLInputElement;
         if (inputEl?.files && inputEl.files.length > 0) {
           const file = inputEl.files[0];
+          
+          // Guardar archivo para subir
+          this.selectedImageFile = file;
+          
+          // Crear previsualización
           const reader = new FileReader();
           reader.onload = () => {
             this.avatarUrl = reader.result as string;
@@ -174,10 +261,6 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  quitarImagen() {
-    this.avatarUrl = undefined;
-  }
-
   seleccionarPDF() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -186,12 +269,35 @@ export class ProfilePage implements OnInit {
       const inputEl = event.target as HTMLInputElement;
       if (inputEl?.files && inputEl.files.length > 0) {
         const file = inputEl.files[0];
+        
+        // Guardar archivo para subir
+        this.selectedPdfFile = file;
+        
+        // Crear URL temporal y versión segura
         const objectUrl = URL.createObjectURL(file);
-        this.pdfUrl= objectUrl; 
-        this.pdfver= this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
+        this.pdfUrl = objectUrl; // Temporal para previsualización
+        this.pdfver = this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl);
       }
     };
     input.click();
+  }
+
+  // ========== MÉTODOS SIN CAMBIOS (pero mantenidos) ==========
+  
+  private marcarTodosComoTocados() {
+    this.nombreTouched = true;
+    this.apellidoTouched = true;
+    this.edadTouched = true;
+    this.nacimientoTouched = true;
+    this.generoTouched = true;
+    this.pesoTouched = true;
+    this.alturaTouched = true;
+    this.correoTouched = true;
+  }
+
+  quitarImagen() {
+    this.avatarUrl = undefined;
+    this.selectedImageFile = null;
   }
 
   abrirModal() {
@@ -204,6 +310,8 @@ export class ProfilePage implements OnInit {
 
   quitarExpediente() {
     this.pdfUrl = null;
+    this.pdfver = null;
+    this.selectedPdfFile = null;
     this.mostrarModal = false;
   }
 

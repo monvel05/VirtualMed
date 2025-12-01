@@ -1,50 +1,77 @@
 
-<ion-header [translucent]="true">
+<!-- version  -->
+  <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-button slot="start"  routerLink="/pages/dashboard"  color="primary" fill="solid">
+    <ion-button slot="start" (click)="fnCitaRegresar()" color="primary" fill="solid">
       Regresar
     </ion-button>
-    <ion-title>VirtualMed Crear cita </ion-title>
+    <ion-title>VirtualMed Crear cita</ion-title>
   </ion-toolbar>
 </ion-header>
 
-
-
-
 <ion-content [fullscreen]="true">
-<ion-card>
-<ion-grid>
-  <!--datos generales-->
-  <ion-row>
-    <ion-col size="12" size-md="6">
-      <h2 class="section-title">Datos generales</h2>
-          <ion-item lines="none">
+  <ion-card>
+    <ion-grid>
+      <!--datos generales-->
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <h2 class="section-title">Datos generales</h2>
+          <ion-item lines="none" [class.invalid]="nombreInvalid && nombreTouched">
             <ion-label position="floating">Nombre</ion-label>
-            <ion-input [(ngModel)]="nombreCita" placeholder="Ingresa tu nombre"></ion-input>
+            <ion-input 
+              [(ngModel)]="nombreCita" 
+              placeholder="Ingresa tu nombre"
+              (ionBlur)="nombreTouched = true">
+            </ion-input>
           </ion-item>
+          @if(nombreInvalid && nombreTouched){
+            <div class="mensaje-error">
+              El nombre es requerido
+            </div>
+          }
         </ion-col>
 
         <!-- Apellidos -->
         <ion-col size="12" size-md="6">
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="apellidoInvalid && apellidoTouched">
             <ion-label position="floating">Apellidos</ion-label>
-            <ion-input [(ngModel)]="apellidoCita" placeholder="Ingresa tus apellidos"></ion-input>
+            <ion-input 
+              [(ngModel)]="apellidoCita" 
+              placeholder="Ingresa tus apellidos"
+              (ionBlur)="apellidoTouched = true">
+            </ion-input>
           </ion-item>
+          @if(apellidoInvalid && apellidoTouched){
+            <div class="mensaje-error">
+              Los apellidos son requeridos
+            </div>
+          }
         </ion-col>
         
         <!-- Edad -->
         <ion-col size="12" size-md="6">
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="edadInvalid && edadTouched">
             <ion-label position="floating">Edad</ion-label>
-            <ion-input [(ngModel)]="edadCita" placeholder="Ingresa tu edad" type="number"></ion-input>
+            <ion-input 
+              [(ngModel)]="edadCita" 
+              placeholder="Ingresa tu edad" 
+              type="number"
+              (ionBlur)="edadTouched = true">
+            </ion-input>
           </ion-item>
+          @if(edadInvalid && edadTouched){
+            <div class="mensaje-error">
+              La edad debe ser mayor a 0
+            </div>
+          }
         </ion-col>
 
         <ion-col size="12">
           <!-- Input de Correo con validación de estilo -->
-          <ion-item [class.valid]="correoInput.valid && correoInput.dirty"
-                    [class.invalid]="correoInput.invalid && correoInput.dirty"
-                    lines="none">
+          <ion-item 
+            lines="none"
+            [class.invalid]="correoInvalid && correoTouched"
+            [class.valid]="!correoInvalid && correoTouched">
             <ion-label position="floating">Correo electrónico</ion-label>
             <ion-input
               name="correo"
@@ -52,58 +79,71 @@
               type="email"
               required
               pattern=".+@.+"
-              #correoInput="ngModel">
+              #correoInput="ngModel"
+              (ionBlur)="correoTouched = true">
             </ion-input>
           </ion-item>
           
           <!-- Mensaje de error -->
-          <div *ngIf="correoInput.invalid && correoInput.dirty" class="mensaje-error">
-            Ingresa un correo válido (ej. usuario@dominio.com)
-          </div>
+          @if (correoInput.invalid && correoInput.dirty) {
+            <div class="mensaje-error">
+              Ingresa un correo válido (ej. usuario@dominio.com)
+            </div>
+          }
         </ion-col>
-  </ion-row>
+      </ion-row>
 
-  <!--motivo-->
-  <ion-row>
-
-
-  </ion-row>
-
-  <!--medico y tipo de cita-->
-
-<ion-row>
-  <ion-col size="12" size-md="6">
-    <h2 class="section-title">Datos de cita</h2>
-          <ion-item lines="none">
-            <!-- Usamos position="stacked" para que el label esté siempre visible sobre el select -->
+      <!--medico y tipo de cita-->
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <h2 class="section-title">Datos de cita</h2>
+          <ion-item lines="none" [class.invalid]="medicoInvalid && medicaTouched">
             <ion-label position="stacked">Médico <ion-text color="danger">(Requerido)</ion-text></ion-label>
-            <ion-select class="custom-select" [(ngModel)]="medicoCita" placeholder="Selecciona a tu médico">
+            <ion-select 
+              class="custom-select" 
+              [(ngModel)]="medicoCita" 
+              placeholder="Selecciona a tu médico"
+              (ionBlur)="medicaTouched = true">
               <ion-select-option value="medico1">Dr. Alejandro Gómez</ion-select-option>
               <ion-select-option value="medico2">Dra. Camila Vargas</ion-select-option>
             </ion-select>
           </ion-item>
+          @if(medicoInvalid && medicaTouched){
+            <div class="mensaje-error">
+              Selecciona un médico
+            </div>
+          }
         </ion-col>
 
         <!-- Selección de tipo de cita -->
         <ion-col size="12" size-md="6">
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="tipoCitaInvalid && tipoCitaTouched">
             <ion-label position="stacked">Tipo de cita <ion-text color="danger">(Requerido)</ion-text></ion-label>
-            <ion-select class="custom-select" [(ngModel)]="tipoCita" placeholder="Selecciona el tipo de cita">
+            <ion-select 
+              class="custom-select" 
+              [(ngModel)]="tipoCita" 
+              placeholder="Selecciona el tipo de cita"
+              (ionBlur)="tipoCitaTouched = true">
               <ion-select-option value="presencialCita">Presencial</ion-select-option>
               <ion-select-option value="llamadaCita">Llamada</ion-select-option>
               <ion-select-option value="videollamadaCita">Videollamada</ion-select-option>
             </ion-select>
           </ion-item>
+          @if(tipoCitaInvalid && tipoCitaTouched){
+            <div class="mensaje-error">
+              Selecciona el tipo de cita
+            </div>
+          }
         </ion-col>
-</ion-row>
-  
-  <!--fecha y hora-->
-<ion-row>
-<ion-col size="12">
+      </ion-row>
+      
+      <!--fecha y hora-->
+      <ion-row>
+        <ion-col size="12">
           <h2 class="section-title">Día y Hora</h2>
         </ion-col>
         <ion-col size="12">
-          <ion-item lines="none">
+          <ion-item lines="none" [class.invalid]="fechaInvalid && fechaTouched">
             <ion-label position="stacked">Selecciona Fecha y Hora</ion-label>
             <ion-datetime 
               [(ngModel)]="fechahoraCita"
@@ -113,20 +153,29 @@
               max="2099-05-31T23:59:59"
               locale="es-ES"
               class="custom-datetime"
-            ></ion-datetime>
+              (ionBlur)="fechaTouched = true">
+            </ion-datetime>
           </ion-item>
+          @if(fechaInvalid && fechaTouched){
+            <div class="mensaje-error">
+              Selecciona una fecha y hora válida
+            </div>
+          }
         </ion-col>
-</ion-row>
+      </ion-row>
 
-<!--guardar los cambios-->
-<ion-row>
-    <ion-col size="12" size-md="6" offset-md="3" class="confirm-button-container">
-      <!-- Usamos una función de TS para el click -->
-      <ion-button expand="block" color="primary" (click)="guardarCita()">Confirmar Cita</ion-button>
-    </ion-col>
-</ion-row>
-
-
-</ion-grid>
-</ion-card>
+      <!--guardar los cambios-->
+      <ion-row>
+        <ion-col size="12" size-md="6" offset-md="3" class="confirm-button-container">
+          <ion-button 
+            expand="block" 
+            color="primary" 
+            (click)="guardarCita()"
+            [disabled]="!formularioValido">
+            Confirmar Cita
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
 </ion-content>

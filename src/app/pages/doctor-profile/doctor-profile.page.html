@@ -1,0 +1,191 @@
+
+
+
+
+<!--regreso y encabezado-->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-button slot="start" (click)="fnRegresar()" color="primary" fill="solid">
+      Regresar
+    </ion-button>
+    <ion-title>VirtualMed Perfil Doctor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-grid>
+
+      <!--foto de perfil de doctor-->
+      <ion-row class="avatar-container">
+        <ion-col size="12">
+          <ion-avatar style="width: 120px; height: 120px; margin: 20px auto;">
+            <img [src]="avatarFoto || 'assets/avatar.png'" alt="foto de perfil" />
+          </ion-avatar>
+        
+          <!--botones de la foto de perfil-->
+          <div class="profile-actions">
+            <ion-button (click)="seleccionarFoto()" color="primary" fill="outline">
+              Cambiar
+            </ion-button>
+            <ion-button (click)="quitarFoto()" color="danger" fill="outline">
+              Quitar
+            </ion-button>
+          </div>
+
+          <!-- Input oculto para seleccionar archivo -->
+          <input
+            type="file"
+            accept="image/*"
+            #fileInput
+            style="display: none"
+            (change)="archivoSelect($event)"
+          />
+        </ion-col>
+      </ion-row>
+    
+      <!--nombre del doctor-->
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="nombreInvalid && nombreTouched">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input 
+              [(ngModel)]="nombre" 
+              placeholder="Ingresa tu nombre"
+              (ionBlur)="nombreTouched = true">
+            </ion-input>
+          </ion-item>
+          @if(nombreInvalid && nombreTouched){
+            <div class="mensaje-error">
+              El nombre es requerido
+            </div>
+          }
+        </ion-col>
+
+        <!--apellido del doctor -->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="apellidoInvalid && apellidoTouched">
+            <ion-label position="floating">Apellidos</ion-label>
+            <ion-input 
+              [(ngModel)]="apellido" 
+              placeholder="Ingresa tus apellidos"
+              (ionBlur)="apellidoTouched = true">
+            </ion-input>
+          </ion-item>
+          @if(apellidoInvalid && apellidoTouched){
+            <div class="mensaje-error">
+              Los apellidos son requeridos
+            </div>
+          }
+        </ion-col>
+        
+        <!-- edad del doctor-->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="edadInvalid && edadTouched">
+            <ion-label position="floating">Edad</ion-label>
+            <ion-input 
+              [(ngModel)]="edad" 
+              type="number" 
+              placeholder="Ingresa tu edad"
+              (ionBlur)="edadTouched = true">
+            </ion-input>
+          </ion-item>
+          @if(edadInvalid && edadTouched){
+            <div class="mensaje-error">
+              La edad debe ser mayor a 0
+            </div>
+          }
+        </ion-col>
+
+        <!--especialidad del doctor -->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="especialidadInvalid && especialidadTouched">
+            <ion-label position="floating">Especialidad</ion-label>
+            <ion-input 
+              [(ngModel)]="especialidad" 
+              placeholder="Ingresa tu especialidad"
+              (ionBlur)="especialidadTouched = true">
+            </ion-input>
+          </ion-item>
+          @if(especialidadInvalid && especialidadTouched){
+            <div class="mensaje-error">
+              La especialidad es requerida
+            </div>
+          }
+        </ion-col>
+
+        <!--subespecialidad del doctor-->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="subespecialidadInvalid && subespecialidadTouched">
+            <ion-label position="floating">Subespecialidad</ion-label>
+            <ion-input 
+              [(ngModel)]="subespecialidad" 
+              placeholder="Ingresa tu subespecialidad"
+              (ionBlur)="subespecialidadTouched = true">
+            </ion-input>
+          </ion-item>
+          @if(subespecialidadInvalid && subespecialidadTouched){
+            <div class="mensaje-error">
+              La subespecialidad es requerida
+            </div>
+          }
+        </ion-col>
+
+        <!--cedula del doctor -->
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" [class.invalid]="cedulaInvalid && cedulaTouched">
+            <ion-label position="floating">Cédula profesional</ion-label>
+            <ion-input 
+              [(ngModel)]="cedula" 
+              placeholder="Ingresa tu cédula"
+              (ionBlur)="cedulaTouched = true">
+            </ion-input>
+          </ion-item>
+          @if(cedulaInvalid && cedulaTouched){
+            <div class="mensaje-error">
+              La cédula profesional es requerida
+            </div>
+          }
+        </ion-col>
+        
+        <!-- validacion del correo-->
+        <ion-col size="12">
+          <ion-item lines="none" 
+                    [class.invalid]="correoInvalid && correoTouched"
+                    [class.valid]="!correoInvalid && correoTouched">
+            <ion-label position="floating">Correo electrónico</ion-label>
+            <ion-input 
+              name="correo" 
+              [(ngModel)]="correo" 
+              type="email"
+              required 
+              pattern=".+@.+"
+              #correoInput="ngModel"
+              (ionBlur)="correoTouched = true">
+            </ion-input>
+          </ion-item>
+          
+          <!-- Mensaje de error -->
+          @if(correoInvalid && correoTouched){
+            <div class="mensaje-error">
+              Ingresa un correo válido (ej. usuario@dominio.com)
+            </div>
+          }
+        </ion-col>
+      </ion-row>
+
+      <!--boton para guardar los cambios-->
+      <ion-row>
+        <ion-col size="12" size-md="6" offset-md="3" class="save-button-container">
+          <ion-button 
+            expand="block" 
+            (click)="guardarCambios()"
+            [disabled]="!formularioValido">
+            Guardar cambios
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </ion-card>
+</ion-content>

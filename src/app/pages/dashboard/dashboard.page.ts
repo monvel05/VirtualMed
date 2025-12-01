@@ -25,6 +25,7 @@ import {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
+
   imports: [
     CommonModule, FormsModule, IonButtons, IonDatetime,
     IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar,

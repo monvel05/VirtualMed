@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, ToastController,
 } from '@ionic/angular/standalone';
-
+import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { UserService } from 'src/app/services/user.service';
@@ -44,7 +44,7 @@ export class PrescriptionPage implements OnInit {
     { name: '', dosage: '', frequency: '', duration: '', instructions: '' },
   ];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit() {
     this.doctor = {
@@ -57,6 +57,10 @@ export class PrescriptionPage implements OnInit {
     };
   }
 
+  goToDashboard() {
+    this.router.navigate(['/dashboard']); // Asegúrate que la ruta sea '/dashboard' o '/home' según tu app
+  }
+  
   // <--- 2. AGREGADO: Esta función faltaba
   printPrescription() {
     this.generatePDF();

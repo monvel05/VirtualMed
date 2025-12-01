@@ -47,46 +47,32 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <!--Botón de agendar cita-->
+
+            <!--Botón de agendar citas (Ajustado a size-md="6" para mantener la cuadrícula)-->
             <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToCreateAppointment()"
-              >
+              <button type="button" class="btn-custom" (click)="fnGoToCreateAppointment()">
                 Agendar citas
               </button>
             </ion-col>
 
-            <!--Botón de ver y gestionar citas-->
+            <!--Botón de gestionar citas (Adaptado al estilo btn-custom)-->
+            <!-- [MODIFICACIÓN CLAVE APLICADA AQUÍ] -->
             <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToManagement()"
-              >
-                Gestionar citas
+              <button type="button" class="btn-custom" (click)="fnGoToDoctorSchedule()">
+                GESTIONAR CITAS
               </button>
             </ion-col>
 
             <!--Botón de historial médico-->
             <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToMedicalRecords()"
-              >
+              <button type="button" class="btn-custom" (click)="fnGoToMedicalRecords()">
                 Historiales Médicos
               </button>
             </ion-col>
 
             <!--Botón de recetas-->
             <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToPrescription()"
-              >
+              <button type="button" class="btn-custom" (click)="fnGoToPrescription()">
                 Generar receta
               </button>
             </ion-col>
@@ -94,11 +80,8 @@
         </ion-col>
         <ion-col size="12" size-md="4">
           <!--Calendario con fechas-->
-          <ion-datetime
-            presentation="date"
-            show-adjacent-days="true"
-            [highlightedDates]="highlightedDates"
-          ></ion-datetime>
+          <ion-datetime presentation="date" show-adjacent-days="true"
+            [highlightedDates]="highlightedDates"></ion-datetime>
 
           <ion-accordion-group expand="inset">
             <ion-accordion value="first">
@@ -154,31 +137,19 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToCreateAppointment()"
-              >
+              <button type="button" class="btn-custom" (click)="fnGoToCreateAppointment()">
                 Agendar cita
               </button>
             </ion-col>
 
             <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToManagement()"
-              >
+              <button type="button" class="btn-custom" (click)="fnGoToManagement()">
                 Ver mis citas
               </button>
             </ion-col>
 
             <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToProfile()"
-              >
+              <button type="button" class="btn-custom" (click)="fnGoToProfile()">
                 Mi Perfil
               </button>
             </ion-col>
@@ -186,45 +157,45 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    
+
     <ion-fab slot="fixed" vertical="bottom" horizontal="end">
       <ion-fab-button>
         <ion-icon name="chevron-up-circle"></ion-icon>
       </ion-fab-button>
       <ion-fab-list side="top">
-  
-  <ion-fab-button color="tertiary" (click)="fnGoToChatbot()">
-    <ion-icon name="chatbubbles"></ion-icon>
-  </ion-fab-button>
-  
-  <ion-fab-button (click)="fnGoToSettings()">
-    <ion-icon name="settings"></ion-icon>
-  </ion-fab-button>
-  
-  <ion-fab-button (click)="setOpen(true)">
-    <ion-icon name="notifications"></ion-icon>
-  </ion-fab-button>
 
-</ion-fab-list>
-      </ion-fab>
+        <ion-fab-button color="tertiary" (click)="fnGoToChatbot()">
+          <ion-icon name="chatbubbles"></ion-icon>
+        </ion-fab-button>
 
-      <ion-modal [isOpen]="isModalOpen">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Notificaciones</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="setOpen(false)">Close</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <p>
-          Usted está al día.
-        </p>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+        <ion-fab-button (click)="fnGoToSettings()">
+          <ion-icon name="settings"></ion-icon>
+        </ion-fab-button>
+
+        <ion-fab-button (click)="setOpen(true)">
+          <ion-icon name="notifications"></ion-icon>
+        </ion-fab-button>
+
+      </ion-fab-list>
+    </ion-fab>
+
+    <ion-modal [isOpen]="isModalOpen">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Notificaciones</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="setOpen(false)">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <p>
+            Usted está al día.
+          </p>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
   </ion-content>
 </div>
 }

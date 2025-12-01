@@ -1,10 +1,14 @@
-<ion-header>
+<ion-header [translucent]="true">
+  <!-- Primera Toolbar: Título de la App -->
   <ion-toolbar color="light">
     <ion-title>VirtualMed</ion-title>
   </ion-toolbar>
+  
+  <!-- Segunda Toolbar: Navegación y Título de la Página -->
   <ion-toolbar color="light">
     <ion-buttons slot="start">
       <ion-button (click)="fnPerfilRegresar()">
+        <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
         Regresar
       </ion-button>
     </ion-buttons>
@@ -12,60 +16,101 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="content">
+<ion-content [fullscreen]="true">
+  <div class="content ion-padding">
 
-    <!-- TODAS LAS CITAS EN UNA SOLA LISTA -->
-    <ion-item lines="none">
-      <ion-label class="section-title">Todas las Citas</ion-label>
+    <!-- Sección de Título -->
+    <ion-item lines="none" class="ion-margin-bottom">
+      <ion-label class="section-title">
+        <h2 style="font-weight: bold; margin: 0;">Todas las Citas</h2>
+      </ion-label>
     </ion-item>
 
+    <!-- Usando el control de flujo @if de Angular para manejar la lista vacía -->
     @if (allAppointments.length > 0) {
-    @for (cita of allAppointments; track cita.id) {
-    <ion-card class="appt-card">
-      <ion-card-header>
-        <ion-card-title>{{ cita.tipo }}</ion-card-title>
-        <ion-card-subtitle>{{ cita.paciente }}
-          @if (cita.pacienteEdad) {
-          ({{ cita.pacienteEdad }} años)
-          }
-        </ion-card-subtitle>
-      </ion-card-header>
+      
+      <!-- Iteración sobre la lista de citas usando @for -->
+      @for (cita of allAppointments; track cita.id) {
+        <ion-card class="appt-card ion-margin-bottom">
+          <ion-card-header>
+            <!-- Muestra el estatus de la cita con color -->
+            <ion-card-subtitle class="ion-text-right">
+                Estado: 
+                <ion-text [color]="cita.estatus === 'Confirmada' ? 'success' : cita.estatus === 'Cancelada' ? 'danger' : 'warning'">
+                    {{ cita.estatus || 'Pendiente' }}
+                </ion-text>
+            </ion-card-subtitle>
 
-      <ion-card-content>
-        <div class="patient-info">
-          <div class="info-row">
-            <span>Fecha y Hora:</span>
-            <strong>{{ formatearFechaHora(cita.fechahoraCita) }}</strong>
-          </div>
-          <div class="info-row">
-            <span>Tipo:</span>
-            <strong>{{ cita.tipoConsulta }}</strong>
-          </div>
-        </div>
+            <!-- Título: Tipo de Cita y Paciente -->
+            <ion-card-title>{{ cita.tipo }}</ion-card-title>
+            <ion-card-subtitle>
+              Paciente: {{ cita.paciente }}
+              @if (cita.pacienteEdad) {
+                ({{ cita.pacienteEdad }} años)
+              }
+            </ion-card-subtitle>
+          </ion-card-header>
 
-        <div class="appt-actions">
-          <ion-button class="btn-confirmar" (click)="confirmarCita(cita)">
-            <ion-icon name="checkmark" slot="start"></ion-icon>
-            Confirmar
-          </ion-button>
-          <ion-button class="btn-rechazar" (click)="rechazarCita(cita)">
-            <ion-icon name="close" slot="start"></ion-icon>
-            Rechazar
-          </ion-button>
-        </div>
-      </ion-card-content>
-    </ion-card>
-    }
+          <ion-card-content>
+            <div class="patient-info ion-margin-bottom">
+              <!-- Información detallada en formato de ítem/fila simple -->
+              
+              <ion-item lines="none" class="info-row">
+                <ion-icon name="time-outline" slot="start" color="medium"></ion-icon>
+                <ion-label>
+                    <p>Fecha y Hora:</p>
+                    <strong>{{ formatearFechaHora(cita.fechahoraCita) }}</strong>
+                </ion-label>
+              </ion-item>
+
+              <ion-item lines="none" class="info-row">
+                <ion-icon name="medical-outline" slot="start" color="medium"></ion-icon>
+                <ion-label>
+                    <p>Tipo de Consulta:</p>
+                    <strong>{{ cita.tipoConsulta }}</strong>
+                </ion-label>
+              </ion-item>
+            </div>
+
+            <!-- Controles de acción (Botones Confirmar/Rechazar) -->
+            <div class="appt-actions ion-text-right">
+              <!-- Deshabilitamos los botones si ya está Confirmada o Cancelada -->
+              <ion-button 
+                color="success" 
+                size="small"
+                (click)="confirmarCita(cita)"
+                [disabled]="cita.estatus === 'Confirmada' || cita.estatus === 'Cancelada'"
+                class="ion-margin-end"
+              >
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                Confirmar
+              </ion-button>
+              
+              <ion-button 
+                color="danger" 
+                size="small"
+                (click)="rechazarCita(cita)"
+                [disabled]="cita.estatus === 'Confirmada' || cita.estatus === 'Cancelada'"
+              >
+                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                Rechazar
+              </ion-button>
+            </div>
+            
+          </ion-card-content>
+        </ion-card>
+      }
+
     } @else {
-    <ion-card class="appt-card empty">
-      <ion-card-content class="ion-text-center">
-        <ion-icon name="calendar-outline" size="large" color="medium"></ion-icon>
-        <ion-text color="medium">
-          <p>No hay citas programadas</p>
-        </ion-text>
-      </ion-card-content>
-    </ion-card>
+      <!-- Contenido si la lista está vacía -->
+      <ion-card class="appt-card empty ion-text-center">
+        <ion-card-content>
+          <ion-icon name="calendar-outline" size="large" color="medium"></ion-icon>
+          <ion-text color="medium" class="ion-padding-top ion-display-block">
+            <p>No hay citas programadas.</p>
+          </ion-text>
+        </ion-card-content>
+      </ion-card>
     }
 
   </div>

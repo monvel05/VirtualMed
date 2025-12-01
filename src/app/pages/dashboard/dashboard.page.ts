@@ -87,13 +87,15 @@ export class DashboardPage implements OnInit {
 
   // Funciones para navegación
   fnGoToCreateAppointment() { this.router.navigate(['/create-appointment']); }
-  fnGoToManagement() { this.router.navigate(['/management']); }
+  fnGoToManagement() { this.router.navigate(['/my-appointments']); }
   fnGoToMedicalRecords() { this.router.navigate(['/medical-records']); }
   fnGoToPrescription() { this.router.navigate(['/prescription']); }
   fnGoToProfile() { this.router.navigate(['/profile']); }
   fnGoToSettings() { this.router.navigate(['/settings']); }
   fnGoToHome() { this.router.navigate(['/dashboard']); }
   fnGoToChatbot() { this.router.navigate(['/chatbot']); }
+  //se agrega la funcion para ir al horario del doctor
+  fnGoToDoctorSchedule() { this.router.navigate(['/schedule-for-doctor']); }
 
 
   fnLogout() {

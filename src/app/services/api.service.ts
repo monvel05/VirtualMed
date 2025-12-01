@@ -14,6 +14,7 @@ export class ApiService {
 
   constructor() { }
 
+  
   // Función auxiliar para crear headers
   private getHeaders(): HttpHeaders {
     let headers = new HttpHeaders({
@@ -36,10 +37,12 @@ export class ApiService {
 
   // ================= MÉTODOS HTTP GENÉRICOS =================
 
+   
+
   get(endpoint: string): Observable<any> {
     return this.http.get(`${this.apiUrl}${endpoint}`, { headers: this.getHeaders() });
   }
-
+// 👇 AÑADE ESTOS MÉTODOS POST, PUT, DELETE
   post<T>(endpoint: string, data: any): Observable<T> {
     return this.http.post<T>(`${this.apiUrl}${endpoint}`, data, { headers: this.getHeaders() });
   }

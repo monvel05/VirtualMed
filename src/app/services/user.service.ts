@@ -235,7 +235,7 @@ export class UserService {
   // ==================== MÉTODOS API (Proxies) ====================
 
   getCitas(): Observable<any> { return this.apiService.get('/citas'); }
-  getCitasByUser(userId: string): Observable<any> { return this.apiService.get(`/users/${userId}/citas`); }
+  getCitasByUser(userId: string): Observable<any> { return this.apiService.get(`/citas?usuarioId=${userId}`); }
   createCita(citaData: any): Observable<any> { return this.apiService.post('/citas', citaData); }
   getUsers(): Observable<any> { return this.apiService.get('/users'); }
   getUserById(id: string): Observable<any> { return this.apiService.get(`/user/${id}`); }

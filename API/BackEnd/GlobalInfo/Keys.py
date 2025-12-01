@@ -1,16 +1,10 @@
 import os
-import urllib.parse
 from dotenv import load_dotenv
 
 load_dotenv()  # Esto carga las variables del .env
 
-# MongoDB Configuration
-username = urllib.parse.quote_plus(os.getenv("MONGO_USER"))
-password = urllib.parse.quote_plus(os.getenv("MONGO_PASSWORD"))
-cluster = os.getenv("MONGO_CLUSTER")
 
-# 3. Construir la URI limpia
-MONGODB_URI = f"mongodb+srv://{username}:{password}@{cluster}"
-
-DB_NAME = "VirtualMedDB"
 dbconn = None
+MONGODB_URI = os.getenv("MONGODB_URI")
+DB_NAME = "VirtualMedDB"
+PORT = os.getenv("PORT", 3000)  # Usa 3000 por defecto si no está en .env

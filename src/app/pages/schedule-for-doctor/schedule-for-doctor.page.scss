@@ -1,16 +1,14 @@
 // doctor-agenda.page.scss
 .content {
   padding: 16px;
-  background: #F8F9F9; // Gris Niebla suavizado
+  background: #F8F9F9;
 }
 
 .section-title {
   font-size: 18px;
   font-weight: 600;
-  color: #A8D8E8; // Azul Cielo Sereno suave
-  margin: 25px 0 15px 0;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #A8D8E8;
+  color: #373e41;
+  margin: 0;
 }
 
 // TARJETAS DE CITAS
@@ -20,39 +18,33 @@
   box-shadow: 0 4px 16px rgba(168, 216, 232, 0.15);
   background: white;
   transition: transform 0.3s ease;
+  border-left: 6px solid #A8D8E8;
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(168, 216, 232, 0.25);
   }
-}
 
-// BARRAS DE ESTADO
-.status-bar {
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-// ESTADOS CON TUS COLORES SUAVES
-.status-pendiente {
-  background: linear-gradient(135deg, #C2F0F1 0%, #A8D8E8 100%);
-  color: #2c5f7a;
-  border-bottom: 3px solid #A8D8E8;
-}
-
-.status-confirmada {
-  background: linear-gradient(135deg, #B4E4D1 0%, #9BD7BC 100%);
-  color: #1e4e3a;
-  border-bottom: 3px solid #B4E4D1;
-}
-
-.status-completada {
-  background: linear-gradient(135deg, #F2D4B8 0%, #E8C9A8 100%);
-  color: #7d5a2c;
-  border-bottom: 3px solid #F2D4B8;
+  &.empty {
+    text-align: center;
+    background: linear-gradient(135deg, #C2F0F1 0%, #A8D8E8 100%);
+    color: #2c5f7a;
+    
+    ion-card-content {
+      padding: 50px 20px;
+      
+      ion-icon {
+        color: #2c5f7a;
+        margin-bottom: 16px;
+      }
+      
+      p {
+        color: #2c5f7a;
+        font-size: 16px;
+        margin-bottom: 24px;
+      }
+    }
+  }
 }
 
 // CONTENIDO DE TARJETAS
@@ -106,32 +98,6 @@ ion-card-content {
   }
 }
 
-// INDICADOR DE URGENCIA
-.urgencia {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-left: 8px;
-}
-
-.urgencia-alta {
-  background: #FFC8C8;
-  color: #8b3a3a;
-}
-
-.urgencia-media {
-  background: #F2D4B8;
-  color: #7d5a2c;
-}
-
-.urgencia-baja {
-  background: #B4E4D1;
-  color: #1e4e3a;
-}
-
 // BOTONES DE ACCIÓN
 .appt-actions {
   margin-top: 20px;
@@ -139,7 +105,7 @@ ion-card-content {
   border-top: 2px solid rgba(194, 240, 241, 0.3);
 
   ion-button {
-    margin: 0;
+    margin: 0 8px 8px 0;
     --border-radius: 12px;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     --padding-top: 16px;
@@ -154,23 +120,24 @@ ion-card-content {
   }
 }
 
-//BOTÓN CONFIRMAR 
-ion-button.btn-confirmar {
+// BOTÓN CONFIRMAR 
+.btn-confirmar {
   --background: linear-gradient(135deg, #88ca8d 0%, #96c098 100%);
   --background-activated: #5a925c;
   --color: #2E7D32;
 }
 
-//BOTÓN RECHAZAR
-ion-button.btn-rechazar {
+// BOTÓN RECHAZAR
+.btn-rechazar {
   --background: linear-gradient(135deg, #f28f8f 0%, #f0a5a5 100%);
   --background-activated: #d87373;
   --color: #C62828;
 }
+
 // HEADER
 ion-header {
   ion-toolbar {
-    --background: #C2F0F1; // Azul Jordy Suave
+    --background: #C2F0F1;
     --color: #2c5f7a;
     
     &:first-child {
@@ -216,11 +183,6 @@ ion-content {
     padding: 12px 16px 16px 16px;
   }
   
-  .status-bar {
-    padding: 12px 16px;
-    font-size: 13px;
-  }
-  
   .appt-actions {
     margin-top: 16px;
     
@@ -228,12 +190,13 @@ ion-content {
       --padding-top: 14px;
       --padding-bottom: 14px;
       font-size: 14px;
+      margin: 0 4px 8px 0;
     }
   }
 }
 
 // ANIMACIONES
-ion-card {
+.appt-card {
   animation: fadeInUp 0.5s ease-out;
 }
 

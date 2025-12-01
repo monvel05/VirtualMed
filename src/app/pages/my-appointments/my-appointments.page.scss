@@ -28,10 +28,6 @@ ion-content {
   background: white;
   overflow: hidden;
 
-  &.next {
-    border-left: 6px solid #73C7E3;
-  }
-
   &.empty {
     text-align: center;
     background: #9BEBED;
@@ -40,43 +36,6 @@ ion-content {
       padding: 50px 20px;
     }
   }
-}
-
-// BARRAS DE ESTADO
-.status-bar {
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.status-pendiente {
-  background: linear-gradient(135deg, #9BEBED 0%, #73C7E3 100%);
-  color: #2c5f7a;
-}
-
-.status-confirmada {
-  background: linear-gradient(135deg, #86CBB1 0%, #6ab897 100%);
-  color: #1e4e3a;
-}
-
-.status-completada {
-  background: linear-gradient(135deg, #E6B780 0%, #d9a466 100%);
-  color: #7d5a2c;
-}
-
-.status-cancelada {
-  background: linear-gradient(135deg, #FF9999 0%, #ff7a7a 100%);
-  color: #8b3a3a;
-}
-
-// ALERTAS
-.alerta-cancelada {
-  --background: #FFE6E6;
-  --color: #8b3a3a;
-  border-radius: 12px;
-  margin: 0 0 20px 0;
-  border-left: 6px solid #FF9999;
 }
 
 // CONTENIDO DE TARJETAS
@@ -116,6 +75,15 @@ ion-list {
       margin-right: 16px;
       font-size: 20px;
     }
+
+    ion-label {
+      font-size: 14px;
+      color: #2c5f7a;
+      
+      strong {
+        color: #73C7E3;
+      }
+    }
   }
 }
 
@@ -132,7 +100,6 @@ ion-list {
   --background-activated: #d87373;
   --color: #C62828;
   font-weight: 600;
-  
 }
 
 // ==================== BOTÓN SOLICITAR CITA ====================
@@ -140,6 +107,14 @@ ion-list {
   --background: linear-gradient(135deg, #79b4e0 0%, #8cbae3 100%);
   --background-activated: #5a8fc4;
   --color: #1565C0;
+}
+
+// ==================== BOTÓN REGRESAR ====================
+.btn-regresar {
+  --background: linear-gradient(135deg, #9BEBED 0%, #73C7E3 100%);
+  --background-activated: #5aabc7;
+  --color: #2c5f7a;
+  font-weight: 600;
 }
 
 // SECCIONES
@@ -150,9 +125,38 @@ ion-list {
   margin: 0;
 }
 
+// ALERTAS (por si las necesitas después)
+.alerta-cancelada {
+  --background: #FFE6E6;
+  --color: #8b3a3a;
+  border-radius: 12px;
+  margin: 0 0 20px 0;
+  border-left: 6px solid #FF9999;
+}
+
 // RESPONSIVE
 @media (max-width: 480px) {
   .content {
     padding: 12px;
+  }
+
+  ion-card-header {
+    padding: 16px 16px 8px 16px;
+    
+    ion-card-title {
+      font-size: 18px;
+    }
+    
+    ion-card-subtitle {
+      font-size: 14px;
+    }
+  }
+
+  ion-card-content {
+    padding: 8px 16px 16px 16px;
+  }
+
+  .section-title {
+    font-size: 16px;
   }
 }

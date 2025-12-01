@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 // IMPORTANTE: Importamos la CLASE UserService, no la interfaz User
-import { UserService } from '../../services/user.service';
+import { UserService } from 'src/app/services/user.service';
 
 // Ionic Components & Icons
 import {
@@ -11,8 +11,7 @@ import {
   IonMenuButton, IonGrid, IonDatetime, IonCol, IonRow, IonAccordion,
   IonAccordionGroup, IonItem, IonLabel, IonCard, IonCardContent,
   IonCardHeader, IonCardSubtitle, IonCardTitle, IonFab, IonFabButton,
-  IonFabList, IonIcon, IonModal, IonButton, IonList 
-} from '@ionic/angular/standalone';
+  IonFabList, IonIcon, IonModal, IonButton, IonList } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { 

@@ -4,7 +4,10 @@
   </ion-toolbar>
   <ion-toolbar color="light">
     <ion-buttons slot="start">
-      <ion-back-button default-href="/home" text="Regreso"></ion-back-button>
+      <ion-button (click)="fnPerfilRegresar()" class="btn-regresar">
+        <ion-icon name="arrow-back"></ion-icon>
+        Regresar
+      </ion-button>
     </ion-buttons>
     <ion-title>Mis Citas Médicas</ion-title>
   </ion-toolbar>
@@ -13,82 +16,14 @@
 <ion-content>
   <div class="content">
 
-    <!-- PRÓXIMA CITA -->
+    <!-- TODAS LAS CITAS EN UNA SOLA LISTA -->
     <ion-item lines="none">
-      <ion-label class="section-title">Tu próxima cita</ion-label>
+      <ion-label class="section-title">Todas mis citas</ion-label>
     </ion-item>
 
-    @if (nextAppointment) {
-    @if (nextAppointment.estatus === 'Cancelada') {
-    <ion-item class="alerta-cancelada" lines="none">
-      <ion-icon name="warning" slot="start"></ion-icon>
-      <ion-label>El doctor ha cancelado esta cita</ion-label>
-    </ion-item>
-    }
-
-    <ion-card class="appt-card next">
-      <div [class]="'status-bar status-' + nextAppointment.estatus.toLowerCase()">
-        <ion-label>Estatus: {{ nextAppointment.estatus }}</ion-label>
-      </div>
-
-      <ion-card-header>
-        <ion-card-title>{{ nextAppointment.tipo }}</ion-card-title>
-        <ion-card-subtitle>{{ nextAppointment.doctor }}</ion-card-subtitle>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-list lines="none">
-          <ion-item>
-            <ion-icon name="calendar" slot="start"></ion-icon>
-            <ion-label>Fecha: {{ nextAppointment.fecha }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="time" slot="start"></ion-icon>
-            <ion-label>Hora: {{ nextAppointment.hora }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="medical" slot="start"></ion-icon>
-            <ion-label>Especialidad: {{ nextAppointment.especialidad }}</ion-label>
-          </ion-item>
-        </ion-list>
-
-        <!-- SOLO BOTÓN DE CANCELAR -->
-        <div class="appt-actions">
-          @if (nextAppointment.estatus !== 'Cancelada' && nextAppointment.estatus !== 'Completada') {
-          <ion-button expand="block" class="btn-cancelar" (click)="cancelarCita(nextAppointment)">
-            <ion-icon name="close-circle" slot="start"></ion-icon>
-            Cancelar Cita
-          </ion-button>
-          }
-        </div>
-      </ion-card-content>
-    </ion-card>
-    } @else {
-    <ion-card class="appt-card empty">
-      <ion-card-content class="ion-text-center">
-        <ion-icon name="calendar-outline" size="large" color="medium"></ion-icon>
-        <ion-text color="medium">
-          <p>No tienes citas próximas programadas</p>
-        </ion-text>
-        <ion-button class="btn-solicitar" (click)="solicitarCita()">
-          <ion-icon name="add" slot="start"></ion-icon>
-          Solicitar una cita
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
-    }
-
-    <!-- HISTORIAL DE CITAS -->
-    <ion-item lines="none">
-      <ion-label class="section-title">Historial de citas</ion-label>
-    </ion-item>
-
-    @for (cita of otherAppointments; track cita.id) {
+    @if (allAppointments.length > 0) {
+    @for (cita of allAppointments; track cita.id) {
     <ion-card class="appt-card">
-      <div [class]="'status-bar status-' + cita.estatus.toLowerCase()">
-        <ion-label>Estatus: {{ cita.estatus }}</ion-label>
-      </div>
-
       <ion-card-header>
         <ion-card-title>{{ cita.tipo }}</ion-card-title>
         <ion-card-subtitle>{{ cita.doctor }}</ion-card-subtitle>
@@ -98,11 +33,7 @@
         <ion-list lines="none">
           <ion-item>
             <ion-icon name="calendar" slot="start"></ion-icon>
-            <ion-label>Fecha: {{ cita.fecha }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="time" slot="start"></ion-icon>
-            <ion-label>Hora: {{ cita.hora }}</ion-label>
+            <ion-label>Fecha y Hora: {{ formatearFechaHora(cita.fechahoraCita) }}</ion-label>
           </ion-item>
           <ion-item>
             <ion-icon name="medical" slot="start"></ion-icon>
@@ -110,17 +41,30 @@
           </ion-item>
         </ion-list>
 
-        <!-- SOLO BOTÓN DE CANCELAR (solo para citas activa) -->
+        <!-- BOTÓN DE CANCELAR -->
         <div class="appt-actions">
-          @if (cita.estatus !== 'Cancelada' && cita.estatus !== 'Completada') {
           <ion-button expand="block" class="btn-cancelar" (click)="cancelarCita(cita)">
             <ion-icon name="close-circle" slot="start"></ion-icon>
             Cancelar Cita
           </ion-button>
-          }
         </div>
       </ion-card-content>
     </ion-card>
     }
+    } @else {
+    <ion-card class="appt-card empty">
+      <ion-card-content class="ion-text-center">
+        <ion-icon name="calendar-outline" size="large" color="medium"></ion-icon>
+        <ion-text color="medium">
+          <p>No tienes citas programadas</p>
+        </ion-text>
+        <ion-button class="btn-solicitar" (click)="solicitarCita()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Solicitar una cita
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+    }
+
   </div>
 </ion-content>

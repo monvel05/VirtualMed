@@ -19,6 +19,10 @@ export interface User {
   cedula?: string;
   especialidad?: string;
   subespecialidad?: string;
+
+  nacimiento?:string;
+  avatarUrl?:string;
+  pdfUrl?:string;
 }
 
 export interface AuthResponse {
@@ -51,6 +55,19 @@ export class UserService {
   }
 
   // ==================== MÉTODOS DE AUTENTICACIÓN ====================
+uploadFile(file: File, tipo: 'avatar' | 'pdf'): Observable<any> {
+  const formData = new FormData(); 
+  formData.append('file', file);  
+  formData.append('tipo', tipo);  
+  return this.apiService.post('/upload', formData); 
+}
+  getMedicosDisponibles(): Observable<any> {
+    console.log('[UserService] Obteniendo médicos disponibles...');
+    return this.apiService.get('/users/role/doctor');
+  }
+  
+  
+  
 
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
     return this.apiService.post<AuthResponse>('/login', credentials).pipe(
@@ -193,7 +210,6 @@ export class UserService {
       subespecialidad: this.subespecialidad
     };
   }
-
   getId(): string { return this.id; }
   getName(): string { return this.name; }
   getEmail(): string { return this.email; }
@@ -235,10 +251,11 @@ export class UserService {
 
   getCitas(): Observable<any> { return this.apiService.get('/citas'); }
   getCitasByUser(userId: string): Observable<any> { return this.apiService.get(`/users/${userId}/citas`); }
-  createCita(citaData: any): Observable<any> { return this.apiService.post('/citas', citaData); }
+  createCita(citaData: any): Observable<any> {console.log('[UserService] Creando cita:', citaData);return this.apiService.post('/citas', citaData);}
   getUsers(): Observable<any> { return this.apiService.get('/users'); }
   getUserById(id: string): Observable<any> { return this.apiService.get(`/user/${id}`); }
   updateProfile(userData: any): Observable<any> { return this.apiService.put('/user/profile', userData); }
   getMedicos(): Observable<any> { return this.apiService.get('/medicos'); }
   getPacientes(): Observable<any> { return this.apiService.get('/pacientes'); }
+
 }

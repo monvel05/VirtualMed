@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-
-
 export const routes: Routes = [
   {
     path: '',
@@ -19,12 +17,10 @@ export const routes: Routes = [
   {
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage),
-
   },
   {
     path: 'create-appointment',
     loadComponent: () => import('./pages/create-appointment/create-appointment.page').then(m => m.CreateAppointmentPage),
-
   },
   {
     path: 'my-appointments',
@@ -34,6 +30,7 @@ export const routes: Routes = [
   {
     path: 'prescription',
     loadComponent: () => import('./pages/prescription/prescription.page').then(m => m.PrescriptionPage),
+
 
   },
   {
@@ -55,15 +52,16 @@ export const routes: Routes = [
   {
     path: 'cancer-classifier',
     loadComponent: () => import('./pages/cancer-classifier/cancer-classifier.page').then( m => m.CancerClassifierPage),
+
+  },
+  {
+    path: 'doctor-profile',
+    loadComponent: () => import('./pages/doctor-profile/doctor-profile.page').then( m => m.DoctorProfilePage)
   },
   {
     path: '**',
     redirectTo: 'login'
   },
-  {
-    path: 'doctor-profile',
-    loadComponent: () => import('./pages/doctor-profile/doctor-profile.page').then( m => m.DoctorProfilePage)
-  }
 
 
 ];

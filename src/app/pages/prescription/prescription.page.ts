@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
+
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, ToastController,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
@@ -13,6 +14,7 @@ import { UserService } from 'src/app/services/user.service';
   selector: 'app-root',
   standalone: true,
   imports: [
+
     CommonModule, FormsModule,
   ],
   templateUrl: './prescription.page.html',
@@ -45,6 +47,7 @@ export class PrescriptionPage implements OnInit {
   ];
 
   constructor(private userService: UserService, private router: Router) {}
+
 
   ngOnInit() {
     this.doctor = {
@@ -126,4 +129,5 @@ export class PrescriptionPage implements OnInit {
 
   fnBringDoctorData(id: string) {}
   fnBringPatientData(id: string) {}
+
 }

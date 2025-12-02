@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline, cameraOutline, checkmarkCircle } from 'ionicons/icons';
 
+
 import {
   IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
   IonItem, IonInput, IonLabel, IonButton, IonList, IonRadio,
@@ -50,6 +51,7 @@ export class LoginPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private userService: UserService
+
   ) {
     this.loginForm = this.createLoginForm();
     this.registerForm = this.createRegisterForm();
@@ -65,6 +67,7 @@ export class LoginPage implements OnInit {
     
     // Solo después de limpiar, verificar si redirigir
     // (pero como acabamos de limpiar, nunca debería redirigir)
+
     if (this.userService.isAuthenticated()) {
       console.log('⚠️ Usuario aún autenticado después de limpiar, redirigiendo...');
       this.router.navigate(['/dashboard']);
@@ -181,6 +184,7 @@ export class LoginPage implements OnInit {
     if (this.loginForm.valid) {
       this.isLoggingIn = true;
       try {
+
         const credentials = this.loginForm.value;
         const response: any = await new Promise((resolve, reject) => {
             this.userService.login(credentials).subscribe({
@@ -233,6 +237,7 @@ export class LoginPage implements OnInit {
           cedula: cedulaLimpia 
         };
 
+
         const response: any = await new Promise((resolve, reject) => {
             this.userService.register(userData).subscribe({
                 next: (res) => resolve(res),
@@ -241,6 +246,7 @@ export class LoginPage implements OnInit {
         });
         
         if (response.intStatus === 200) {
+
           const toast = await this.toastController.create({
             message: 'Cuenta creada exitosamente',
             duration: 3000,

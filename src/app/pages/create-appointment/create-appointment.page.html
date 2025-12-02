@@ -1,6 +1,4 @@
-
-<!-- version  -->
-  <ion-header [translucent]="true">
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-button slot="start" (click)="fnCitaRegresar()" color="primary" fill="solid">
       Regresar
@@ -31,7 +29,6 @@
           }
         </ion-col>
 
-        <!-- Apellidos -->
         <ion-col size="12" size-md="6">
           <ion-item lines="none" [class.invalid]="apellidoInvalid && apellidoTouched">
             <ion-label position="floating">Apellidos</ion-label>
@@ -48,7 +45,6 @@
           }
         </ion-col>
         
-        <!-- Edad -->
         <ion-col size="12" size-md="6">
           <ion-item lines="none" [class.invalid]="edadInvalid && edadTouched">
             <ion-label position="floating">Edad</ion-label>
@@ -67,7 +63,6 @@
         </ion-col>
 
         <ion-col size="12">
-          <!-- Input de Correo con validación de estilo -->
           <ion-item 
             lines="none"
             [class.invalid]="correoInvalid && correoTouched"
@@ -79,13 +74,10 @@
               type="email"
               required
               pattern=".+@.+"
-              #correoInput="ngModel"
               (ionBlur)="correoTouched = true">
             </ion-input>
           </ion-item>
-          
-          <!-- Mensaje de error -->
-          @if (correoInput.invalid && correoInput.dirty) {
+          @if (correoInvalid && correoTouched) {
             <div class="mensaje-error">
               Ingresa un correo válido (ej. usuario@dominio.com)
             </div>
@@ -104,8 +96,17 @@
               [(ngModel)]="medicoCita" 
               placeholder="Selecciona a tu médico"
               (ionBlur)="medicaTouched = true">
-              <ion-select-option value="medico1">Dr. Alejandro Gómez</ion-select-option>
-              <ion-select-option value="medico2">Dra. Camila Vargas</ion-select-option>
+              
+              <!-- AQUI ESTA EL CAMBIO CON LA NUEVA SINTAXIS Y LA ESPECIALIDAD -->
+              @for (medico of listaMedicos; track medico.id) {
+                <ion-select-option [value]="medico.id">
+                  Dr. {{medico.nombre}} {{medico.apellidos}} ({{medico.especialidad}})
+                </ion-select-option>
+              }
+              @empty {
+                <ion-select-option disabled>Cargando médicos...</ion-select-option>
+              }
+
             </ion-select>
           </ion-item>
           @if(medicoInvalid && medicaTouched){
@@ -115,7 +116,6 @@
           }
         </ion-col>
 
-        <!-- Selección de tipo de cita -->
         <ion-col size="12" size-md="6">
           <ion-item lines="none" [class.invalid]="tipoCitaInvalid && tipoCitaTouched">
             <ion-label position="stacked">Tipo de cita <ion-text color="danger">(Requerido)</ion-text></ion-label>

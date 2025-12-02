@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  
   private http = inject(HttpClient);
   
   // 👇 CAMBIA ESTO POR LA URL DE TU BACKEND (ej: 'http://localhost:3000/api')

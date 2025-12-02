@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonCardTitle, IonCard, IonCardSubtitle, IonCardHeader, IonCardContent, IonButton, IonButtons, IonBackButton,IonModal, IonIcon, IonLabel } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonCardTitle, IonCard, IonCardSubtitle, IonCardHeader, IonCardContent, IonButton, IonButtons, IonBackButton, IonModal, IonIcon, IonLabel, IonText, IonItem } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+// Importamos los servicios necesarios
+import { ApiService } from '../../services/api.service';
+import { UserService } from '../../services/user.service';
 
 interface CitaDoctor {
-  id: number;
+  id: string; 
   tipo: string;
-  fecha: string;
-  hora: string;
+  fechahoraCita: string;
   paciente: string;
   pacienteEdad?: number;
-  motivo: string;
-  urgencia: 'baja' | 'media' | 'alta';
-  estatus: 'pendiente' | 'confirmada' | 'completada' | 'cancelada';
-  tipoConsulta: 'virtual' | 'presencial';
-  duracion: string;
+  tipoConsulta: string;
+  estatus?: string; 
 }
 
 @Component({
@@ -22,115 +22,103 @@ interface CitaDoctor {
   templateUrl: './schedule-for-doctor.page.html',
   styleUrls: ['./schedule-for-doctor.page.scss'],
   standalone: true,
-  imports: [IonLabel, IonIcon, IonBackButton, IonButtons, IonButton, IonCardContent, IonCardHeader, IonCardSubtitle, IonCard, IonCardTitle, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonModal]
+  imports: [IonItem, IonText, IonLabel, IonIcon, IonBackButton, IonButtons, IonButton, IonCardContent, IonCardHeader, IonCardSubtitle, IonCard, IonCardTitle, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonModal]
 })
 export class ScheduleForDoctorPage implements OnInit {
-  // CITAS ORGANIZADAS POR ESTADO
-  pendientes: CitaDoctor[] = [];
-  confirmadas: CitaDoctor[] = [];
-  completadas: CitaDoctor[] = [];
+  
+  allAppointments: CitaDoctor[] = [];
 
-  constructor() { }
+  // Inyectamos los servicios
+  private apiService = inject(ApiService);
+  private userService = inject(UserService);
+
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.cargarCitasDoctor();
   }
 
-  cargarCitasDoctor() {
-    const citas: CitaDoctor[] = [
-      {
-        id: 1,
-        tipo: 'Consulta General',
-        fecha: '2024-12-25',
-        hora: '9:00 AM',
-        paciente: 'María González',
-        pacienteEdad: 35,
-        motivo: 'Dolor de cabeza persistente',
-        urgencia: 'media',
-        estatus: 'pendiente',
-        tipoConsulta: 'virtual',
-        duracion: '30 min'
-      },
-      {
-        id: 2,
-        tipo: 'Seguimiento Cardiológico',
-        fecha: '2024-12-25',
-        hora: '10:30 AM',
-        paciente: 'Carlos Rodríguez',
-        pacienteEdad: 62,
-        motivo: 'Control presión arterial',
-        urgencia: 'baja',
-        estatus: 'pendiente',
-        tipoConsulta: 'presencial',
-        duracion: '45 min'
-      },
-      {
-        id: 3,
-        tipo: 'Consulta Urgente',
-        fecha: '2024-12-25',
-        hora: '11:00 AM',
-        paciente: 'Ana Martínez',
-        pacienteEdad: 28,
-        motivo: 'Fiebre alta y malestar general',
-        urgencia: 'alta',
-        estatus: 'confirmada',
-        tipoConsulta: 'virtual',
-        duracion: '20 min'
-      },
-      {
-        id: 4,
-        tipo: 'Control Diabetes',
-        fecha: '2024-12-25',
-        hora: '2:00 PM',
-        paciente: 'Jorge López',
-        pacienteEdad: 45,
-        motivo: 'Revisión niveles glucosa',
-        urgencia: 'media',
-        estatus: 'confirmada',
-        tipoConsulta: 'presencial',
-        duracion: '30 min'
-      },
-      {
-        id: 5,
-        tipo: 'Dermatología',
-        fecha: '2024-12-25',
-        hora: '3:30 PM',
-        paciente: 'Laura García',
-        pacienteEdad: 29,
-        motivo: 'Revisión lunar',
-        urgencia: 'baja',
-        estatus: 'completada',
-        tipoConsulta: 'presencial',
-        duracion: '25 min'
-      }
-    ];
-
-    // ORGANIZAR CITAS POR ESTADO
-    this.pendientes = citas.filter(cita => cita.estatus === 'pendiente');
-    this.confirmadas = citas.filter(cita => cita.estatus === 'confirmada');
-    this.completadas = citas.filter(cita => cita.estatus === 'completada');
-  }
-
-  // ACCIONES DEL DOCTOR
-
-  confirmarCita(cita: CitaDoctor) {
-    console.log('Doctor confirmando cita:', cita);
-    cita.estatus = 'confirmada';
-    this.actualizarListas();
-    alert(`Cita con ${cita.paciente} confirmada`);
-  }
-
-  rechazarCita(cita: CitaDoctor) {
-    console.log('Doctor rechazando cita:', cita);
-    
-    if (confirm(`¿Rechazar cita con ${cita.paciente}?`)) {
-      cita.estatus = 'cancelada';
-      this.actualizarListas();
-      alert('Cita rechazada');
-    }
-  }
-  // MÉTODO PRIVADO PARA ACTUALIZAR LISTAS
-  private actualizarListas() {
+  // Agregamos este hook de Ionic para recargar las citas cada vez que entras a la pantalla
+  // (útil si regresas de otra página y hubo cambios)
+  ionViewWillEnter() {
     this.cargarCitasDoctor();
+  }
+
+  fnPerfilRegresar() {
+    this.router.navigate(['/dashboard']);
+  }
+
+  // ESTA ES LA PETICIÓN PARA QUE EL DOCTOR VEA SUS CITAS
+  cargarCitasDoctor() {
+    const doctorId = this.userService.getId(); 
+
+    if (!doctorId) {
+      console.error('No se encontró ID de doctor activo.');
+      return;
+    }
+
+    // Hacemos la petición GET al backend.
+    // Usamos la ruta /citas/doctor/{id} que es común para obtener las citas de un médico específico.
+    // Si tu backend usa query params (ej: /citas?medicoId=...), cambia esta línea.
+    this.apiService.get(`/citas/doctor/${doctorId}`).subscribe({
+      next: (data: any) => {
+        this.allAppointments = data;
+        console.log('Lista de citas del doctor actualizada:', this.allAppointments);
+      },
+      error: (error) => {
+        console.error('Error al cargar las citas del doctor:', error);
+      }
+    });
+  }
+
+  formatearFechaHora(fechahora: string): string {
+    if (!fechahora) return 'Fecha no definida';
+
+    const fecha = new Date(fechahora);
+    return fecha.toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  // Lógica para CONFIRMAR Cita
+  confirmarCita(cita: CitaDoctor) {
+    const payload = { estatus: 'Confirmada' };
+    
+    this.apiService.put(`/citas/${cita.id}/status`, payload).subscribe({
+      next: () => {
+        console.log(`Cita ${cita.id} confirmada`);
+        this.cargarCitasDoctor(); // Recargamos la lista para ver el cambio de estado
+        alert(`Has confirmado la cita con ${cita.paciente}`);
+      },
+      error: (err) => {
+        console.error('Error al confirmar cita:', err);
+        alert('Hubo un error al intentar confirmar la cita.');
+      }
+    });
+  }
+
+  // Lógica para RECHAZAR Cita
+  rechazarCita(cita: CitaDoctor) {
+    if (confirm(`¿Estás seguro de que deseas cancelar la cita con ${cita.paciente}?`)) {
+      
+      const payload = { estatus: 'Cancelada' }; 
+
+      this.apiService.put(`/citas/${cita.id}/status`, payload).subscribe({
+        next: () => {
+          console.log(`Cita ${cita.id} cancelada`);
+          this.cargarCitasDoctor(); // Recargamos la lista
+          alert('La cita ha sido cancelada.');
+        },
+        error: (err) => {
+          console.error('Error al cancelar cita:', err);
+          alert('Hubo un error al intentar cancelar la cita.');
+        }
+      });
+    }
   }
 }

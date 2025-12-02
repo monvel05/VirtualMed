@@ -1,136 +1,116 @@
-<ion-header>
+<ion-header [translucent]="true">
+  <!-- Primera Toolbar: Título de la App -->
   <ion-toolbar color="light">
     <ion-title>VirtualMed</ion-title>
   </ion-toolbar>
+  
+  <!-- Segunda Toolbar: Navegación y Título de la Página -->
   <ion-toolbar color="light">
     <ion-buttons slot="start">
-      <ion-back-button text="Regreso" defaultHref="/home"></ion-back-button>
+      <ion-button (click)="fnPerfilRegresar()">
+        <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+        Regresar
+      </ion-button>
     </ion-buttons>
     <ion-title>Agenda del Doctor</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="content">
+<ion-content [fullscreen]="true">
+  <div class="content ion-padding">
 
-    <!-- 🟡 CITAS PENDIENTES -->
-    <div class="section-title">🟡 Pendientes de Confirmar ({{ pendientes.length }})</div>
+    <!-- Sección de Título -->
+    <ion-item lines="none" class="ion-margin-bottom">
+      <ion-label class="section-title">
+        <h2 style="font-weight: bold; margin: 0;">Todas las Citas</h2>
+      </ion-label>
+    </ion-item>
 
-    @for (cita of pendientes; track cita.id) {
-    <ion-card class="appt-card">
-      <div class="status-bar status-pendiente">
-        <ion-label>Estatus: Pendiente</ion-label>
-      </div>
+    <!-- Usando el control de flujo @if de Angular para manejar la lista vacía -->
+    @if (allAppointments.length > 0) {
+      
+      <!-- Iteración sobre la lista de citas usando @for -->
+      @for (cita of allAppointments; track cita.id) {
+        <ion-card class="appt-card ion-margin-bottom">
+          <ion-card-header>
+            <!-- Muestra el estatus de la cita con color -->
+            <ion-card-subtitle class="ion-text-right">
+                Estado: 
+                <ion-text [color]="cita.estatus === 'Confirmada' ? 'success' : cita.estatus === 'Cancelada' ? 'danger' : 'warning'">
+                    {{ cita.estatus || 'Pendiente' }}
+                </ion-text>
+            </ion-card-subtitle>
 
-      <ion-card-header>
-        <ion-card-title>{{ cita.tipo }}</ion-card-title>
-        <ion-card-subtitle>{{ cita.paciente }} ({{ cita.pacienteEdad }} años)</ion-card-subtitle>
-      </ion-card-header>
+            <!-- Título: Tipo de Cita y Paciente -->
+            <ion-card-title>{{ cita.tipo }}</ion-card-title>
+            <ion-card-subtitle>
+              Paciente: {{ cita.paciente }}
+              @if (cita.pacienteEdad) {
+                ({{ cita.pacienteEdad }} años)
+              }
+            </ion-card-subtitle>
+          </ion-card-header>
 
-      <ion-card-content>
-        <div class="patient-info">
-          <div class="info-row">
-            <span>Hora:</span>
-            <strong>{{ cita.hora }} • {{ cita.duracion }}</strong>
-          </div>
-          <div class="info-row">
-            <span>Motivo:</span>
-            <strong>{{ cita.motivo }}</strong>
-            <span class="urgencia urgencia-{{ cita.urgencia }}">
-              {{ cita.urgencia }}
-            </span>
-          </div>
-          <div class="info-row">
-            <span>Tipo:</span>
-            <strong>{{ cita.tipoConsulta }}</strong>
-          </div>
-        </div>
+          <ion-card-content>
+            <div class="patient-info ion-margin-bottom">
+              <!-- Información detallada en formato de ítem/fila simple -->
+              
+              <ion-item lines="none" class="info-row">
+                <ion-icon name="time-outline" slot="start" color="medium"></ion-icon>
+                <ion-label>
+                    <p>Fecha y Hora:</p>
+                    <strong>{{ formatearFechaHora(cita.fechahoraCita) }}</strong>
+                </ion-label>
+              </ion-item>
 
-        <div class="appt-actions">
-          <ion-button class="btn-confirmar" (click)="confirmarCita(cita)">
-            <ion-icon name="checkmark" slot="start"></ion-icon>
-            Confirmar
-          </ion-button>
-          <ion-button class="btn-rechazar" (click)="rechazarCita(cita)">
-            <ion-icon name="close" slot="start"></ion-icon>
-            Rechazar
-          </ion-button>
-        </div>
-      </ion-card-content>
-    </ion-card>
-    }
+              <ion-item lines="none" class="info-row">
+                <ion-icon name="medical-outline" slot="start" color="medium"></ion-icon>
+                <ion-label>
+                    <p>Tipo de Consulta:</p>
+                    <strong>{{ cita.tipoConsulta }}</strong>
+                </ion-label>
+              </ion-item>
+            </div>
 
-    <!-- 🟢 CITAS CONFIRMADAS -->
-    <div class="section-title">🟢 Confirmadas para Hoy ({{ confirmadas.length }})</div>
+            <!-- Controles de acción (Botones Confirmar/Rechazar) -->
+            <div class="appt-actions ion-text-right">
+              <!-- Deshabilitamos los botones si ya está Confirmada o Cancelada -->
+              <ion-button 
+                color="success" 
+                size="small"
+                (click)="confirmarCita(cita)"
+                [disabled]="cita.estatus === 'Confirmada' || cita.estatus === 'Cancelada'"
+                class="ion-margin-end"
+              >
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                Confirmar
+              </ion-button>
+              
+              <ion-button 
+                color="danger" 
+                size="small"
+                (click)="rechazarCita(cita)"
+                [disabled]="cita.estatus === 'Confirmada' || cita.estatus === 'Cancelada'"
+              >
+                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                Rechazar
+              </ion-button>
+            </div>
+            
+          </ion-card-content>
+        </ion-card>
+      }
 
-    @for (cita of confirmadas; track cita.id) {
-    <ion-card class="appt-card">
-      <div class="status-bar status-confirmada">
-        <ion-label>Estatus: Confirmada</ion-label>
-      </div>
-
-      <ion-card-header>
-        <ion-card-title>{{ cita.tipo }}</ion-card-title>
-        <ion-card-subtitle>{{ cita.paciente }} ({{ cita.pacienteEdad }} años)</ion-card-subtitle>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="patient-info">
-          <div class="info-row">
-            <span>Hora:</span>
-            <strong>{{ cita.hora }} • {{ cita.duracion }}</strong>
-          </div>
-          <div class="info-row">
-            <span>Motivo:</span>
-            <strong>{{ cita.motivo }}</strong>
-            <span class="urgencia urgencia-{{ cita.urgencia }}">
-              {{ cita.urgencia }}
-            </span>
-          </div>
-          <div class="info-row">
-            <span>Tipo:</span>
-            <strong>{{ cita.tipoConsulta }}</strong>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-    }
-
-    <!-- 🔵 CITAS COMPLETADAS -->
-    @if (completadas.length > 0) {
-    <div class="section-title">🔵 Completadas ({{ completadas.length }})</div>
-
-    @for (cita of completadas; track cita.id) {
-    <ion-card class="appt-card">
-      <div class="status-bar status-completada">
-        <ion-label>Estatus: Completada</ion-label>
-      </div>
-
-      <ion-card-header>
-        <ion-card-title>{{ cita.tipo }}</ion-card-title>
-        <ion-card-subtitle>{{ cita.paciente }} ({{ cita.pacienteEdad }} años)</ion-card-subtitle>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="patient-info">
-          <div class="info-row">
-            <span>Hora:</span>
-            <strong>{{ cita.hora }} • {{ cita.duracion }}</strong>
-          </div>
-          <div class="info-row">
-            <span>Motivo:</span>
-            <strong>{{ cita.motivo }}</strong>
-          </div>
-          <div class="info-row">
-            <span>Estado:</span>
-            <strong>Consulta finalizada</strong>
-          </div>
-        </div>
-
-        <!-- SIN BOTONES -->
-      </ion-card-content>
-    </ion-card>
-    }
+    } @else {
+      <!-- Contenido si la lista está vacía -->
+      <ion-card class="appt-card empty ion-text-center">
+        <ion-card-content>
+          <ion-icon name="calendar-outline" size="large" color="medium"></ion-icon>
+          <ion-text color="medium" class="ion-padding-top ion-display-block">
+            <p>No hay citas programadas.</p>
+          </ion-text>
+        </ion-card-content>
+      </ion-card>
     }
 
   </div>

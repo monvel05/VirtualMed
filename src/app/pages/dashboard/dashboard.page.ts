@@ -27,13 +27,14 @@ import {
   standalone: true,
 
   imports: [
+
     CommonModule, FormsModule, IonButtons, IonDatetime,
     IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar,
     IonGrid, IonCol, IonRow, IonAccordion, IonAccordionGroup,
     IonItem, IonLabel, IonCard, IonCardContent, IonCardHeader,
     IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonFabList,
     IonIcon, IonModal, IonButton, IonMenu, IonList
-  ],
+]
 })
 export class DashboardPage implements OnInit {
   role = '';
@@ -85,6 +86,7 @@ export class DashboardPage implements OnInit {
   ];
 
 
+
   
 
   // Funciones para navegación entre páginas
@@ -92,8 +94,13 @@ export class DashboardPage implements OnInit {
     this.router.navigate(['/create-appointment']);
   }
 
-  fnGoToManagement() {
-    this.router.navigate(['/management']);
+
+  fnGoTomyAppointments() {
+    this.router.navigate(['/my-appointments']);
+  }
+
+  fnGoToManagementD() {
+    this.router.navigate(['/schedule-for-doctor']);
   }
 
   fnGoToClassifier() {
@@ -107,7 +114,9 @@ export class DashboardPage implements OnInit {
   fnGoToProfile() {
     this.router.navigate(['/profile']);
   }
-
+  fnGoToProfileD() {
+    this.router.navigate(['/doctor-profile']);
+  }
   fnGoToSettings() {
     this.router.navigate(['/settings']);
   }

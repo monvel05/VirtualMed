@@ -8,7 +8,7 @@
   <ion-content class="ion-padding">
     <!--Espacio para poner botones en la barra lateral-->
     <ion-list>
-      <ion-item button (click)="fnGoToProfile()">
+      <ion-item button (click)="fnGoToProfileD()">
         <ion-icon slot="start" name="person-circle-outline"></ion-icon>
         <ion-label>Mi Perfil</ion-label>
       </ion-item>
@@ -47,23 +47,13 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <!--Botón de agendar cita-->
-            <ion-col size="12" size-md="6">
-              <button
-                type="button"
-                class="btn-custom"
-                (click)="fnGoToCreateAppointment()"
-              >
-                Agendar citas
-              </button>
-            </ion-col>
 
             <!--Botón de ver y gestionar citas-->
             <ion-col size="12" size-md="6">
               <button
                 type="button"
                 class="btn-custom"
-                (click)="fnGoToManagement()"
+                (click)="fnGoToManagementD()"
               >
                 Gestionar citas
               </button>
@@ -166,7 +156,7 @@
               <button
                 type="button"
                 class="btn-custom"
-                (click)="fnGoToManagement()"
+                (click)="fnGoTomyAppointments()"
               >
                 Ver mis citas
               </button>

@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton,
   IonGrid, IonIcon, IonCard, IonRow, IonLabel, IonItem, IonRadio,
   IonCol,IonList,IonSelect, IonSelectOption,IonText, IonInput , IonDatetime} from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-create-appointment',
@@ -26,6 +26,13 @@ export class CreateAppointmentPage implements OnInit {
   tipoCita: string = '';
   fechahoraCita: string = ''; 
   
+  // Lista de médicos cargada dinámicamente
+  listaMedicos: any[] = []; // AÑADIR
+  
+  // Variables para manejo de fecha/hora separadas
+  fechaSeleccionada: string = '';
+  horaSeleccionada: string = '';
+  
   // Propiedades para validación
   nombreTouched: boolean = false;
   apellidoTouched: boolean = false;
@@ -35,12 +42,42 @@ export class CreateAppointmentPage implements OnInit {
   tipoCitaTouched: boolean = false;
   fechaTouched: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
+    this.cargarMedicos(); // Cargar médicos al iniciar
   }
 
-  
+  // ========== NUEVO MÉTODO: Cargar médicos desde backend ==========
+  cargarMedicos() {
+    // El string 'doctor' es el rol que buscaremos en la BD
+    this.userService.getMedicosDisponibles().subscribe({
+      next: (res: any) => {
+        console.log('Respuesta cruda del backend:', res); // Para depurar
+
+        // CORRECCIÓN: Tu backend devuelve { intStatus: 200, arrUsers: [...] }
+        // Si intentas asignar 'res' directo, asignas el objeto entero, no la lista.
+        if (res.arrUsers) {
+          this.listaMedicos = res.arrUsers;
+        } else if (Array.isArray(res)) {
+          // Por si acaso el backend cambiara y devolviera el array directo
+          this.listaMedicos = res;
+        }
+        
+        console.log('Lista final de médicos:', this.listaMedicos);
+      },
+      error: (err) => {
+        console.error('Error cargando médicos:', err);
+        // Fallback datos falsos solo para pruebas visuales
+        this.listaMedicos = []; 
+      }
+    });
+  }
+
+  // ========== GETTERS DE VALIDACIÓN ==========
   
   get nombreInvalid(): boolean {
     return this.nombreCita.trim().length === 0;
@@ -71,7 +108,6 @@ export class CreateAppointmentPage implements OnInit {
     return this.fechahoraCita.trim().length === 0;
   }
 
-  // Valida si todo el formulario es válido
   get formularioValido(): boolean {
     return !this.nombreInvalid && 
           !this.apellidoInvalid && 
@@ -82,35 +118,82 @@ export class CreateAppointmentPage implements OnInit {
           !this.fechaInvalid;
   }
   
-  guardarCita() {
-    // Marcar todos los campos como tocados para mostrar errores
+  // ========== MÉTODO PARA CREAR CITA ==========
+  crearCita() {
     this.marcarTodosComoTocados();
     
-    if (this.formularioValido) {
-      // Aquí va tu lógica para guardar la cita
-      console.log('Cita guardada:', {
-        nombre: this.nombreCita,
-        apellido: this.apellidoCita,
-        edad: this.edadCita,
-        correo: this.correoCita,
-        medico: this.medicoCita,
-        tipoCita: this.tipoCita,
-        fechaHora: this.fechahoraCita
-      });
-      
-      // Mostrar mensaje de éxito
-      alert('¡Cita creada exitosamente!');
-      
-      // Limpiar el formulario después de guardar
-      this.limpiarFormulario();
-      
-    } else {
+    if (!this.formularioValido) {
       alert('Por favor completa todos los campos correctamente');
+      return;
+    }
+
+    // Validar que se seleccionó un médico
+    if (!this.medicoCita) {
+      alert('Por favor selecciona un médico');
+      return;
+    }
+
+    this.procesarFechaHora();
+
+    const nuevaCita = {
+      pacienteId: this.userService.getId(),
+      medicoId: this.medicoCita, // Ya es el ID real del médico
+
+      // Datos del formulario
+      nombreCita: this.nombreCita,
+      apellidoCita: this.apellidoCita,
+      edadCita: this.edadCita,
+      correoCita: this.correoCita,
+      tipoCita: this.obtenerTipoCita(this.tipoCita),
+      fechahoraCita: this.fechahoraCita,
+      fecha: this.fechaSeleccionada, 
+      hora: this.horaSeleccionada,
+      estado: 'pendiente'
+    };
+
+    this.userService.createCita(nuevaCita).subscribe({
+      next: (res: any) => {
+        if (res.intStatus === 200 || res.success) {
+          console.log('Cita creada exitosamente', res);
+          alert('¡Cita creada exitosamente!');
+          this.limpiarFormulario();
+        } else {
+          alert(res.message || 'Error al crear la cita');
+        }
+      },
+      error: (err) => {
+        console.error('Error en la petición:', err);
+        alert('Error de conexión al crear la cita');
+      }
+    });
+  }
+
+  // ========== MÉTODOS AUXILIARES ==========
+
+  private procesarFechaHora() {
+    if (this.fechahoraCita) {
+      const fecha = new Date(this.fechahoraCita);
+      
+      this.fechaSeleccionada = fecha.toISOString().split('T')[0];
+      this.horaSeleccionada = fecha.toTimeString().split(' ')[0];
     }
   }
 
+  private obtenerTipoCita(valorSelect: string): string {
+    const tipos = {
+      'presencialCita': 'presencial',
+      'llamadaCita': 'virtual',
+      'videollamadaCita': 'virtual'
+    };
+    
+    return tipos[valorSelect as keyof typeof tipos] || valorSelect;
+  }
 
-  // Marca todos los campos como tocados para mostrar errores
+  // Alias para mantener compatibilidad
+  guardarCita() {
+    this.crearCita();
+  }
+
   private marcarTodosComoTocados() {
     this.nombreTouched = true;
     this.apellidoTouched = true;
@@ -121,7 +204,6 @@ export class CreateAppointmentPage implements OnInit {
     this.fechaTouched = true;
   }
 
-  // Limpia todos los campos del formulario
   private limpiarFormulario() {
     // Limpiar datos
     this.nombreCita = '';
@@ -131,6 +213,8 @@ export class CreateAppointmentPage implements OnInit {
     this.medicoCita = '';
     this.tipoCita = '';
     this.fechahoraCita = '';
+    this.fechaSeleccionada = '';
+    this.horaSeleccionada = '';
     
     // Resetear estados de validación
     this.nombreTouched = false;
@@ -140,12 +224,9 @@ export class CreateAppointmentPage implements OnInit {
     this.medicaTouched = false;
     this.tipoCitaTouched = false;
     this.fechaTouched = false;
-    
-    console.log('Formulario limpiado, listo para nueva cita');
   }
 
   fnCitaRegresar() {
     this.router.navigate(['/dashboard']);
   }
 }
-

@@ -1,14 +1,20 @@
 import { Injectable, inject } from '@angular/core';
+<<<<<<< HEAD
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 
 // 1. CORRECCIÓN DE RUTA: Ajusta esto si tu carpeta es distinta
 // Si el guard está en 'src/app/guards' y el servicio en 'src/app/services'
 import { UserService } from '../services/user.service'; 
+=======
+import { CanActivate, Router } from '@angular/router';
+import { User } from '../services/user.service'; 
+>>>>>>> 7b5bf724c58506f0373c1583d6fd8fe4d532ddc3
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+<<<<<<< HEAD
   private userService = inject(UserService);
   private router = inject(Router);
 
@@ -20,6 +26,18 @@ export class AuthGuard implements CanActivate {
     if (!isAuth) {
       console.log('⛔ Guard: Usuario no autenticado. Redirigiendo a Login.');
       this.router.navigate(['/login']);
+=======
+  private userService = inject(User);
+  private router = inject(Router);
+
+  canActivate(): boolean {
+    const isLoggedIn = this.userService.validateSession(); 
+
+    if (isLoggedIn) {
+      return true; 
+    } else {
+      this.router.navigate(['/login']); 
+>>>>>>> 7b5bf724c58506f0373c1583d6fd8fe4d532ddc3
       return false;
     }
 

@@ -14,22 +14,27 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage),
+
   },
   {
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage),
+
   },
   {
     path: 'create-appointment',
     loadComponent: () => import('./pages/create-appointment/create-appointment.page').then(m => m.CreateAppointmentPage),
+
   },
   {
     path: 'my-appointments',
     loadComponent: () => import('./pages/my-appointments/my-appointments.page').then(m => m.MyAppointmentsPage),
+
   },
   {
     path: 'prescription',
     loadComponent: () => import('./pages/prescription/prescription.page').then(m => m.PrescriptionPage),
+
   },
   {
     path: 'management',
@@ -45,15 +50,20 @@ export const routes: Routes = [
   },
   {
     path: 'chatbot',
-    loadComponent: () => import('./pages/chatbot/chatbot.page').then( m => m.ChatbotPage),
+    loadComponent: () => import('./pages/chatbot/chatbot.page').then( m => m.ChatbotPage), 
+  },
+  {
+    path: 'cancer-classifier',
+    loadComponent: () => import('./pages/cancer-classifier/cancer-classifier.page').then( m => m.CancerClassifierPage),
   },
   {
     path: '**',
     redirectTo: 'login'
   },
   {
-    path: 'chatbot',
-    loadComponent: () => import('./pages/chatbot/chatbot.page').then(m => m.ChatbotPage),
+    path: 'doctor-profile',
+    loadComponent: () => import('./pages/doctor-profile/doctor-profile.page').then( m => m.DoctorProfilePage)
   }
+
 
 ];

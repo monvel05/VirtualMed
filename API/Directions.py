@@ -34,23 +34,28 @@ def update_user(user_id):
 def delete_user(user_id):
     return CallMethod.deleteUser(user_id)
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy", "message": "Servidor funcionando correctamente"})
 
-@app.route('/citas', methods=['POST'])
-def create_cita():
-    return CallMethod.createCita()
+# ENDPOINT PRINCIPAL - TODO EN UNO
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    return CallMethod.analyze_complete()
 
+# Solo mantener para consultar el historial
+@app.route('/predictions', methods=['GET'])
+def get_predictions():
+    return CallMethod.getAllPredictions()
 
-@app.route('/users/<user_id>/citas', methods=['GET'])
-def get_citas_by_user(user_id):
-    return CallMethod.getCitasByUser(user_id)
+@app.route('/predictions/<prediction_id>', methods=['GET'])
+def get_prediction(prediction_id):
+    return CallMethod.getPredictionById(prediction_id)
 
+@app.route('/predictions/<prediction_id>', methods=['DELETE'])
+def delete_prediction(prediction_id):
+    return CallMethod.deletePrediction(prediction_id)
 
-@app.route('/citas/<cita_id>/status', methods=['PUT'])
-def update_cita_status(cita_id):
-    return CallMethod.updateCitaStatus(cita_id)
-
-
-# ==================== INICIO DEL SERVIDOR ====================
 
 if __name__ == '__main__':
     print("Iniciando servidor Flask...")

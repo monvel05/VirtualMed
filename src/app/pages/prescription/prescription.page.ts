@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, ToastController,
 } from '@ionic/angular/standalone';
-
+import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { UserService } from 'src/app/services/user.service';
@@ -44,7 +44,7 @@ export class PrescriptionPage implements OnInit {
     { name: '', dosage: '', frequency: '', duration: '', instructions: '' },
   ];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit() {
     this.doctor = {
@@ -57,19 +57,17 @@ export class PrescriptionPage implements OnInit {
     };
   }
 
+  goToDashboard() {
+    this.router.navigate(['/dashboard']); // Asegúrate que la ruta sea '/dashboard' o '/home' según tu app
+  }
+  
   // <--- 2. AGREGADO: Esta función faltaba
   printPrescription() {
     this.generatePDF();
   }
 
   addNewMedication() {
-    this.medications.push({
-      name: '',
-      dosage: '',
-      frequency: '',
-      duration: '',
-      instructions: '',
-    });
+    this.medications.push({ name: '', dosage: '', frequency: '', duration: '', instructions: '' });
   }
 
   removeMedication(index: number) {
@@ -81,22 +79,17 @@ export class PrescriptionPage implements OnInit {
 
   async generatePDF() {
     this.isLoading = true;
-
-    // Pequeña pausa para asegurar que el DOM esté listo
     setTimeout(async () => {
       try {
         const element = document.getElementById('prescription-pdf');
         if (!element) { this.isLoading = false; return; }
 
-        // GENERACIÓN DEL CANVAS
         const canvas = await html2canvas(element, {
           scale: 2, useCORS: true, backgroundColor: '#ffffff',
           ignoreElements: (el) => el.getAttribute('data-html2canvas-ignore') === 'true',
         });
 
         const imgData = canvas.toDataURL('image/png');
-
-        // SECCIÓN DEL PDF
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgWidth = 210; 
         const pageHeight = 297; 
@@ -104,11 +97,9 @@ export class PrescriptionPage implements OnInit {
         let heightLeft = imgHeight;
         let position = 0;
 
-        // Primera página
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
-        // Si la receta es muy larga, agrega más páginas
         while (heightLeft >= 0) {
           position = heightLeft - imgHeight;
           pdf.addPage();

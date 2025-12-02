@@ -24,7 +24,7 @@ import {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  // CORRECCIÓN 1: Agregar CommonModule y FormsModule aquí, y limpiar duplicados
+
   imports: [
     CommonModule, FormsModule, IonButtons, IonDatetime,
     IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar,
@@ -83,15 +83,41 @@ export class DashboardPage implements OnInit {
     { date: '2025-11-15', hour: '02:00 PM', description: 'Cita con la paciente María López' },
   ];
 
-  // Funciones para navegación
-  fnGoToCreateAppointment() { this.router.navigate(['/create-appointment']); }
-  fnGoToManagement() { this.router.navigate(['/management']); }
-  fnGoToMedicalRecords() { this.router.navigate(['/medical-records']); }
-  fnGoToPrescription() { this.router.navigate(['/prescription']); }
-  fnGoToProfile() { this.router.navigate(['/profile']); }
-  fnGoToSettings() { this.router.navigate(['/settings']); }
-  fnGoToHome() { this.router.navigate(['/dashboard']); }
-  fnGoToChatbot() { this.router.navigate(['/chatbot']); }
+
+  
+
+  // Funciones para navegación entre páginas
+  fnGoToCreateAppointment() {
+    this.router.navigate(['/create-appointment']);
+  }
+
+  fnGoToManagement() {
+    this.router.navigate(['/management']);
+  }
+
+  fnGoToClassifier() {
+    this.router.navigate(['/cancer-classifier']);
+  }
+
+  fnGoToPrescription() {
+    this.router.navigate(['/prescription']);
+  }
+
+  fnGoToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  fnGoToSettings() {
+    this.router.navigate(['/settings']);
+  }
+
+  fnGoToHome() {
+    this.router.navigate(['/dashboard']);
+  }
+
+  fnGoToChatbot() {
+    this.router.navigate(['/chatbot']);
+  }
 
   fnLogout() {
     // El servicio se encarga de limpiar datos y redirigir

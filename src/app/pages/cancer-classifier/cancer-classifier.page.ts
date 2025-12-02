@@ -24,8 +24,7 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonText
-} from '@ionic/angular/standalone';
+  IonText, IonBackButton } from '@ionic/angular/standalone';
 import { ToastController, LoadingController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { 
@@ -87,14 +86,14 @@ interface PatientData {
   templateUrl: './cancer-classifier.page.html',
   styleUrls: ['./cancer-classifier.page.scss'],
   standalone: true,
-  imports: [
-    IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
-    IonCard, 
-    IonCardHeader, 
-    IonCardTitle, 
+  imports: [IonBackButton,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
     IonCardContent,
     IonButton,
     IonIcon,
@@ -109,9 +108,8 @@ interface PatientData {
     IonRow,
     IonCol,
     IonText,
-    CommonModule, 
-    FormsModule
-  ]
+    CommonModule,
+    FormsModule, IonButtons]
 })
 export class CancerClassifierPage implements OnInit {
   selectedImage: File | null = null;

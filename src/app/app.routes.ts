@@ -34,10 +34,6 @@ export const routes: Routes = [
 
   },
   {
-    path: 'management',
-    loadComponent: () => import('./pages/management/management.page').then(m => m.ManagementPage),
-  },
-  {
     path: 'schedule-for-doctor',
     loadComponent: () => import('./pages/schedule-for-doctor/schedule-for-doctor.page').then(m => m.ScheduleForDoctorPage),
   },

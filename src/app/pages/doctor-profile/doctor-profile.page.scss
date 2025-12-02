@@ -1,100 +1,80 @@
-/* VALIDACIÓN DE CAMPOS */
+/* --- VARIABLES LOCALES (:host) --- */
+:host {
+  /* Paleta VirtualMed Premium */
+  --azulmarino: #2E4A70;
+  --Azulcielo: #73C7E3;
+  --AzulMedio: #9EBEED;
+  --AzulGrisaceo: #B1C8D6;
+  --Rosita: #F4B9B8;
+  --VerdeSage: #B6CBB3;
+  --FondoCrema: #FFF9F0;
+  --White: #FFFFFF;
+  
+  --fuente-titulo: 'Poppins', sans-serif;
+  --shadow-premium: 0 15px 35px -5px rgba(115, 199, 227, 0.25);
 
-// Estado Válido
-ion-item.valid ion-input {
-  border-color: #2dd36f !important; /* Verde */
-  box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
+  display: block;
 }
 
-// Estado Inválido
-ion-item.invalid ion-input {
-  border-color: #eb445a !important; /* Rojo */
-  box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
-}
-
-.mensaje-error {
-  color: #eb445a;
-  font-size: 13px;
-  margin-left: 5px;
-  margin-top: -10px; // Acercamos el mensaje al input
-  margin-bottom: 10px;
-}
-
-/* Fondo de la página */
+/* --- FONDO DE PÁGINA --- */
 ion-content {
-  --background: var(--app-blanco-cremoso, #FFF9F0);
+  --background: var(--FondoCrema);
+  /* Gradiente radial característico */
+  background-image: radial-gradient(circle at top right, rgba(115, 199, 227, 0.15) 0%, transparent 50%);
+  padding-bottom: 30px;
 }
 
-/* Estilo de la Tarjeta Principal */
-ion-card {
-  --background: white;
-  margin: 16px;
-  padding: 16px 8px;
-  border-radius: 16px;
-  box-shadow: 0 6px 15px rgba(46, 74, 112, 0.15); 
-}
-
-/* Estilos de Entradas de Formulario */
-ion-item {
-  --background: transparent;
-  --inner-border-width: 0;
-  --border-width: 0;
-  padding: 0;
-  margin-bottom: 20px;
-
-  ion-input, ion-datetime {
-    padding: 10px;
-    min-height: 40px;
-    border: 1px solid var(--app-gris-sutil, #B1CBD6);
-    border-radius: 8px;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    --padding-top: 10px;
-    --padding-bottom: 10px;
-    color: var(--app-azul-marino, #2E4A70);
+/* --- HEADER (Clean Style) --- */
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.9);
+    --color: var(--azulmarino);
+    --min-height: 70px;
+    box-shadow: 0 4px 20px rgba(115, 199, 227, 0.2);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
     
-    &:focus-within {
-      border-color: var(--app-azul-primario, #73C7E3);
-      box-shadow: 0 0 0 2px rgba(115, 199, 227, 0.3); 
+    ion-title {
+      font-family: var(--fuente-titulo);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    /* Botón Regresar */
+    ion-buttons ion-button {
+      --color: var(--Azulcielo);
+      font-weight: 600;
+      
+      /* Fondo suave al botón regresar para destacar */
+      background: rgba(115, 199, 227, 0.1);
+      border-radius: 12px;
+      margin-left: 10px;
+      height: 40px;
+      
+      ion-icon {
+        font-size: 1.2rem;
+        margin-right: 5px;
+      }
     }
   }
-
-  /* Estilo para la etiqueta */
-  ion-label {
-    color: var(--app-azul-marino, #2E4A70);
-    font-weight: 600;
-    margin-bottom: 6px;
-    line-height: 1.2;
-    font-size: 14px;
-  }
 }
 
-/* Estilos específicos para validación visual */
-ion-item.valid {
-  ion-input {
-    border-color: #2dd36f !important;
-    box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
-  }
-}
-
-ion-item.invalid {
-  ion-input {
-    border-color: #eb445a !important;
-    box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
-  }
-}
-
-/* Contenedor del Avatar */
+/* --- AVATAR CONTAINER (Premium) --- */
 .avatar-container {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  position: relative;
   
   ion-avatar {
-    width: 120px;
-    height: 120px;
-    margin: 20px auto;
-    border: 4px solid var(--app-azul-secundario, #9EBEED);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 130px;
+    height: 130px;
+    margin: 0 auto;
+    /* Borde doble: blanco interno + degradado externo */
+    border: 4px solid var(--White);
+    box-shadow: 
+      0 0 0 4px var(--AzulMedio), /* Aro externo */
+      0 10px 25px rgba(46, 74, 112, 0.2); /* Sombra */
     
     img {
       object-fit: cover;
@@ -102,147 +82,207 @@ ion-item.invalid {
   }
 }
 
-/* Botones de Acción del Perfil */
+/* Botones de Acción Avatar (Minimalistas) */
 .profile-actions {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  gap: 15px;
+  margin-top: 15px;
   
   ion-button {
-    --border-radius: 8px;
-    --box-shadow: none;
-    margin: 0;
-    
-    /* Botón Cambiar - Primary */
+    --border-radius: 12px;
+    --box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    font-family: var(--fuente-titulo);
+    font-size: 0.85rem;
+    height: 40px;
+    text-transform: none;
+    letter-spacing: 0;
+
+    /* Cambiar Foto */
     &:first-child {
-      --background: var(--app-azul-primario, #73C7E3);
-      --color: white;
+      --background: var(--White);
+      --color: var(--azulmarino);
+      border: 1px solid var(--AzulMedio);
     }
     
-    /* Botón Quitar - Danger */
+    /* Eliminar Foto */
     &:last-child {
-      --background: var(--ion-color-danger, #eb445a);
-      --color: white;
+      --background: rgba(244, 185, 184, 0.2); /* Rosita transparente */
+      --color: #D66D6C; /* Rosa oscuro texto */
+      --box-shadow: none;
     }
   }
 }
 
-/* Input de archivo oculto */
-input[type="file"] {
-  display: none;
+/* Input File Oculto */
+input[type="file"] { display: none; }
+
+/* --- TARJETA FORMULARIO --- */
+ion-card {
+  --background: var(--White);
+  margin: 0 20px 20px 20px;
+  padding: 25px 20px;
+  border-radius: 30px; /* Squircle muy marcado */
+  box-shadow: var(--shadow-premium);
+  border: 1px solid rgba(115, 199, 227, 0.1);
 }
 
-/* Contenedor del Botón Guardar */
+/* --- CAMPOS DEL FORMULARIO --- */
+ion-item {
+  --background: transparent;
+  --inner-border-width: 0;
+  --border-width: 0;
+  --padding-start: 0;
+  margin-bottom: 20px;
+  display: block; /* Para controlar labels arriba */
+}
+
+/* Labels Flotantes Modernos */
+ion-label {
+  color: var(--Gris) !important;
+  font-family: var(--fuente-titulo);
+  font-size: 0.85rem !important;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  padding-left: 5px;
+}
+
+/* Estilo unificado Inputs */
+ion-item ion-input {
+  background: #FAFBFC;
+  border: 1px solid var(--AzulGrisaceo);
+  border-radius: 16px;
+  color: var(--azulmarino);
+  font-weight: 500;
+  font-family: var(--fuente-titulo);
+  transition: all 0.3s ease;
+  min-height: 52px;
+  
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+
+  /* Focus */
+  &:focus-within {
+    background: var(--White);
+    border-color: var(--Azulcielo);
+    box-shadow: 0 5px 15px rgba(115, 199, 227, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+/* --- VALIDACIÓN VISUAL --- */
+
+/* Válido */
+ion-item.valid ion-input {
+  border-color: var(--VerdeSage) !important;
+  background-color: rgba(182, 203, 179, 0.1) !important;
+  box-shadow: 0 0 0 1px var(--VerdeSage) !important;
+}
+
+/* Inválido */
+ion-item.invalid ion-input {
+  border-color: var(--Rosita) !important;
+  background-color: rgba(244, 185, 184, 0.1) !important;
+  box-shadow: 0 0 0 1px var(--Rosita) !important;
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Mensajes de Error */
+.mensaje-error {
+  color: #D66D6C; /* Un rosa oscuro legible */
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 10px;
+  margin-top: -12px; /* Pegado al input */
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeIn 0.3s ease-out;
+
+  /* Icono ! */
+  &::before {
+    content: '!';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    background: var(--Rosita);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+  }
+}
+
+/* --- BOTÓN GUARDAR (Footer) --- */
 .save-button-container {
-  padding: 16px;
+  padding: 10px 20px 30px 20px;
   text-align: center;
-  margin-top: 20px;
   
   ion-button {
-    --border-radius: 12px;
-    --background: var(--app-azul-marino, #2E4A70);
-    --background-activated: var(--app-azul-primario, #73C7E3);
-    --background-hover: var(--app-azul-primario, #73C7E3);
-    font-weight: bold;
-    height: 45px;
-    width: 100%;
-    font-size: 16px;
+    --border-radius: 20px; /* Botón píldora */
+    --background: var(--Azulcielo);
+    --background-activated: #5EB2CF;
+    --background-hover: #5EB2CF;
+    --box-shadow: 0 10px 25px rgba(115, 199, 227, 0.4);
+    --color: var(--White);
     
-    /* Estilo cuando está deshabilitado */
+    font-family: var(--fuente-titulo);
+    font-weight: 600;
+    font-size: 1.05rem;
+    height: 56px;
+    width: 100%;
+    text-transform: none;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+
+    /* Disabled */
     &[disabled] {
-      --background: var(--app-gris-sutil, #B1CBD6);
+      --background: var(--AzulGrisaceo);
+      --box-shadow: none;
       opacity: 0.7;
     }
   }
 }
 
-/* Estilos de la Cabecera */
-ion-header {
-  ion-toolbar {
-    --background: var(--app-azul-marino, #2E4A70);
-    
-    ion-title {
-      color: white;
-      font-weight: 600;
-    }
-    
-    ion-button {
-      --color: var(--app-azul-primario, #73C7E3);
-      --background: white;
-      --border-radius: 8px;
-      font-weight: bold;
-      margin: 0 8px;
-    }
-  }
-}
-
-/* Estilos Responsivos */
-@media (max-width: 768px) {
-  ion-card {
-    margin: 8px;
-    padding: 12px 6px;
-  }
-  
-  .profile-actions {
-    flex-direction: column;
-    align-items: center;
-    
-    ion-button {
-      width: 80%;
-    }
-  }
-  
-  .avatar-container {
-    ion-avatar {
-      width: 100px;
-      height: 100px;
-    }
-  }
-}
-
-/* Efectos de transición suaves */
-ion-input, ion-button {
-  transition: all 0.3s ease;
-}
-
-/* Mejora visual para los mensajes de error */
-.mensaje-error {
-  animation: fadeIn 0.3s ease-in;
+/* Animaciones */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Grid Ajustes */
+ion-grid { padding: 0; }
+ion-row { margin-left: -5px; margin-right: -5px; }
+ion-col { padding-left: 5px; padding-right: 5px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  ion-card {
+    margin: 0 15px 20px 15px;
+    padding: 20px 15px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Estilo para el grid y rows */
-ion-grid {
-  padding: 0;
-}
-
-ion-row {
-  align-items: center;
-}
-
-/* Estilo específico para campos numéricos */
-ion-input[type="number"] {
-  input {
-    text-align: left;
-  }
-}
-
-/* Mejora visual para el correo electrónico */
-ion-input[type="email"] {
-  input {
-    text-transform: lowercase;
+  
+  .avatar-container ion-avatar {
+    width: 110px;
+    height: 110px;
   }
 }

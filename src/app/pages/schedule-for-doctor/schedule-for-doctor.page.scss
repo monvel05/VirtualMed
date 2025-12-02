@@ -1,249 +1,290 @@
-// doctor-agenda.page.scss
+/* --- VARIABLES (:host) --- */
+:host {
+  /* Paleta VirtualMed Premium */
+  --azulmarino: #2E4A70;
+  --Azulcielo: #73C7E3;
+  --AzulMedio: #9EBEED;
+  --AzulGrisaceo: #B1C8D6;
+  --Rosita: #F4B9B8;      /* Urgencia Alta / Rechazar */
+  --VerdeSage: #B6CBB3;   /* Confirmada / Urgencia Baja */
+  --CremaSuave: #FFF9F0;
+  --White: #FFFFFF;
+  --Gris: #91A4B3;
+
+  --fuente-titulo: 'Poppins', sans-serif;
+  --shadow-premium: 0 10px 30px -5px rgba(115, 199, 227, 0.25);
+
+  display: block;
+}
+
+/* --- FONDO GENERAL --- */
+ion-content {
+  --background: var(--CremaSuave);
+  /* El gradiente característico */
+  background-image: radial-gradient(circle at top right, rgba(115, 199, 227, 0.15) 0%, transparent 60%);
+}
+
 .content {
-  padding: 16px;
-  background: #F8F9F9; // Gris Niebla suavizado
+  padding: 20px;
 }
 
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #A8D8E8; // Azul Cielo Sereno suave
-  margin: 25px 0 15px 0;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #A8D8E8;
-}
+/* --- HEADER (Clean Style) --- */
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.9);
+    --color: var(--azulmarino);
+    --min-height: 70px;
+    
+    /* Sombra azulada y bordes inferiores redondos */
+    box-shadow: 0 4px 20px rgba(115, 199, 227, 0.2);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 
-// TARJETAS DE CITAS
-.appt-card {
-  margin: 0 0 20px 0;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(168, 216, 232, 0.15);
-  background: white;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(168, 216, 232, 0.25);
+    ion-title {
+      font-family: var(--fuente-titulo);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--azulmarino);
+    }
   }
 }
 
-// BARRAS DE ESTADO
-.status-bar {
-  padding: 14px 20px;
-  font-size: 14px;
+/* --- TÍTULOS DE SECCIÓN --- */
+.section-title {
+  font-family: var(--fuente-titulo);
+  font-size: 1.1rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--azulmarino);
+  margin: 30px 0 20px 0;
+  padding-left: 10px;
+  /* Acento vertical en lugar de subrayado completo para más elegancia */
+  border-left: 5px solid var(--Azulcielo);
+  display: flex;
+  align-items: center;
 }
 
-// ESTADOS CON TUS COLORES SUAVES
+/* --- TARJETAS DE CITAS --- */
+.appt-card {
+  margin: 0 0 25px 0;
+  border-radius: 24px; /* Squircle */
+  box-shadow: var(--shadow-premium);
+  background: var(--White);
+  border: 1px solid rgba(115, 199, 227, 0.1);
+  overflow: hidden; /* Para que la status bar respete el borde */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(115, 199, 227, 0.35);
+  }
+}
+
+/* --- BARRAS DE ESTADO --- */
+.status-bar {
+  padding: 12px 20px;
+  font-family: var(--fuente-titulo);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ESTADOS ADAPTADOS A PALETA VIRTUALMED */
 .status-pendiente {
-  background: linear-gradient(135deg, #C2F0F1 0%, #A8D8E8 100%);
-  color: #2c5f7a;
-  border-bottom: 3px solid #A8D8E8;
+  background: linear-gradient(135deg, var(--AzulMedio) 0%, #b8d4ff 100%);
+  color: var(--azulmarino);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
 }
 
 .status-confirmada {
-  background: linear-gradient(135deg, #B4E4D1 0%, #9BD7BC 100%);
-  color: #1e4e3a;
-  border-bottom: 3px solid #B4E4D1;
+  background: linear-gradient(135deg, var(--VerdeSage) 0%, #d4e8d1 100%);
+  color: #3d5a3a; /* Verde oscuro para contraste */
 }
 
 .status-completada {
-  background: linear-gradient(135deg, #F2D4B8 0%, #E8C9A8 100%);
-  color: #7d5a2c;
-  border-bottom: 3px solid #F2D4B8;
+  background: linear-gradient(135deg, #E0E0E0 0%, #F5F5F5 100%);
+  color: var(--Gris);
 }
 
-// CONTENIDO DE TARJETAS
+.status-cancelada {
+  background: linear-gradient(135deg, var(--Rosita) 0%, #ffdad9 100%);
+  color: #8a3c3c;
+}
+
+/* --- CONTENIDO DE TARJETAS --- */
 ion-card-header {
-  padding: 20px 20px 12px 20px;
-  background: rgba(194, 240, 241, 0.1);
+  padding: 20px 25px 10px 25px;
+  background: var(--White);
   
   ion-card-title {
-    font-size: 20px;
+    font-family: var(--fuente-titulo);
+    font-size: 1.2rem;
     font-weight: 700;
-    color: #2c5f7a;
-    margin-bottom: 6px;
+    color: var(--azulmarino);
+    margin-bottom: 5px;
   }
   
   ion-card-subtitle {
-    font-size: 16px;
-    color: #A8D8E8;
+    font-family: var(--fuente-titulo);
+    font-size: 0.9rem;
+    color: var(--Azulcielo);
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 }
 
 ion-card-content {
-  padding: 12px 20px 20px 20px;
+  padding: 10px 25px 25px 25px;
 }
 
-// INFORMACIÓN DE PACIENTE
+/* --- INFORMACIÓN DE PACIENTE --- */
 .patient-info {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   
   .info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(168, 216, 232, 0.2);
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--AzulGrisaceo); /* Línea punteada sutil */
     
     &:last-child {
       border-bottom: none;
+      margin-bottom: 0;
     }
     
     span {
-      color: #2c5f7a;
+      color: var(--Gris);
+      font-size: 0.9rem;
       font-weight: 500;
     }
     
     strong {
-      color: #2c5f7a;
+      color: var(--azulmarino);
       font-weight: 600;
+      font-family: var(--fuente-titulo);
+      font-size: 0.95rem;
     }
   }
 }
 
-// INDICADOR DE URGENCIA
+/* --- INDICADOR DE URGENCIA (Badges) --- */
 .urgencia {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  margin-left: 8px;
+  letter-spacing: 0.5px;
+  margin-left: 10px;
 }
 
 .urgencia-alta {
-  background: #FFC8C8;
-  color: #8b3a3a;
+  background: rgba(244, 185, 184, 0.2); /* Rosita transparente */
+  color: #D66D6C;
+  border: 1px solid var(--Rosita);
 }
 
 .urgencia-media {
-  background: #F2D4B8;
-  color: #7d5a2c;
+  background: rgba(115, 199, 227, 0.15); /* Azul cielo transparente */
+  color: var(--azulmarino);
+  border: 1px solid var(--Azulcielo);
 }
 
 .urgencia-baja {
-  background: #B4E4D1;
-  color: #1e4e3a;
+  background: rgba(182, 203, 179, 0.2); /* Verde Sage transparente */
+  color: #5a7a58;
+  border: 1px solid var(--VerdeSage);
 }
 
-// BOTONES DE ACCIÓN
+/* --- BOTONES DE ACCIÓN --- */
 .appt-actions {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 2px solid rgba(194, 240, 241, 0.3);
+  margin-top: 15px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(177, 200, 214, 0.2); /* Separador sutil */
+  display: flex;
+  gap: 15px;
 
   ion-button {
+    flex: 1;
     margin: 0;
-    --border-radius: 12px;
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --padding-top: 16px;
-    --padding-bottom: 16px;
+    --border-radius: 16px;
+    --box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    font-family: var(--fuente-titulo);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 0.95rem;
+    height: 48px;
+    text-transform: none;
     
     ion-icon {
-      font-size: 20px;
+      font-size: 1.2rem;
       margin-right: 8px;
     }
   }
 }
 
-//BOTÓN CONFIRMAR 
+/* BOTÓN CONFIRMAR (Verde Sage / Azul Cielo) */
 ion-button.btn-confirmar {
-  --background: linear-gradient(135deg, #88ca8d 0%, #96c098 100%);
-  --background-activated: #5a925c;
-  --color: #2E7D32;
+  --background: var(--VerdeSage);
+  --color: #2b452c;
+  --box-shadow: 0 8px 20px rgba(182, 203, 179, 0.4);
+
+  &:hover {
+    --background: #a3bca0;
+  }
 }
 
-//BOTÓN RECHAZAR
+/* BOTÓN RECHAZAR (Rosita) */
 ion-button.btn-rechazar {
-  --background: linear-gradient(135deg, #f28f8f 0%, #f0a5a5 100%);
-  --background-activated: #d87373;
-  --color: #C62828;
-}
-// HEADER
-ion-header {
-  ion-toolbar {
-    --background: #C2F0F1; // Azul Jordy Suave
-    --color: #2c5f7a;
-    
-    &:first-child {
-      border-bottom: 3px solid #A8D8E8;
-    }
-    
-    ion-title {
-      font-weight: 700;
-      font-size: 22px;
-    }
+  --background: var(--White);
+  --color: #D66D6C;
+  border: 2px solid var(--Rosita);
+  --box-shadow: none;
+
+  &:hover {
+    --background: rgba(244, 185, 184, 0.1);
   }
 }
 
-// FONDO GENERAL
-ion-content {
-  --background: #F8F9F9;
-}
-
-// RESPONSIVE
+/* RESPONSIVE */
 @media (max-width: 480px) {
-  .content {
-    padding: 12px;
-  }
+  .content { padding: 15px; }
   
   .appt-card {
-    margin: 0 0 16px 0;
-    border-radius: 12px;
+    border-radius: 20px;
   }
   
   ion-card-header {
-    padding: 16px;
-    
-    ion-card-title {
-      font-size: 18px;
-    }
-    
-    ion-card-subtitle {
-      font-size: 14px;
-    }
+    padding: 15px 20px;
   }
   
   ion-card-content {
-    padding: 12px 16px 16px 16px;
-  }
-  
-  .status-bar {
-    padding: 12px 16px;
-    font-size: 13px;
+    padding: 10px 20px 20px 20px;
   }
   
   .appt-actions {
-    margin-top: 16px;
+    flex-direction: column;
+    gap: 10px;
     
     ion-button {
-      --padding-top: 14px;
-      --padding-bottom: 14px;
-      font-size: 14px;
+      width: 100%;
     }
   }
 }
 
-// ANIMACIONES
+/* ANIMACIONES */
 ion-card {
-  animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }

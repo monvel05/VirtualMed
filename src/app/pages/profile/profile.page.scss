@@ -1,200 +1,321 @@
-/* VALIDACIÓN DE CORREO */
-
-// Estado Válido
-ion-item.valid ion-input {
-  border-color: #2dd36f !important; /* Verde */
-  box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
-}
-
-// Estado Inválido
-ion-item.invalid ion-input {
-  border-color: #eb445a !important; /* Rojo */
-  box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
-}
-
-.mensaje-error {
-  color: #eb445a;
-  font-size: 13px;
-  margin-left: 5px;
-  margin-top: -10px; // Acercamos el mensaje al input
-  margin-bottom: 10px;
-}
-
-
-// Fondo de la página
-ion-content {
-  --background: var(--app-blanco-cremoso, #FFF9F0);
-}
-
-// Estilo de la Tarjeta Principal (Contenedor del Perfil)
-ion-card {
-  --background: white;
-  margin: 16px;
-  padding: 16px 8px; /* Padding interno */
+/* --- VARIABLES & PALETA PREMIUM (:host) --- */
+:host {
+  /* Paleta VirtualMed Premium */
+  --azulmarino: #2E4A70;
+  --Azulcielo: #73C7E3;
+  --AzulMedio: #9EBEED;
+  --AzulGrisaceo: #B1C8D6;
+  --Rosita: #F4B9B8;      /* Error */
+  --VerdeSage: #B6CBB3;   /* Éxito */
+  --FondoCrema: #FFF9F0;
+  --White: #FFFFFF;
+  --Gris: #91A4B3;
   
-  // Bordes redondeados y sombra para visibilidad
-  border-radius: 16px;
-  box-shadow: 0 6px 15px rgba(46, 74, 112, 0.15); 
+  --fuente-titulo: 'Poppins', sans-serif;
+  --shadow-premium: 0 15px 35px -5px rgba(115, 199, 227, 0.25);
+
+  display: block;
 }
 
-/* Estilos de Entradas de Formulario (Inputs, Datetime, Radio Group) */
+/* --- FONDO DE PÁGINA --- */
+ion-content {
+  --background: var(--FondoCrema);
+  /* Gradiente radial característico */
+  background-image: radial-gradient(circle at top right, rgba(115, 199, 227, 0.15) 0%, transparent 50%);
+  padding-bottom: 30px;
+}
 
+/* --- HEADER (Clean Style) --- */
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.9);
+    --color: var(--azulmarino);
+    --min-height: 70px;
+    box-shadow: 0 4px 20px rgba(115, 199, 227, 0.2);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+
+    ion-title {
+      font-family: var(--fuente-titulo);
+      font-weight: 700;
+      color: var(--azulmarino);
+    }
+
+    ion-button {
+      color: var(--Azulcielo);
+      font-weight: 600;
+      --background: rgba(115, 199, 227, 0.1);
+      border-radius: 12px;
+      margin-right: 10px;
+      height: 40px;
+    }
+  }
+}
+
+/* --- TARJETA PRINCIPAL (Contenedor) --- */
+ion-card {
+  --background: var(--White);
+  margin: 20px;
+  padding: 25px 20px;
+  border-radius: 30px; /* Squircle moderno */
+  box-shadow: var(--shadow-premium);
+  border: 1px solid rgba(115, 199, 227, 0.1);
+}
+
+/* --- AVATAR CONTAINER --- */
+.avatar-container {
+  text-align: center;
+  margin-bottom: 25px;
+  position: relative;
+
+  ion-avatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    border: 4px solid var(--White);
+    box-shadow: 
+      0 0 0 4px var(--AzulMedio), 
+      0 10px 25px rgba(46, 74, 112, 0.2);
+    
+    img { object-fit: cover; }
+  }
+}
+
+/* Botones de Acción Avatar */
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+
+  ion-button {
+    --border-radius: 12px;
+    --box-shadow: none;
+    font-family: var(--fuente-titulo);
+    font-size: 0.85rem;
+    height: 38px;
+    
+    /* Botón Primario (Cambiar) */
+    &:first-child {
+      --background: var(--White);
+      --color: var(--azulmarino);
+      border: 1px solid var(--AzulMedio);
+    }
+    
+    /* Botón Danger (Quitar) */
+    &:last-child {
+      --background: rgba(244, 185, 184, 0.15);
+      --color: #D66D6C;
+    }
+  }
+}
+
+/* --- INPUTS & FORMULARIO --- */
 ion-item {
-  // Quitamos los bordes por defecto y el fondo de ion-item
   --background: transparent;
   --inner-border-width: 0;
   --border-width: 0;
   padding: 0;
-  margin-bottom: 20px; /* Espacio entre campos */
+  margin-bottom: 20px;
+  display: block;
 
-  // Damos estilo al input dentro del item
+  /* Etiquetas Flotantes */
+  ion-label {
+    color: var(--Gris);
+    font-family: var(--fuente-titulo);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-left: 5px;
+    display: block;
+  }
+
+  /* Estilo Unificado Inputs & Datetime */
   ion-input, ion-datetime {
-
-    padding: 10px;      /* espacio interno */
-    min-height: 40px;   /* altura mínima para que no se vea comprimido */
-
-    // Redondeado y borde sutil
-    border: 1px solid var(--app-gris-sutil, #B1CBD6);
-    border-radius: 8px;
-    padding-left: 10px !important; // Relleno interno
-    padding-right: 10px !important;
+    background: #FAFBFC;
+    border: 1px solid var(--AzulGrisaceo);
+    border-radius: 16px;
+    color: var(--azulmarino);
+    font-weight: 500;
+    font-family: var(--fuente-titulo);
+    transition: all 0.3s ease;
+    min-height: 52px;
     
-    // Altura y color de texto para visibilidad
-    --padding-top: 10px;
-    --padding-bottom: 10px;
-    color: var(--app-azul-marino, #2E4A70);
-    
-    // Estilo al enfocar
+    /* Padding */
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    --padding-top: 15px;
+    --padding-bottom: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    /* Focus State */
     &:focus-within {
-      border-color: var(--app-azul-primario, #73C7E3);
-      box-shadow: 0 0 0 2px rgba(115, 199, 227, 0.3); 
+      background: var(--White);
+      border-color: var(--Azulcielo);
+      box-shadow: 0 5px 15px rgba(115, 199, 227, 0.2);
+      transform: translateY(-2px);
     }
   }
-  ion-radio-group {
-  display: flex;
-  flex-direction: column; /* apila verticalmente */
-  gap: 8px;               /* espacio entre opciones */
-  padding: 10px;          /* espacio interno */
-  border: 1px solid #B1CBD6;
-  border-radius: 8px;
 }
 
-ion-radio-group ion-item {
-  --inner-padding-end: 0; /* quita padding extra */
-  --inner-padding-start: 0;
-  align-items: center;    /* centra radio y texto */
-}
+/* --- RADIO GROUP (GÉNERO) --- */
 .genero-label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  margin-left: 5px;
   font-weight: 600;
-  color: var(--app-azul-marino, #2E4A70);
+  font-size: 0.85rem;
+  color: var(--Gris);
+  font-family: var(--fuente-titulo);
 }
 
 .genero-group {
-  border: 1px solid #B1CBD6;
-  border-radius: 8px;
-  padding: 10px;
+  background: #FAFBFC;
+  border: 1px solid var(--AzulGrisaceo);
+  border-radius: 16px; /* Squircle igual que inputs */
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: white;
-}
+  gap: 10px;
+  transition: all 0.3s ease;
 
-  // Estilo para la etiqueta flotante/apilada
-  ion-label {
-  color: var(--app-azul-marino, #2E4A70);
-  font-weight: 600;
-  margin-bottom: 6px; /* separa el label del input */
-  line-height: 1.2;   /* altura de línea más cómoda */
-  font-size: 14px;    /* tamaño consistente */
+  ion-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
+  /* Estilo interno del item de radio */
+  ion-item {
+    margin-bottom: 0;
+    --background: var(--White);
+    border-radius: 12px;
+    border: 1px solid transparent;
+    
+    &.item-radio-checked {
+      border-color: var(--Azulcielo);
+      background: rgba(115, 199, 227, 0.05);
+    }
+    
+    ion-label {
+      margin: 0;
+      color: var(--azulmarino);
+      font-size: 0.95rem;
+    }
   }
 }
 
-/* Estilo específico para el grupo de radio */
-ion-radio-group {
-    padding: 10px;
-    display: block; // Asegura que el borde aplique bien
+/* --- VALIDACIONES VISUALES --- */
+
+/* Input Válido */
+ion-item.valid ion-input, 
+ion-datetime.valid,
+.genero-group.valid {
+  border-color: var(--VerdeSage) !important;
+  background-color: rgba(182, 203, 179, 0.1) !important;
+  box-shadow: 0 0 0 1px var(--VerdeSage) !important;
 }
 
-/* Estilo para el Avatar y Botones de Imagen */
-
-.avatar-container {
-  text-align: center;
-  margin-bottom: 20px;
+/* Input Inválido */
+ion-item.invalid ion-input,
+ion-datetime.invalid,
+.genero-group.invalid {
+  border-color: var(--Rosita) !important;
+  background-color: rgba(244, 185, 184, 0.1) !important;
+  box-shadow: 0 0 0 1px var(--Rosita) !important;
+  animation: shake 0.3s ease-in-out;
 }
 
-ion-avatar {
-  border: 4px solid var(--app-azul-secundario, #9EBEED); /* Borde de acento */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.profile-actions {
+/* Mensaje de Error */
+.mensaje-error {
+  color: #D66D6C;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: var(--fuente-titulo);
+  margin-left: 10px;
+  margin-top: -12px; /* Pegado al input anterior */
+  margin-bottom: 15px;
   display: flex;
-  flex-wrap: wrap; // Envuelve en móvil
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  align-items: center;
+  gap: 6px;
+  
+  &::before {
+    content: '!';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    background: var(--Rosita);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+  }
 }
 
-/* Estilo para el Botón de Imagen (Cámara, Quitar) */
-.profile-actions ion-button {
-  --border-radius: 8px;
-  --box-shadow: none;
+/* --- BOTONES DE GUARDAR Y PDF --- */
+.save-button-container {
+  padding: 10px 20px 30px 20px;
+  text-align: center;
+  
+  ion-button {
+    --border-radius: 20px;
+    --background: var(--Azulcielo);
+    --background-activated: #5EB2CF;
+    --background-hover: #5EB2CF;
+    --box-shadow: 0 10px 25px rgba(115, 199, 227, 0.4);
+    --color: var(--White);
+    
+    font-family: var(--fuente-titulo);
+    font-weight: 600;
+    font-size: 1.05rem;
+    height: 56px;
+    width: 100%;
+    text-transform: none;
+    transition: transform 0.2s;
+
+    &:hover { transform: scale(1.02); }
+    &:active { transform: scale(0.98); }
+
+    &[disabled] {
+      --background: var(--AzulGrisaceo);
+      --box-shadow: none;
+      opacity: 0.7;
+    }
+  }
 }
 
-/* Estilos para el manejador de PDF */
 .pdf-actions {
   display: flex;
-  flex-wrap: wrap; 
   gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-/* Estilo del Botón de Guardar */
-.save-button-container {
-  padding: 16px;
-  text-align: center;
-}
-.save-button-container ion-button {
-  --border-radius: 12px;
-  font-weight: bold;
-  height: 45px;
-  width: 100%;
-}
-
-
-
-/* Estilos de la cabecera */
-ion-header {
-  ion-toolbar {
-    --background: var(--app-azul-marino, #2E4A70);
-    ion-title {
-      color: white;
-    }
-    ion-button {
-      color: var(--app-azul-primario, #73C7E3);
-      font-weight: bold;
-    }
+  margin-top: 10px;
+  
+  ion-button {
+    flex: 1;
+    --border-radius: 12px;
+    font-family: var(--fuente-titulo);
+    font-weight: 600;
   }
 }
 
-/* Estilos del Modal del PDF */
+/* --- MODAL PDF --- */
 ion-modal {
-    --background: var(--app-blanco-cremoso, #FFF9F0);
-    ion-toolbar {
-        --background: var(--app-azul-marino, #2E4A70);
-        color: white;
-    }
+  --border-radius: 30px;
+  --box-shadow: 0 -10px 40px rgba(46, 74, 112, 0.2);
+
+  ion-toolbar {
+    --background: var(--White);
+    --color: var(--azulmarino);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
 }
 
-
-
-
-
-
-
-
-
+/* Animaciones */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}

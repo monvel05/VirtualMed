@@ -1,0 +1,342 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Clasificador de Cáncer de Mama</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="container">
+    
+    <!-- Alert cuando el servidor no está disponible -->
+    <ion-card *ngIf="!serverAvailable" color="warning" class="server-alert">
+      <ion-card-content>
+        <ion-icon name="warning-outline" class="alert-icon"></ion-icon>
+        <p>El servidor de análisis no está disponible. Se mostrarán resultados de demostración.</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Indicador de progreso -->
+    <div class="progress-indicator">
+      <div class="progress-step" [class.active]="showPatientForm" [class.completed]="showImageSection || showResults">
+        <div class="step-number">1</div>
+        <span>Datos Paciente</span>
+      </div>
+      <div class="progress-step" [class.active]="showImageSection" [class.completed]="showResults">
+        <div class="step-number">2</div>
+        <span>Cargar Mamografía</span>
+      </div>
+      <div class="progress-step" [class.active]="showResults">
+        <div class="step-number">3</div>
+        <span>Resultados</span>
+      </div>
+    </div>
+
+    <!-- Sección 1: Datos del Paciente -->
+    <ion-card class="patient-section" *ngIf="showPatientForm">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="person-outline"></ion-icon>
+          Datos de la Paciente
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <form (ngSubmit)="continueToImageUpload()">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" size-md="6">
+                <ion-item>
+                  <ion-label position="stacked">
+                    <ion-icon name="person-outline" slot="start"></ion-icon>
+                    Nombre Completo *
+                  </ion-label>
+                  <ion-input 
+                    [(ngModel)]="patientData.name" 
+                    name="name"
+                    placeholder="Ingrese el nombre completo"
+                    required>
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+              
+              <ion-col size="12" size-md="6">
+                <ion-item>
+                  <ion-label position="stacked">
+                    <ion-icon name="id-card-outline" slot="start"></ion-icon>
+                    Identificación *
+                  </ion-label>
+                  <ion-input 
+                    [(ngModel)]="patientData.id" 
+                    name="id"
+                    placeholder="Número de identificación"
+                    required>
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12" size-md="6">
+                <ion-item>
+                  <ion-label position="stacked">
+                    <ion-icon name="calendar-outline" slot="start"></ion-icon>
+                    Edad *
+                  </ion-label>
+                  <ion-input 
+                    type="number" 
+                    [(ngModel)]="patientData.age" 
+                    name="age"
+                    placeholder="Edad de la paciente"
+                    min="1"
+                    max="120"
+                    required>
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+
+              <ion-col size="12" size-md="6">
+                <ion-item>
+                  <ion-label position="stacked">
+                    <ion-icon name="body-outline" slot="start"></ion-icon>
+                    Mama Estudiada *
+                  </ion-label>
+                  <ion-select 
+                    [(ngModel)]="patientData.breastSide" 
+                    name="breastSide"
+                    placeholder="Seleccione la mama"
+                    required>
+                    <ion-select-option *ngFor="let side of breastSides" [value]="side.value">
+                      {{ side.label }}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-label position="stacked">
+                    <ion-icon name="document-outline" slot="start"></ion-icon>
+                    Observaciones Clínicas
+                  </ion-label>
+                  <ion-textarea 
+                    [(ngModel)]="patientData.clinicalNotes" 
+                    name="clinicalNotes"
+                    placeholder="Observaciones relevantes, síntomas, motivo del estudio..."
+                    rows="3"
+                    autoGrow="true">
+                  </ion-textarea>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <div class="button-group">
+            <ion-button 
+              type="submit" 
+              expand="block" 
+              [disabled]="!isPatientDataValid()"
+              class="continue-btn">
+              <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+              Continuar a Carga de Mamografía
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Sección 2: Carga de Mamografía -->
+    <ion-card class="upload-section" *ngIf="showImageSection">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="cloud-upload-outline"></ion-icon>
+          Cargar Imagen de Mamografía
+        </ion-card-title>
+        <ion-text color="medium">
+          <p>Paciente: {{ patientData.name }} | ID: {{ patientData.id }} | Mama: {{ patientData.breastSide }}</p>
+        </ion-text>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div 
+          class="upload-area" 
+          (click)="selectImage()"
+          (dragover)="onDragOver($event)"
+          (drop)="onDrop($event)"
+          (dragleave)="onDragLeave($event)"
+          [class.active]="isDragOver">
+          <ion-icon name="image-outline" class="upload-icon"></ion-icon>
+          <p class="upload-text">Arrastra una imagen de mamografía aquí o haz clic para seleccionar</p>
+          <ion-button fill="solid" class="select-btn">
+            <ion-icon name="folder-open-outline" slot="start"></ion-icon>
+            Seleccionar Mamografía
+          </ion-button>
+          <p class="file-info">Formatos soportados: JPG, PNG</p>
+        </div>
+
+        <div class="image-preview" *ngIf="imagePreview">
+          <h4>Vista previa de la mamografía:</h4>
+          <img [src]="imagePreview" alt="Vista previa de mamografía" class="preview-img">
+          <p class="image-info">Mama: {{ patientData.breastSide }}</p>
+        </div>
+
+        <div class="button-group">
+          <ion-button 
+            (click)="analyzeImage()" 
+            [disabled]="!selectedImage || analyzing" 
+            expand="block"
+            class="analyze-btn">
+            <ion-icon name="analytics-outline" slot="start" *ngIf="!analyzing"></ion-icon>
+            <ion-spinner name="crescent" *ngIf="analyzing" slot="start"></ion-spinner>
+            <span>{{ analyzing ? 'Analizando Mamografía...' : 'Analizar con IA' }}</span>
+          </ion-button>
+          
+          <div class="secondary-buttons">
+            <ion-button 
+              (click)="backToPatientForm()" 
+              fill="outline"
+              class="back-btn">
+              <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+              Volver a Datos
+            </ion-button>
+            
+            <ion-button 
+              (click)="clearAll()" 
+              fill="outline"
+              color="danger"
+              class="clear-btn">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Cancelar
+            </ion-button>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Sección 3: Resultados -->
+    <ion-card class="result-section" *ngIf="showResults">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="bar-chart-outline"></ion-icon>
+          Resultados del Análisis
+        </ion-card-title>
+        <ion-text color="medium">
+          <p>Paciente: {{ patientData.name }} | ID: {{ patientData.id }} | Edad: {{ patientData.age }} | Mama: {{ patientData.breastSide }}</p>
+        </ion-text>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="patient-summary">
+          <h4>Resumen Clínico:</h4>
+          <p><strong>Observaciones:</strong> {{ patientData.clinicalNotes || 'No se registraron observaciones' }}</p>
+        </div>
+
+        <div class="result-display" 
+             [ngClass]="{
+               'benign': result?.classification === 'Benigno', 
+               'malignant': result?.classification === 'Maligno', 
+               'default': !result
+             }">
+          <ion-icon [name]="getResultIcon()" class="result-icon"></ion-icon>
+          <p class="result-text">{{ getResultText() }}</p>
+          <p class="result-description">{{ getResultDescription() }}</p>
+        </div>
+
+        <!-- Barra de confianza -->
+        <div class="confidence-container" *ngIf="result">
+          <div class="confidence-header">
+            <span>Confianza del modelo:</span>
+            <strong>{{ result.confidence.toFixed(1) }}%</strong>
+          </div>
+          <div class="confidence-bar">
+            <div class="confidence-level" [style.width.%]="result.confidence"></div>
+          </div>
+          <div class="confidence-labels">
+            <span>0%</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!-- Recomendaciones -->
+        <div class="recommendations">
+          <h3>
+            <ion-icon name="medical-outline"></ion-icon>
+            Recomendaciones
+          </h3>
+          <div [innerHTML]="getRecommendations()"></div>
+        </div>
+
+        <div class="button-group">
+          <ion-button 
+            (click)="newAnalysis()" 
+            expand="block"
+            class="new-analysis-btn">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Nuevo Análisis
+          </ion-button>
+          
+          <div class="secondary-buttons">
+            <ion-button 
+              (click)="backToPatientForm()" 
+              fill="outline"
+              class="back-btn">
+              <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+              Volver a Datos
+            </ion-button>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Historial de análisis -->
+    <ion-card class="history-section">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="time-outline"></ion-icon>
+          Historial de Análisis
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="history-list" *ngIf="history.length > 0; else emptyHistory">
+          <div class="history-item" *ngFor="let item of history; let i = index">
+            <div class="history-info">
+              <img [src]="item.image" [alt]="'Mamografía de ' + item.patientName" class="history-img">
+              <div class="history-details">
+                <strong>{{ item.patientName }}</strong>
+                <span class="patient-meta">ID: {{ item.patientId }} | Edad: {{ item.patientAge }}</span>
+                <span class="study-meta">Mama: {{ item.breastSide }}</span>
+                <span class="history-date">{{ item.date | date:'dd/MM/yyyy HH:mm' }}</span>
+                <span class="history-notes" *ngIf="item.clinicalNotes">Observaciones: {{ item.clinicalNotes }}</span>
+                <span class="history-confidence">Confianza: {{ item.confidence.toFixed(1) }}%</span>
+              </div>
+            </div>
+            <div class="history-result" 
+                 [ngClass]="{
+                   'benign': item.classification === 'Benigno', 
+                   'malignant': item.classification === 'Maligno'
+                 }">
+              <ion-icon 
+                [name]="item.classification === 'Benigno' ? 'checkmark-circle' : 'alert-circle'" 
+                class="result-indicator">
+              </ion-icon>
+              {{ item.classification }}
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyHistory>
+          <div class="empty-history">
+            <ion-icon name="document-outline" class="empty-icon"></ion-icon>
+            <p>No hay análisis en el historial</p>
+            <p class="empty-subtext">Los análisis realizados aparecerán aquí</p>
+          </div>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,67 +1,149 @@
-/* Contenedor principal del chat */
+/* --- CONTENEDOR PRINCIPAL --- */
 .chat-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding-bottom: 20px;
+  gap: 20px; /* Un poco más de aire entre mensajes */
+  padding: 20px 15px;
+  padding-bottom: 40px;
 }
 
-/* Estilos comunes para los mensajes */
+/* --- ESTILOS COMUNES --- */
 .mensaje-usuario, .mensaje-bot {
   display: flex;
-  max-width: 85%;
+  max-width: 88%; /* Un poco más ancho para aprovechar pantallas móviles */
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* --- MENSAJE USUARIO (Alineado a la derecha) --- */
+/* --- MENSAJE USUARIO (Derecha - Azul Cielo) --- */
 .mensaje-usuario {
   align-self: flex-end;
   justify-content: flex-end;
   
   .burbuja {
-    background-color: var(--ion-color-primary);
-    color: white;
-    border-radius: 18px 18px 0 18px;
+    /* Gradiente sutil para dar profundidad premium */
+    background: linear-gradient(135deg, var(--Azulcielo) 0%, var(--AzulMedio) 100%);
+    color: var(--White);
+    border-radius: 20px 20px 4px 20px; /* Squircle asimétrico */
+    
+    /* Sombra proyectada hacia abajo-izquierda */
+    box-shadow: 0 8px 20px -5px rgba(115, 199, 227, 0.4);
+    
+    /* El texto del usuario debe ser legible sobre azul */
+    font-weight: 500;
   }
 }
 
-/* --- MENSAJE BOT (Alineado a la izquierda) --- */
+/* --- MENSAJE BOT (Izquierda - Blanco Limpio) --- */
 .mensaje-bot {
   align-self: flex-start;
-  /* ESTA LÍNEA ES LA CLAVE PARA QUE LOS DOCTORES SALGAN ABAJO: */
   flex-direction: column; 
-  align-items: flex-start; /* Alinea texto y tarjetas a la izquierda */
+  align-items: flex-start;
 
   .burbuja {
-    background-color: #f0f0f0;
-    color: #333;
-    border-radius: 18px 18px 18px 0;
+    background-color: var(--White);
+    color: var(--azulmarino); /* Texto oscuro para lectura */
+    border-radius: 20px 20px 20px 4px;
+    
+    /* Borde muy sutil y sombra suave */
+    border: 1px solid rgba(115, 199, 227, 0.15);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
   }
 }
 
-/* Estilo de la burbuja de texto */
+/* --- BURBUJA BASE --- */
 .burbuja {
-  padding: 12px 16px;
+  padding: 14px 18px;
+  font-family: var(--fuente-titulo); /* Poppins */
   font-size: 0.95rem;
-  line-height: 1.4;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  word-wrap: break-word; /* Evita que textos largos rompan el diseño */
+  line-height: 1.5;
+  word-wrap: break-word;
+  position: relative;
+  transition: transform 0.2s;
 }
 
-/* --- CONTENEDOR DE DOCTORES --- */
+/* --- CONTENEDOR DE DOCTORES (Tarjetas dentro del chat) --- */
 .contenedor-doctores {
-  width: 100%; /* Ocupa todo el ancho disponible dentro del mensaje */
-  margin-top: 10px; /* Espacio entre el texto del bot y las tarjetas */
+  width: 100%;
+  margin-top: 15px;
+  padding-left: 5px; /* Pequeña sangría visual */
   
   ion-card {
-    margin-inline: 0; /* Quita márgenes laterales por defecto de Ionic */
-    margin-bottom: 10px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-inline: 0;
+    margin-bottom: 15px;
+    background: var(--White);
+    border-radius: 16px;
+    border: none;
+    
+    /* Estilo específico de tarjeta mini para chat */
+    border-left: 5px solid var(--Azulcielo); /* Acento visual */
+    box-shadow: 0 10px 25px -5px rgba(115, 199, 227, 0.2); /* Sombra azulada */
+    
+    ion-card-header {
+      padding: 12px 15px;
+      
+      ion-card-title {
+        font-family: var(--fuente-titulo);
+        font-size: 1rem;
+        color: var(--azulmarino);
+        font-weight: 700;
+      }
+      
+      ion-card-subtitle {
+        color: var(--Rosita); /* Especialidad en rosa */
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+    
+    ion-card-content {
+      padding: 0 15px 15px 15px;
+      color: var(--Gris);
+      font-size: 0.9rem;
+    }
+
+    /* Botón dentro de la tarjeta de doctor */
+    ion-button {
+      margin: 0 15px 15px 15px;
+      --background: var(--AzulMedio);
+      --border-radius: 10px;
+      --box-shadow: none;
+      font-family: var(--fuente-titulo);
+      font-size: 0.85rem;
+    }
   }
 }
 
-/* Animación de escribiendo */
+/* --- ANIMACIÓN ESCRIBIENDO (...) --- */
 .escribiendo {
   font-style: italic;
-  color: #666;
+  color: var(--Gris);
+  font-size: 0.85rem;
+  margin-left: 10px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  /* Pequeños puntos animados (opcional, si usas spans dentro) */
+  &::after {
+    content: '...';
+    animation: loadingDots 1.5s infinite;
+    color: var(--Rosita);
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+}
+
+/* Animación de entrada de mensajes */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes loadingDots {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
 }

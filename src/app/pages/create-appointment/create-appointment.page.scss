@@ -1,138 +1,228 @@
-:root {
---app-azul-marino: #2E4A70;
---app-azul-primario: #73C7E3;
---app-azul-secundario: #9EBEED;
---app-blanco-cremoso: #FFF9F0;
---app-gris-sutil: #B1CBD6;
+/* --- VARIABLES Y CONFIGURACIÓN (:host) --- */
+:host {
+  /* Paleta VirtualMed Premium */
+  --azulmarino: #2E4A70;
+  --Azulcielo: #73C7E3;
+  --AzulMedio: #9EBEED;
+  --AzulGrisaceo: #B1C8D6;
+  --Rosita: #F4B9B8;      /* Para errores y alertas */
+  --VerdeSage: #B6CBB3;   /* Para validación exitosa */
+  --FondoCrema: #FFF9F0;
+  --White: #FFFFFF;
+
+  --fuente-titulo: 'Poppins', sans-serif;
+  
+  --shadow-premium: 0 10px 25px -5px rgba(115, 199, 227, 0.25);
+  
+  display: block;
 }
 
-// Estado Válido
-ion-item.valid ion-input {
-border-color: #2dd36f !important; /* Verde */
-box-shadow: 0 0 0 2px rgba(45, 211, 111, 0.3) !important;
-}
-
-// Estado Inválido
-ion-item.invalid ion-input {
-border-color: #eb445a !important; /* Rojo */
-box-shadow: 0 0 0 2px rgba(235, 68, 90, 0.3) !important;
-}
-
-.mensaje-error {
-color: #eb445a;
-font-size: 13px;
-margin-left: 5px;
-margin-top: -10px; // Acercamos el mensaje al input
-margin-bottom: 10px;
-}
-
-// Fondo de la página
+/* --- FONDO DE PÁGINA --- */
 ion-content {
---background: var(--app-blanco-cremoso, #FFF9F0);
-padding: 16px;
+  --background: var(--FondoCrema);
+  /* Gradiente sutil característico */
+  background-image: radial-gradient(circle at top left, rgba(115, 199, 227, 0.1) 0%, transparent 50%);
+  padding: 16px;
 }
 
-// Estilo de la Tarjeta Principal
+/* --- HEADER (Estilo Clean/Glass) --- */
+ion-header {
+  ion-toolbar {
+    --background: rgba(255, 255, 255, 0.9);
+    --color: var(--azulmarino);
+    --min-height: 70px;
+    box-shadow: 0 4px 20px rgba(115, 199, 227, 0.2);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+
+    ion-title {
+      font-family: var(--fuente-titulo);
+      font-weight: 700;
+      color: var(--azulmarino);
+      font-size: 1.2rem;
+    }
+
+    ion-buttons ion-button {
+      color: var(--Azulcielo);
+      --color: var(--Azulcielo);
+      font-weight: 600;
+      
+      ion-icon {
+        font-size: 1.4rem;
+        color: var(--Azulcielo);
+      }
+    }
+  }
+}
+
+/* --- TARJETA PRINCIPAL --- */
 ion-card {
---background: rgb(255, 255, 255);
-margin: 0; // Quitamos el margin por defecto para usar padding en content
-padding: 16px; 
-border-radius: 16px;
-box-shadow: 0 6px 15px rgba(46, 74, 112, 0.15); 
+  --background: var(--White);
+  margin: 20px 0;
+  padding: 20px; 
+  border-radius: 24px; /* Squircle moderno */
+  box-shadow: var(--shadow-premium);
+  border: 1px solid rgba(115, 199, 227, 0.1);
 }
 
-/* TÍTULOS DE SECCIÓN */
+/* --- TÍTULOS DE SECCIÓN --- */
 .section-title {
-    color: var(--app-azul-marino);
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin: 10px 0 10px 0;
-    padding-left: 5px;
-    border-left: 4px solid var(--app-azul-primario);
+  color: var(--azulmarino);
+  font-family: var(--fuente-titulo);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 15px 0;
+  padding-left: 10px;
+  border-left: 5px solid var(--Azulcielo); /* Acento azul cielo */
+  display: flex;
+  align-items: center;
 }
 
-/* Estilos de Entradas de Formulario (Inputs, Datetime, Select, Textarea) */
-
+/* --- INPUTS Y CONTROLES DE FORMULARIO --- */
 ion-item {
---background: transparent;
---inner-border-width: 0;
---border-width: 0;
-padding: 0;
-margin-bottom: 20px; 
-
-  // **CORRECCIÓN CLAVE: SOLUCIÓN AL ENCABALMIENTO DE LABEL/INPUT**
-  // Agregamos padding al ion-item para separar el label flotante del input
-padding-top: 5px; 
-padding-bottom: 5px; 
+  --background: transparent;
+  --inner-border-width: 0;
+  --border-width: 0;
+  --padding-start: 0;
+  margin-bottom: 15px;
+  font-family: var(--fuente-titulo);
 }
 
 ion-label {
-    color: var(--app-azul-marino, #2E4A70);
-    font-weight: 600;
+  color: var(--Gris) !important;
+  font-size: 0.9rem !important;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
 }
 
-/* Estilo Base para todos los controles que tienen borde */
+/* Estilo unificado para Inputs, Textareas, Selects y Datetime */
 ion-input, 
 ion-textarea, 
 .custom-select, 
 .custom-datetime {
-  // Redondeado y borde sutil
-border: 1px solid var(--app-gris-sutil, #B1CBD6);
-border-radius: 8px;
-color: var(--app-azul-marino, #2E4A70);
+  background: #FAFBFC; /* Fondo muy sutil para el input */
+  border: 1px solid var(--AzulGrisaceo);
+  border-radius: 16px; /* Bordes muy redondos */
+  color: var(--azulmarino);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-height: 50px; /* Inputs más altos y cómodos */
 
-  // Estilo al enfocar
-&:focus-within {
-border-color: var(--app-azul-primario, #73C7E3);
-box-shadow: 0 0 0 2px rgba(115, 199, 227, 0.3); 
-}
-}
-
-// Ajustes de padding interno para inputs y textareas
-ion-input, ion-textarea {
---padding-start: 15px; 
---padding-end: 15px; 
---padding-top: 10px;
---padding-bottom: 10px;
+  /* Padding interno cómodo */
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  padding: 12px 15px; /* Para elementos nativos HTML si los hay */
 }
 
-// Ajustes específicos para ion-select y ion-datetime (clases aplicadas en HTML)
-.custom-select, .custom-datetime {
-    padding: 10px 15px;
-    width: 100%;
+/* Estado Focus (Al escribir) */
+ion-input:focus-within, 
+ion-textarea:focus-within,
+.custom-select:focus-within, 
+.custom-datetime:focus-within {
+  background: var(--White);
+  border-color: var(--Azulcielo);
+  box-shadow: 0 5px 15px rgba(115, 199, 227, 0.25);
+  transform: translateY(-2px);
 }
 
+/* Placeholder */
+ion-input::placeholder, ion-textarea::placeholder {
+  color: #CBD5E0;
+  font-weight: 400;
+}
 
+/* --- VALIDACIÓN (ESTADOS DE ÉXITO Y ERROR) --- */
 
+/* Estado Válido */
+ion-item.valid ion-input,
+ion-item.valid ion-textarea,
+ion-item.valid .custom-select,
+ion-item.valid .custom-datetime {
+  border-color: var(--VerdeSage) !important;
+  background-color: rgba(182, 203, 179, 0.1) !important; /* Verde muy suave de fondo */
+  box-shadow: 0 0 0 1px var(--VerdeSage) !important;
+}
 
-/* BOTÓN FINAL DE GUARDAR */
+/* Estado Inválido */
+ion-item.invalid ion-input,
+ion-item.invalid ion-textarea,
+ion-item.invalid .custom-select,
+ion-item.invalid .custom-datetime {
+  border-color: var(--Rosita) !important;
+  background-color: rgba(244, 185, 184, 0.1) !important; /* Rosita muy suave de fondo */
+  box-shadow: 0 0 0 1px var(--Rosita) !important;
+  animation: shake 0.3s ease-in-out;
+}
+
+.mensaje-error {
+  color: var(--Rosita); /* Usamos el rosa de la marca en vez de rojo estándar */
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 5px;
+  margin-top: -8px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  /* Pequeño icono de alerta con CSS puro */
+  &::before {
+    content: '!';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    background: var(--Rosita);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+  }
+}
+
+/* --- BOTÓN FINAL DE GUARDAR --- */
 .confirm-button-container {
-padding: 16px;
-text-align: center;
+  padding: 20px 0;
+  text-align: center;
 }
+
 .confirm-button-container ion-button {
---border-radius: 12px;
-font-weight: bold;
-height: 45px;
-width: 100%;
---background: var(--app-azul-primario); 
+  --border-radius: 16px;
+  font-family: var(--fuente-titulo);
+  font-weight: 600;
+  font-size: 1rem;
+  height: 54px; /* Botón alto estilo app moderna */
+  width: 100%;
+  
+  --background: var(--Azulcielo);
+  --box-shadow: 0 10px 20px rgba(115, 199, 227, 0.4);
+  --color: var(--White);
+  text-transform: none;
+  transition: transform 0.2s;
+
+  &:hover {
+    --background: #62b5d1; /* Un poco más oscuro al hover */
+    transform: scale(1.02);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
+/* Botón deshabilitado */
+ion-button[disabled] {
+  opacity: 0.7;
+  --background: var(--AzulGrisaceo) !important;
+  --box-shadow: none;
+}
 
-/* ESTILOS DE CABECERA */
-ion-header {
-ion-toolbar {
---background: var(--app-azul-marino, #2E4A70); 
-ion-title {
-color: white;
-}
-ion-button {
-color: var(--app-azul-primario, #73C7E3);
-font-weight: bold;
-ion-icon {
-        // Asegura que el ícono sea blanco o del color primario
-color: var(--app-azul-primario, #73C7E3); 
-}
-}
-}
+/* Animación de error suave */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }

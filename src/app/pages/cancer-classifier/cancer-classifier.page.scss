@@ -1,0 +1,891 @@
+/* cancer-classifier.page.scss - Estilo organizado y solo PNG */
+
+// ===== VARIABLES Y FUENTES =====
+:root {
+  --ion-background-color: #FFF9F0;
+  
+  /* Paleta de Colores */
+  --azulmarino: #2e4a70;
+  --Azulcielo: #73C7E3;
+  --Azulbajito: #9EBEED;
+  --AxulMasbajito: #B1C8D6;
+  --Gris: #91a4b3;
+  --VerdecitoBajito: #B6CBB3;
+  --Moradito: #c8a2c8;
+  --Rosita: #f4b9b8;
+  --Negro: #000000;
+
+  /* Fuentes */
+  --fuente: 'Italiana', sans-serif;
+  --fuente1: 'Poppins', sans-serif;
+}
+
+/* Importar fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+// ===== ESTILOS GLOBALES =====
+* {
+  font-family: var(--fuente1);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--fuente);
+  font-weight: 400;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: var(--ion-background-color) !important;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// ===== HEADER =====
+ion-toolbar {
+  --background: var(--azulmarino);
+  --color: white;
+  
+  ion-title {
+    font-family: var(--fuente);
+    font-size: 20px;
+    font-weight: 400;
+  }
+  
+  ion-button {
+    --color: white;
+  }
+}
+
+.server-status {
+  font-size: 12px;
+  padding: 6px 12px;
+  font-family: var(--fuente1);
+  border-radius: 12px;
+}
+
+// ===== ALERTAS =====
+.server-alert {
+  margin-bottom: 24px;
+  background: var(--Rosita);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(244, 185, 184, 0.3);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .alert-icon {
+    font-size: 28px;
+    color: var(--azulmarino);
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--azulmarino);
+    font-family: var(--fuente1);
+  }
+}
+
+// ===== INDICADOR DE PROGRESO =====
+.progress-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  position: relative;
+  background: white;
+  padding: 35px 25px 25px 25px; // Más padding arriba para bajar las bolitas
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(46, 74, 112, 0.08);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 65px; // Posición fija para que esté justo debajo de las bolitas
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: var(--AxulMasbajito);
+    z-index: 1;
+  }
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+
+  .step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--AxulMasbajito);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: all 0.4s ease;
+    font-family: var(--fuente1);
+    border: 3px solid white;
+    box-shadow: 0 4px 15px rgba(46, 74, 112, 0.15);
+    position: relative;
+    z-index: 3;
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--Gris);
+    text-align: center;
+    transition: all 0.3s ease;
+    font-family: var(--fuente1);
+    font-weight: 500;
+  }
+
+  &.active {
+    .step-number {
+      background: var(--Azulcielo);
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(115, 199, 227, 0.4);
+    }
+
+    span {
+      color: var(--azulmarino);
+      font-weight: 600;
+    }
+  }
+
+  &.completed {
+    .step-number {
+      background: var(--VerdecitoBajito);
+      box-shadow: 0 6px 20px rgba(182, 203, 179, 0.4);
+    }
+
+    span {
+      color: var(--azulmarino);
+    }
+  }
+}
+
+// ===== TARJETAS PRINCIPALES =====
+.patient-section, .upload-section, .result-section, .history-section {
+  background: #FFFFFF;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(46, 74, 112, 0.08);
+  margin: 0 auto 24px auto;
+  width: 100%;
+  max-width: 800px;
+  overflow: visible;
+  border: none;
+
+  ion-card-header {
+    padding: 30px 30px 10px 30px;
+    background: transparent;
+    border-bottom: none;
+    
+    ion-card-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--azulmarino) !important;
+      font-family: var(--fuente);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      
+      ion-icon {
+        color: var(--azulmarino);
+        background: rgba(115, 199, 227, 0.1);
+        padding: 8px;
+        border-radius: 50%;
+      }
+    }
+
+    ion-text {
+      text-align: center;
+      display: block;
+      margin-top: 8px;
+      
+      p {
+        color: var(--Gris);
+        font-size: 14px;
+        margin: 0;
+        font-family: var(--fuente1);
+      }
+    }
+  }
+
+  ion-card-content {
+    padding: 20px 30px 30px 30px;
+  }
+}
+
+// ===== FORMULARIOS =====
+.form-item {
+  --background: #FFFFFF;
+  --color: var(--azulmarino);
+  --border-color: var(--AxulMasbajito);
+  --border-radius: 16px;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --padding-start: 15px;
+  --highlight-height: 0;
+  --padding-end: 20px;
+  
+  margin-bottom: 18px;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  font-family: var(--fuente1);
+}
+
+.form-item.item-has-focus {
+  --border-color: var(--Azulcielo);
+  transform: translateY(-2px);
+}
+
+ion-label {
+  color: var(--Gris) !important;
+  font-weight: 400;
+  font-family: var(--fuente1);
+  font-size: 14px;
+}
+
+ion-item.item-has-focus ion-label {
+  color: var(--Azulcielo) !important;
+}
+
+ion-input, ion-select, ion-textarea {
+  --color: var(--azulmarino);
+  font-weight: 500;
+  font-family: var(--fuente1);
+}
+
+ion-select::part(icon) {
+  color: var(--Azulcielo);
+}
+
+// ===== BOTONES =====
+.auth-button {
+  --border-radius: 16px;
+  --background: var(--Azulcielo);
+  --background-activated: var(--Azulbajito);
+  --box-shadow: 0 4px 15px rgba(115, 199, 227, 0.4);
+  --color: var(--azulmarino);
+  
+  font-family: var(--fuente1);
+  font-weight: 600;
+  text-transform: none;
+  font-size: 16px;
+  height: 52px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.continue-btn, .analyze-btn, .new-analysis-btn, .select-btn {
+  @extend .auth-button;
+}
+
+.back-btn, .clear-btn {
+  --border-radius: 16px;
+  --background: transparent;
+  --color: var(--azulmarino);
+  --border-color: var(--azulmarino);
+  --border-width: 1.5px;
+  
+  font-family: var(--fuente1);
+  font-weight: 600;
+  text-transform: none;
+  font-size: 14px;
+  height: 44px;
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.clear-btn {
+  --color: var(--Rosita);
+  --border-color: var(--Rosita);
+}
+
+// ===== GRUPOS DE BOTONES =====
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.secondary-buttons {
+  display: flex;
+  gap: 12px;
+
+  ion-button {
+    flex: 1;
+  }
+}
+
+// ===== ÁREA DE CARGA =====
+.upload-area {
+  border: 2px dashed var(--AxulMasbajito);
+  border-radius: 16px;
+  padding: 50px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+  background: rgba(177, 200, 214, 0.05);
+
+  &.active {
+    border-color: var(--Azulcielo);
+    background: rgba(115, 199, 227, 0.1);
+    transform: scale(1.01);
+  }
+
+  &:hover {
+    border-color: var(--Azulcielo);
+    background: rgba(115, 199, 227, 0.05);
+  }
+
+  &:active {
+    transform: scale(0.995);
+  }
+}
+
+.upload-icon {
+  font-size: 64px;
+  color: var(--Gris);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover .upload-icon {
+  color: var(--Azulcielo);
+  transform: scale(1.1);
+}
+
+.upload-text {
+  color: var(--Gris);
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.4;
+  font-family: var(--fuente1);
+}
+
+.file-info {
+  font-size: 14px;
+  color: var(--Gris);
+  margin-top: 12px;
+  font-style: italic;
+  font-family: var(--fuente1);
+}
+
+// ===== VISTA PREVIA =====
+.image-preview {
+  margin-top: 25px;
+  text-align: center;
+  
+  h4 {
+    color: var(--azulmarino);
+    margin-bottom: 15px;
+    font-family: var(--fuente);
+    font-weight: 400;
+    font-size: 18px;
+  }
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(46, 74, 112, 0.1);
+  border: 2px solid var(--AxulMasbajito);
+}
+
+.image-info {
+  font-size: 14px;
+  color: var(--Gris);
+  margin-top: 10px;
+  font-style: italic;
+  font-family: var(--fuente1);
+}
+
+// ===== RESULTADOS =====
+.result-display {
+  text-align: center;
+  padding: 40px 30px;
+  border-radius: 20px;
+  margin: 30px 0;
+  background: rgba(177, 200, 214, 0.1);
+  transition: all 0.4s ease;
+  border-left: 6px solid var(--AxulMasbajito);
+  position: relative;
+
+  &.benign {
+    background: rgba(182, 203, 179, 0.15);
+    border-left-color: var(--VerdecitoBajito);
+  }
+
+  &.malignant {
+    background: rgba(244, 185, 184, 0.15);
+    border-left-color: var(--Rosita);
+  }
+}
+
+.result-icon {
+  font-size: 72px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+  
+  .benign & {
+    color: var(--VerdecitoBajito);
+    animation: pulse 2s infinite;
+  }
+  
+  .malignant & {
+    color: var(--Rosita);
+  }
+}
+
+.result-text {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-family: var(--fuente);
+  
+  .benign & {
+    color: var(--VerdecitoBajito);
+  }
+  
+  .malignant & {
+    color: var(--Rosita);
+  }
+}
+
+.result-description {
+  color: var(--Gris);
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: var(--fuente1);
+}
+
+// ===== BARRA DE CONFIANZA =====
+.confidence-container {
+  margin: 30px 0;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(46, 74, 112, 0.08);
+}
+
+.confidence-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  
+  span {
+    color: var(--Gris);
+    font-size: 16px;
+    font-family: var(--fuente1);
+  }
+  
+  strong {
+    color: var(--azulmarino);
+    font-size: 18px;
+    font-family: var(--fuente1);
+    font-weight: 600;
+  }
+}
+
+.confidence-bar {
+  height: 12px;
+  background: var(--AxulMasbajito);
+  border-radius: 6px;
+  margin: 15px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.confidence-level {
+  height: 100%;
+  background: linear-gradient(90deg, var(--VerdecitoBajito), var(--Azulcielo));
+  border-radius: 6px;
+  transition: width 1s ease-in-out;
+  animation: growWidth 1s ease-in-out;
+}
+
+.confidence-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--Gris);
+  font-family: var(--fuente1);
+}
+
+// ===== RESUMEN DEL PACIENTE =====
+.patient-summary {
+  background-color: rgba(177, 200, 214, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--Azulcielo);
+
+  h4 {
+    color: var(--azulmarino);
+    margin-bottom: 12px;
+    font-family: var(--fuente);
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  p {
+    margin: 8px 0;
+    color: var(--Gris);
+    font-size: 14px;
+    line-height: 1.4;
+    font-family: var(--fuente1);
+  }
+}
+
+// ===== RECOMENDACIONES =====
+.recommendations {
+  margin-top: 30px;
+
+  h3 {
+    margin-bottom: 20px;
+    color: var(--azulmarino);
+    font-family: var(--fuente);
+    font-size: 22px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.recommendation-content {
+  p {
+    color: var(--azulmarino);
+    margin-bottom: 15px;
+    font-family: var(--fuente1);
+    font-weight: 500;
+  }
+  
+  ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+    
+    li {
+      margin-bottom: 12px;
+      line-height: 1.5;
+      color: var(--azulmarino);
+      font-family: var(--fuente1);
+    }
+  }
+  
+  .confidence-note {
+    font-size: 14px;
+    color: var(--Gris);
+    font-style: italic;
+    margin-top: 20px;
+    font-family: var(--fuente1);
+  }
+  
+  .important-note {
+    font-size: 14px;
+    color: var(--azulmarino);
+    background-color: rgba(244, 185, 184, 0.15);
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid var(--Rosita);
+    margin-top: 25px;
+    font-family: var(--fuente1);
+    line-height: 1.5;
+  }
+}
+
+// ===== HISTORIAL =====
+.history-list {
+  margin-top: 20px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--AxulMasbajito);
+  transition: all 0.3s ease;
+  font-family: var(--fuente1);
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 12px rgba(46, 74, 112, 0.05);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 74, 112, 0.1);
+  }
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+}
+
+.history-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.history-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid var(--AxulMasbajito);
+}
+
+.history-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  
+  strong {
+    font-size: 16px;
+    color: var(--azulmarino);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+}
+
+.patient-meta, .study-meta, .history-date, .history-notes, .history-confidence {
+  font-size: 14px;
+  color: var(--Gris);
+  display: block;
+  margin: 2px 0;
+}
+
+.history-notes {
+  font-style: italic;
+  color: var(--Azulcielo);
+}
+
+.history-confidence {
+  font-weight: 600;
+  color: var(--Azulcielo);
+}
+
+.history-result {
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  justify-content: center;
+  font-family: var(--fuente1);
+
+  &.benign {
+    background: var(--VerdecitoBajito);
+    color: var(--azulmarino);
+  }
+
+  &.malignant {
+    background: var(--Rosita);
+    color: var(--azulmarino);
+  }
+}
+
+.result-indicator {
+  font-size: 16px;
+}
+
+// ===== ESTADO VACÍO =====
+.empty-history {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--Gris);
+  
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  p {
+    margin: 0;
+    font-family: var(--fuente1);
+    font-size: 16px;
+  }
+  
+  .empty-subtext {
+    font-size: 14px;
+    margin-top: 8px;
+    font-family: var(--fuente1);
+  }
+}
+
+// ===== ANIMACIONES =====
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes growWidth {
+  from {
+    width: 0% !important;
+  }
+}
+
+.patient-section, .upload-section, .result-section {
+  animation: fadeIn 0.4s ease-out;
+}
+
+// ===== RESPONSIVE =====
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .patient-section, .upload-section, .result-section, .history-section {
+    ion-card-header {
+      padding: 25px 20px 10px 20px;
+      
+      ion-card-title {
+        font-size: 24px;
+      }
+    }
+    
+    ion-card-content {
+      padding: 20px 20px 25px 20px;
+    }
+  }
+
+  .progress-indicator {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .progress-step {
+    flex-direction: row;
+    gap: 15px;
+    width: 100%;
+    text-align: left;
+
+    .step-number {
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+  }
+
+  .secondary-buttons {
+    flex-direction: column;
+  }
+
+  .history-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .history-result {
+    align-self: center;
+    margin-top: 10px;
+  }
+
+  .history-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .history-img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 480px) {
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .upload-area {
+    padding: 40px 15px;
+  }
+  
+  .upload-icon {
+    font-size: 48px;
+  }
+  
+  .result-icon {
+    font-size: 56px;
+  }
+  
+  .result-text {
+    font-size: 20px;
+  }
+}
+
+// ===== ACCESIBILIDAD =====
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--Azulcielo);
+  outline-offset: 2px;
+}
+
+ion-select {
+  color: var(--azulmarino) !important;
+}

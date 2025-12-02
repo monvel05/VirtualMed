@@ -1,20 +1,29 @@
 /* --- Variables Locales & Scope (:host) --- */
 :host {
-  /* Paleta de colores extraída del diseño original */
-  --primary: #3880ff;
-  --secondary: #3dc2ff;
-  --danger: #eb445a;
-  --dark: #222428;
-  --medium: #92949c;
-  --light: #f4f5f8;
-  --white: #ffffff;
-  --header-bg: #2B5C48; /* El verde característico */
-  --card-bg: #ffffff;
+  /* --- PALETA NUEVA (VirtualMed) --- */
+  --azulmarino: #2E4A70;
+  --Azulcielo: #73C7E3;
+  --AzulMedio: #9EBEED;
+  --AzulGrisaceo: #B1C8D6;
+  --Gris: #91A4B3;
+  --Rosita: #F4B9B8;
+  --FondoCrema: #FFF9F0;
+  --White: #FFFFFF;
   
-  /* Sobrescribir variables de Ionic para consistencia */
-  --ion-color-primary: var(--header-bg);
-  --ion-background-color: var(--light);
-  --ion-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* --- Mapeo a lógica funcional --- */
+  --header-bg: var(--azulmarino); /* Reemplaza al verde oscuro */
+  --card-bg: var(--White);
+  --shadow-color: rgba(115, 199, 227, 0.25); /* Sombra azulada premium */
+
+  /* --- Sobrescribir variables de Ionic --- */
+  --ion-color-primary: var(--Azulcielo);
+  --ion-color-secondary: var(--AzulMedio);
+  --ion-background-color: var(--FondoCrema);
+  
+  /* Tipografía */
+  --fuente-titulo: 'Poppins', sans-serif;
+  --fuente-decorativa: 'Italiana', serif;
+  --ion-font-family: var(--fuente-titulo);
 
   display: block;
   height: 100%;
@@ -22,101 +31,125 @@
 
 /* --- Estilos Generales de la Página --- */
 .ion-page {
-  background-color: var(--light);
+  background-color: var(--FondoCrema);
+  /* El fondo radial sutil del diseño */
+  background-image: radial-gradient(circle at top right, rgba(115, 199, 227, 0.15) 0%, transparent 45%);
 }
 
-/* --- Toolbar Personalizado --- */
+/* --- Toolbar Personalizado (Clean Style) --- */
 ion-toolbar {
-  --background: var(--header-bg);
-  --color: var(--white);
+  /* Hacemos el toolbar más limpio/blanco para que resalte el contenido */
+  --background: rgba(255, 255, 255, 0.85); 
+  --color: var(--azulmarino);
   --min-height: 70px;
+  backdrop-filter: blur(10px); /* Efecto cristal */
   
-  /* Sombra suave similar al diseño original */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px var(--shadow-color);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 
   ion-title {
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-family: var(--fuente-titulo);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--azulmarino);
+    
+    /* Pequeño detalle: un punto final rosita si quieres ponerlo en HTML, 
+       o simplemente estilizar el texto */
   }
 
   ion-menu-button {
-    --color: var(--white);
+    --color: var(--Azulcielo);
   }
 }
 
 /* --- Contenido Principal --- */
 ion-content {
-  --padding-top: 20px;
-  --padding-bottom: 20px;
+  --background: transparent; /* Para ver el gradiente del host */
+  --padding-top: 25px;
+  --padding-bottom: 30px;
   
   /* Títulos y Saludos */
   h1.title {
-    color: var(--header-bg);
+    font-family: var(--fuente-titulo);
+    color: var(--azulmarino);
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin-bottom: 5px;
+    letter-spacing: -1px;
+    
+    /* Pequeña animación de entrada */
+    animation: fadeDown 0.6s ease-out;
   }
 
   h2 {
-    color: var(--medium);
-    font-size: 1.2rem;
+    font-family: var(--fuente-decorativa); /* Estilo elegante para el subtítulo */
+    color: var(--Gris);
+    font-size: 1.3rem;
     font-weight: 400;
     margin-top: 0;
+    margin-bottom: 25px;
   }
 }
 
 /* --- Botones del Dashboard (.btn-custom) --- */
-/* Adaptados del estilo .card y .btn del diseño original */
 .btn-custom {
   width: 100%;
-  background: var(--white);
-  color: var(--header-bg);
-  border: 1px solid #e8e8e8;
+  background: var(--White);
+  color: var(--azulmarino);
+  /* Eliminamos borde gris, usamos sombra */
+  border: none;
   padding: 25px 20px;
-  border-radius: 12px;
+  border-radius: 24px; /* Squircle moderno */
+  font-family: var(--fuente-titulo);
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  
+  /* Sombra Premium Azulada */
+  box-shadow: 0 15px 35px -5px rgba(115, 199, 227, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Rebote suave */
+  
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  text-transform: none; /* Quitamos mayúsculas forzadas para verse más amigable */
   position: relative;
   overflow: hidden;
+  z-index: 1;
 
-  /* Icono decorativo sutil (opcional, usando pseudo-elemento) */
+  /* Icono decorativo sutil (Burbuja) */
   &::after {
     content: '';
     position: absolute;
-    right: -20px;
-    top: -20px;
-    width: 60px;
-    height: 60px;
-    background: rgba(43, 92, 72, 0.05);
+    right: -15px;
+    top: -15px;
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, var(--AzulMedio) 0%, transparent 70%);
+    opacity: 0.2;
     border-radius: 50%;
-    transition: transform 0.3s;
+    transition: transform 0.4s;
+    z-index: -1;
   }
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(43, 92, 72, 0.15);
-    border-color: var(--header-bg);
-    background: var(--header-bg);
-    color: var(--white);
+    transform: translateY(-5px);
+    /* Al hacer hover, borde azul cielo y sombra más fuerte */
+    box-shadow: 0 20px 40px -5px rgba(115, 199, 227, 0.4);
+    color: var(--Azulcielo);
 
     &::after {
-      background: rgba(255,255,255, 0.1);
-      transform: scale(1.5);
+      transform: scale(1.8);
+      opacity: 0.3;
+      background: var(--Azulcielo);
     }
   }
 
   &:active {
-    transform: translateY(0);
+    transform: scale(0.98);
   }
 }
 
@@ -124,27 +157,33 @@ ion-content {
 
 /* Calendario */
 ion-datetime {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px;
-  background: var(--white);
+  border-radius: 24px;
+  /* Sombra suave */
+  box-shadow: 0 20px 60px -15px rgba(46, 74, 112, 0.1);
+  margin-bottom: 25px;
+  background: var(--White);
+  padding: 10px;
   
   /* Personalización colores Ionic */
-  --background: var(--white);
-  --wheel-highlight-background: #f8f9fa;
-  --accent-color: var(--header-bg);
+  --background: var(--White);
+  --wheel-highlight-background: #f0f4f8;
+  --accent-color: var(--Azulcielo);
+  --wheel-fade-background-rgb: 255,255,255;
 }
 
 /* Acordeón de Agenda */
 ion-accordion-group {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 15px 35px -5px rgba(115, 199, 227, 0.15);
+  background: var(--White);
+  margin-top: 20px;
   overflow: hidden;
-  background: var(--white);
 
   ion-item[slot="header"] {
-    --background: var(--header-bg);
-    --color: var(--white);
+    /* Header del acordeón en Azul Marino */
+    --background: var(--azulmarino);
+    --color: var(--White);
+    font-family: var(--fuente-titulo);
     font-weight: 600;
     
     ion-label {
@@ -155,40 +194,47 @@ ion-accordion-group {
 
 /* Cards dentro de la Agenda */
 ion-card {
-  margin: 10px 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border: 1px solid #eee;
+  margin: 15px 0;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+  border: 1px solid rgba(115, 199, 227, 0.1); /* Borde sutil azul */
   background: #fff;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease;
 
   &:hover {
     transform: translateX(5px);
-    border-left: 4px solid var(--header-bg);
+    border-left: 5px solid var(--Rosita); /* Acento rosita al hover */
   }
 
   ion-card-header {
-    padding: 10px 15px;
-    background: #f9f9f9;
+    padding: 15px;
+    background: linear-gradient(to right, #ffffff, #fcfcfc);
+    border-bottom: 1px solid #f0f0f0;
     
     ion-card-title {
-      font-size: 1rem;
-      color: var(--dark);
+      font-family: var(--fuente-titulo);
+      font-size: 1.05rem;
+      color: var(--azulmarino);
       font-weight: 700;
     }
     
     ion-card-subtitle {
-      color: var(--header-bg);
+      color: var(--Azulcielo);
       font-weight: 600;
-      font-size: 0.85rem;
-      margin-top: 4px;
+      font-size: 0.9rem;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
   }
 
   ion-card-content {
-    padding: 12px 15px;
-    font-size: 0.9rem;
-    color: var(--medium);
+    padding: 15px;
+    font-family: var(--fuente-titulo);
+    font-size: 0.95rem;
+    color: var(--Gris);
+    line-height: 1.5;
   }
 }
 
@@ -196,54 +242,70 @@ ion-card {
 
 /* Floating Action Button */
 ion-fab-button {
-  --background: var(--header-bg);
-  --color: var(--white);
-  --box-shadow: 0 4px 15px rgba(43, 92, 72, 0.4);
+  --background: var(--Azulcielo);
+  --color: var(--White);
+  --box-shadow: 0 10px 20px rgba(115, 199, 227, 0.5);
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: scale(1.1) rotate(90deg);
+  }
   
   &[color="danger"] {
-    --background: var(--danger);
+    --background: var(--Rosita); /* Usamos el rosita en vez de rojo chillón */
+    --box-shadow: 0 10px 20px rgba(244, 185, 184, 0.5);
   }
 
   ion-icon {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
 }
 
 /* Modal de Notificaciones */
 ion-modal {
-  --border-radius: 15px;
-  --box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  --border-radius: 30px;
+  --box-shadow: 0 0 100px rgba(46, 74, 112, 0.3);
 
   ion-header ion-toolbar {
-    --background: var(--white);
-    --color: var(--dark);
-    box-shadow: none;
-    border-bottom: 1px solid #eee;
-
+    --background: var(--White);
+    --color: var(--azulmarino);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    
     ion-title {
-      color: var(--header-bg);
+      color: var(--azulmarino);
+      font-family: var(--fuente-titulo);
+      font-weight: 700;
     }
   }
+}
+
+/* --- Animaciones --- */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Responsive Tweaks --- */
 @media (max-width: 768px) {
   ion-content {
-    --padding-start: 10px;
-    --padding-end: 10px;
+    --padding-start: 15px;
+    --padding-end: 15px;
   }
 
   .btn-custom {
-    padding: 20px;
+    padding: 22px;
     font-size: 1rem;
+    margin-bottom: 15px;
   }
 
   h1.title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
   
   ion-toolbar {
     --min-height: 60px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     ion-title { font-size: 20px; }
   }
 }
